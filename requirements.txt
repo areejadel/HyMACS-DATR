@@ -1,0 +1,43 @@
+# Plan A — macOS (Apple Silicon)
+# pip install -r requirements.txt
+
+# ─── API clients ──────────────────────────────
+openai>=1.50.0
+anthropic>=0.40.0
+together>=1.3.0
+
+# ─── ALLaM local (Apple Silicon) ─────────────
+# MLX = Apple's native framework (recommended on M-series). The model downloads automatically.
+mlx-lm>=0.20.0
+# llama.cpp = fallback (needs the GGUF downloaded manually)
+llama-cpp-python>=0.3.0
+huggingface-hub>=0.26.0
+
+# ─── Data + utils ────────────────────────────
+pydantic>=2.9.0
+python-dotenv>=1.0.0
+numpy>=1.26.0
+pandas>=2.2.0
+scipy>=1.13.0
+tenacity>=9.0.0          # retry logic for API calls
+
+# ─── RAG (textbook retrieval) ──────────────
+sentence-transformers>=3.0.0   # all-MiniLM-L6-v2 (runs on CPU/MPS)
+faiss-cpu>=1.8.0               # vector index (automatic NumPy fallback in rag.py)
+pymupdf>=1.24.0                # textbook text extraction from PDF (fitz)
+
+# ─── Analysis ────────────────────────────────
+scikit-learn>=1.5.0      # cohen_kappa_score, etc.
+matplotlib>=3.9.0
+seaborn>=0.13.0
+
+# ─── Slide rendering (Presenter -> PPTX) ─────
+python-pptx>=1.0.0
+Pillow>=10.0.0
+
+# ─── Human-evaluation package (Excel + PDF) ──────
+openpyxl>=3.1.0          # rating form
+weasyprint>=62.0         # lecture PDF rendering
+
+# ─── Optional progress ─────────────────────
+tqdm>=4.66.0
