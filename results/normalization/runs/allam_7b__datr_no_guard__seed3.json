@@ -1,0 +1,296 @@
+{
+  "run_id": "allam_7b__datr_no_guard__seed3__1781746955",
+  "model_key": "allam_7b",
+  "condition": "datr_no_guard",
+  "seed": 3,
+  "timestamp": "2026-06-18T01:42:35.350196",
+  "iterations": [
+    {
+      "iteration": 0,
+      "lecture": "### Normalization Forms and Database Schema Design (1NF–BCNF)\n\n#### Section 1: Introduction\nNormalization is a process that involves organizing database schemas to minimize redundancy and dependency. It is achieved by breaking down relations into smaller, more manageable pieces. The primary goals of normalization are to reduce storage space, improve query performance, and increase data integrity.\n\n#### Section 2: Overview of Normalization Forms\nNormalization forms are a sequence of rules that dictate the structure of database schemas. They are named after the first letter of the rule, which is a number. The forms are:\n- First Normal Form (1NF)\n- Second Normal Form (2NF)\n- Third Normal Form (3NF)\n- Boyce-Codd Normal Form (BCNF)\n\n#### Section 3: 1NF – First Normal Form\n1NF ensures that a relation has no repeating groups of attributes. A relation is in 1NF if it meets the following criteria:\n- Each attribute is atomic (contains only one value).\n- Each non-primary key attribute is dependent on the primary key.\n\n#### Section 4: 2NF – Second Normal Form\n2NF ensures that a relation is in 1NF and all non-key attributes are dependent on the primary key. A relation is in 2NF if it meets the following criteria:\n- It is in 1NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 5: 3NF – Third Normal Form\n3NF ensures that a relation is in 2NF and all non-key attributes are not dependent on each other. A relation is in 3NF if it meets the following criteria:\n- It is in 2NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 6: BCNF – Boyce-Codd Normal Form\nBCNF is the highest level of normalization, where all non-key attributes are completely independent of each other. A relation is in BCNF if it meets the following criteria:\n- It is in 3NF.\n- Each non-key attribute is dependent only on the primary key.\n\n#### Section 7: Limitations and Common Pitfalls\nNormalization forms, while valuable, have their limitations. Designers and users must already know or discover the constraints associated with normalization. Additionally, normalizing to the highest possible form can incur performance penalties, such as those discussed in Section 14.1.2.\n\n#### Section 8: Denormalization\nDenormalization involves storing the join of higher normal form relations as a base relation, which is in a lower normal form. This can be done for performance reasons. However, it introduces redundancy and increases storage space.\n\n#### Section 9: Choosing the Right Normalization Level\nThe decision of which normalization level to use depends on the specific requirements of the database schema. Different applications may require different levels of normalization. For example, a database schema for an inventory system may need to be in BCNF to ensure the integrity of the data.\n\n#### Section 10: Example\nConsider a relation R(A, B, C, D, E) that contains attributes A, B, C, D, and E. The relation is in 1NF because each attribute is atomic. However, it is not in 2NF because attribute B is dependent on A and C. To make the relation in 2NF, we would need to create a new relation R_B(B, C) and add a foreign key constraint to R that references R_B(B). The new relation R_B(B, C) is in 2NF because all non-key attributes are dependent on the primary key.\n\n#### Section 11: Conclusion\nNormalization forms are a valuable tool for organizing database schemas to minimize redundancy and dependency. By following the rules of normalization, designers and users can ensure that the database schema meets the requirements of the application while maintaining data integrity and query performance. However, normalizing to the highest possible form can incur performance penalties, so it is important to choose the right normalization level for the specific requirements of the application.",
+      "inner_scores": {
+        "academic_accuracy": 7.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 7.0,
+        "practical_relevance": 5.0,
+        "completeness": 6.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 6.0,
+        "innovation": 4.0
+      },
+      "inner_overall": 5.75,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture accurately describes normalization forms but contains minor inaccuracies in the definitions of 2NF and 3NF.",
+        "pedagogical_effectiveness": "The lecture provides a basic understanding but lacks detailed examples and scaffolding for complex concepts.",
+        "clarity_organization": "The structure is logical, but some sections, like 2NF and 3NF, could be more clearly differentiated.",
+        "practical_relevance": "The lecture mentions practical applications but lacks depth in connecting theory to real-world database design.",
+        "completeness": "While it covers basic normalization forms, it lacks discussion on advanced topics like multi-valued dependencies.",
+        "engagement_potential": "The lecture is straightforward but lacks engaging elements like analogies or real-world case studies.",
+        "technical_quality": "The formatting is generally consistent, but there are minor issues with the clarity of criteria for each form.",
+        "innovation": "The lecture presents standard material without introducing new perspectives or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Clarify the definitions of 2NF and 3NF to accurately reflect the dependency requirements.",
+        "pedagogical_effectiveness": "Include more detailed examples and step-by-step walkthroughs of normalization processes.",
+        "clarity_organization": "Differentiate the sections on 2NF and 3NF more clearly, perhaps with distinct examples.",
+        "practical_relevance": "Incorporate case studies or examples of normalization in real-world database systems.",
+        "completeness": "Discuss advanced topics like multi-valued dependencies and their impact on normalization.",
+        "engagement_potential": "Add engaging elements such as real-world analogies or interactive exercises.",
+        "technical_quality": "Ensure that the criteria for each normalization form are clearly and accurately presented.",
+        "innovation": "Explore non-traditional applications of normalization or cross-domain insights."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 347.2208089828491
+    },
+    {
+      "iteration": 1,
+      "lecture": "### Normalization Forms and Database Schema Design (1NF–BCNF)\n\n#### Section 1: Introduction\nNormalization is a process that involves organizing database schemas to minimize redundancy and dependency. It is achieved by breaking down relations into smaller, more manageable pieces. The primary goals of normalization are to reduce storage space, improve query performance, and increase data integrity.\n\n#### Section 2: Overview of Normalization Forms\nNormalization forms are a sequence of rules that dictate the structure of database schemas. They are named after the first letter of the rule, which is a number. The forms are:\n- First Normal Form (1NF)\n- Second Normal Form (2NF)\n- Third Normal Form (3NF)\n- Boyce-Codd Normal Form (BCNF)\n\n#### Section 3: 1NF – First Normal Form\n1NF ensures that a relation has no repeating groups of attributes. A relation is in 1NF if it meets the following criteria:\n- Each attribute is atomic (contains only one value).\n- Each non-primary key attribute is dependent on the primary key.\n\n#### Section 4: 2NF – Second Normal Form\n2NF ensures that a relation is in 1NF and all non-key attributes are dependent on the primary key. A relation is in 2NF if it meets the following criteria:\n- It is in 1NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 5: 3NF – Third Normal Form\n3NF ensures that a relation is in 2NF and all non-key attributes are not dependent on each other. A relation is in 3NF if it meets the following criteria:\n- It is in 2NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 6: BCNF – Boyce-Codd Normal Form\nBCNF is the highest level of normalization, where all non-key attributes are completely independent of each other. A relation is in BCNF if it meets the following criteria:\n- It is in 3NF.\n- Each non-key attribute is dependent only on the primary key.\n\n#### Section 7: Case Study: Real-world Database Design\nA real-world example of using normalization in database design is the U.S. Census Bureau's database. The U.S. Census Bureau collects and processes a large amount of data for the government. The Census Bureau uses normalization to reduce redundancy and improve data integrity. The Census Bureau's database schema is designed to be in 3NF and BCNF.\n\n#### Section 8: Denormalization\nDenormalization involves storing the join of higher normal form relations as a base relation, which is in a lower normal form. This can be done for performance reasons. Denormalization can be useful in cases where a query requires a large amount of data that is spread across multiple relations. In such cases, denormalization can help to reduce the number of queries and improve query performance.\n\n#### Section 9: Limitations and Common Pitfalls\nNormalization forms, while valuable, have their limitations. Designers and users must already know or discover the constraints associated with normalization. Additionally, normalizing to the highest possible form can incur performance penalties, such as those discussed in Section 14.1.2.\n\n#### Section 10: Conclusion\nNormalization forms are a fundamental concept in database design, and understanding them is essential for designing efficient, high-performance databases. By following the normalization rules, designers can create databases that are more reliable, easier to maintain, and easier to query.",
+      "inner_scores": {
+        "academic_accuracy": 8.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 7.0,
+        "practical_relevance": 7.0,
+        "completeness": 6.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 7.0,
+        "innovation": 4.0
+      },
+      "inner_overall": 6.25,
+      "inner_justifications": {
+        "academic_accuracy": "The definitions and descriptions of normalization forms are mostly accurate, though some details are oversimplified.",
+        "pedagogical_effectiveness": "The lecture provides a basic scaffold but lacks detailed examples and fails to address prerequisites clearly.",
+        "clarity_organization": "The structure is logical, but some sections, like 2NF and 3NF, are repetitive and could be clearer.",
+        "practical_relevance": "The case study adds practical relevance, but more real-world examples could enhance this further.",
+        "completeness": "The lecture covers basic normalization forms but lacks depth in discussing limitations and advanced topics.",
+        "engagement_potential": "The lecture is straightforward but lacks engaging elements like analogies or hooks to maintain interest.",
+        "technical_quality": "Formatting is generally consistent, but some sections could benefit from clearer notation and examples.",
+        "innovation": "The lecture presents standard material without offering new perspectives or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Provide more detailed explanations for each normalization form, especially BCNF.",
+        "pedagogical_effectiveness": "Include more examples and clarify prerequisites for understanding normalization.",
+        "clarity_organization": "Avoid repetition in sections discussing 2NF and 3NF; clarify distinctions more effectively.",
+        "practical_relevance": "Incorporate additional real-world examples from different industries to illustrate normalization's impact.",
+        "completeness": "Expand on limitations and introduce advanced topics like multi-valued dependencies.",
+        "engagement_potential": "Introduce analogies or real-world scenarios to make the content more engaging.",
+        "technical_quality": "Use clearer examples and consistent notation throughout the lecture.",
+        "innovation": "Explore cross-domain applications of normalization or introduce novel teaching methods."
+      },
+      "target_dimensions": [
+        "innovation",
+        "practical_relevance"
+      ],
+      "agents_called": [
+        "engagement",
+        "sme"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 204.21614003181458
+    },
+    {
+      "iteration": 2,
+      "lecture": "### Normalization Forms and Database Schema Design (1NF–BCNF)\n\n#### Section 1: Introduction\nNormalization is a process that involves organizing database schemas to minimize redundancy and dependency. It is achieved by breaking down relations into smaller, more manageable pieces. The primary goals of normalization are to reduce storage space, improve query performance, and increase data integrity.\n\n#### Section 2: Overview of Normalization Forms\nNormalization forms are a sequence of rules that dictate the structure of database schemas. They are named after the first letter of the rule, which is a number. The forms are:\n- First Normal Form (1NF)\n- Second Normal Form (2NF)\n- Third Normal Form (3NF)\n- Boyce-Codd Normal Form (BCNF)\n\n#### Section 3: 1NF – First Normal Form\n1NF ensures that a relation has no repeating groups of attributes. A relation is in 1NF if it meets the following criteria:\n- Each attribute is atomic (contains only one value).\n- Each non-primary key attribute is dependent on the primary key.\n\n#### Section 4: 2NF – Second Normal Form\n2NF ensures that a relation is in 1NF and all non-key attributes are dependent on the primary key. A relation is in 2NF if it meets the following criteria:\n- It is in 1NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 5: 3NF – Third Normal Form\n3NF ensures that a relation is in 2NF and all non-key attributes are not dependent on each other. A relation is in 3NF if it meets the following criteria:\n- It is in 2NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 6: BCNF – Boyce-Codd Normal Form\nBCNF is the highest level of normalization, where all non-key attributes are completely independent of each other. A relation is in BCNF if it meets the following criteria:\n- It is in 3NF.\n- Each non-key attribute is dependent only on the primary key.\n\n#### Section 7: Case Study: Real-world Database Design\nA real-world example of using normalization in database design is the U.S. Census Bureau's database. The U.S. Census Bureau collects and processes a large amount of data for the government. The Census Bureau uses normalization to reduce redundancy and improve data integrity. The Census Bureau's database schema is designed to be in 3NF and BCNF.\n\n#### Section 8: Denormalization\nDenormalization involves storing the join of higher normal form relations as a base relation, which can be useful for performance reasons in some cases. However, denormalization can also lead to redundancy and complicate updates.\n\n#### Section 9: Finding the Right Balance\nThe choice between normalization and denormalization depends on the specific requirements and constraints of the database system. It's important to consider factors such as storage space, query performance, data integrity, and system constraints when deciding between normalization and denormalization.\n\n#### Section 10: Cross-Domain Connection: Engineering\nIn the context of engineering, normalization can be compared to organizing building materials. Just as engineers aim to minimize waste and maximize efficiency, database designers aim to minimize redundancy and maximize data integrity.\n\n#### Section 11: Intellectual Tension: Pro and Con\nNormalization can have both pros and cons. On the one hand, it reduces redundancy and increases data integrity. On the other hand, it can lead to a complex schema and make updates more challenging.\n\n#### Section 12: Try This Yourself\nTry to design a database schema using normalization techniques. Consider the trade-offs between 1NF, 2NF, 3NF, and BCNF. How would you use normalization to reduce redundancy and improve data integrity?",
+      "inner_scores": {
+        "academic_accuracy": 7.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 7.0,
+        "practical_relevance": 6.0,
+        "completeness": 6.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 7.0,
+        "innovation": 5.0
+      },
+      "inner_overall": 6.1,
+      "inner_justifications": {
+        "academic_accuracy": "The definitions and descriptions of normalization forms are mostly accurate, but there are minor inaccuracies in the criteria for 2NF and 3NF.",
+        "pedagogical_effectiveness": "The lecture introduces concepts in a logical order but lacks detailed examples and exercises to reinforce learning.",
+        "clarity_organization": "The lecture is well-structured with clear sections, but some explanations could be clearer, especially the differences between normalization forms.",
+        "practical_relevance": "The lecture includes a real-world example, but it lacks depth in connecting normalization to broader ML practices.",
+        "completeness": "While the lecture covers basic normalization forms, it doesn't delve into advanced topics or limitations in detail.",
+        "engagement_potential": "The lecture is informative but lacks engaging elements such as analogies or interactive components.",
+        "technical_quality": "The formatting is consistent, but there are minor issues with the precision of criteria descriptions.",
+        "innovation": "The lecture makes a basic cross-domain connection to engineering, but it doesn't offer fresh insights or innovative perspectives."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Clarify the criteria for 2NF and 3NF, ensuring that transitive dependencies are correctly addressed.",
+        "pedagogical_effectiveness": "Include more examples and exercises to help students apply the concepts of normalization.",
+        "clarity_organization": "Provide clearer distinctions between each normalization form and their specific criteria.",
+        "practical_relevance": "Expand on how normalization impacts real-world ML systems beyond database design.",
+        "completeness": "Include discussions on advanced normalization forms and practical limitations.",
+        "engagement_potential": "Incorporate analogies or interactive elements to make the lecture more engaging.",
+        "technical_quality": "",
+        "innovation": "Explore more innovative cross-domain connections or applications of normalization."
+      },
+      "target_dimensions": [
+        "innovation",
+        "engagement_potential"
+      ],
+      "agents_called": [
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 105.73439908027649
+    },
+    {
+      "iteration": 3,
+      "lecture": "### Normalization Forms and Database Schema Design (1NF–BCNF)\n\n#### Section 1: Introduction\nNormalization is a process that involves organizing database schemas to minimize redundancy and dependency. It is achieved by breaking down relations into smaller, more manageable pieces. The primary goals of normalization are to reduce storage space, improve query performance, and increase data integrity.\n\n#### Section 2: Overview of Normalization Forms\nNormalization forms are a sequence of rules that dictate the structure of database schemas. They are named after the first letter of the rule, which is a number. The forms are:\n- First Normal Form (1NF)\n- Second Normal Form (2NF)\n- Third Normal Form (3NF)\n- Boyce-Codd Normal Form (BCNF)\n\n#### Section 3: 1NF – First Normal Form\n1NF ensures that a relation has no repeating groups of attributes. A relation is in 1NF if it meets the following criteria:\n- Each attribute is atomic (contains only one value).\n- Each non-primary key attribute is dependent on the primary key.\n\n#### Section 4: 2NF – Second Normal Form\n2NF ensures that a relation is in 1NF and all non-key attributes are dependent on the primary key. A relation is in 2NF if it meets the following criteria:\n- It is in 1NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 5: 3NF – Third Normal Form\n3NF ensures that a relation is in 2NF and all non-key attributes are not dependent on each other. A relation is in 3NF if it meets the following criteria:\n- It is in 2NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 6: BCNF – Boyce-Codd Normal Form\nBCNF is the highest level of normalization, where all non-key attributes are completely independent of each other. A relation is in BCNF if it meets the following criteria:\n- It is in 3NF.\n- Each non-key attribute is dependent only on the primary key.\n\n#### Section 7: Case Study: Real-world Database Design\nA real-world example of using normalization in database design is the U.S. Census Bureau's database. The U.S. Census Bureau collects and processes a large amount of data for the government. The Census Bureau uses normalization to reduce redundancy and improve data integrity. The Census Bureau's database schema is designed to be in 3NF and BCNF.\n\n#### Section 8: Denormalization\nDenormalization involves storing the join of higher normal form relations as a base relation, which can improve query performance. However, it can also increase storage space and reduce data integrity.\n\n#### Section 9: Conclusion\nNormalization is a crucial technique for designing efficient and reliable database schemas. By understanding and applying normalization forms, database designers can effectively minimize redundancy and dependency, ultimately leading to better query performance and data integrity.",
+      "inner_scores": {
+        "academic_accuracy": 6.0,
+        "pedagogical_effectiveness": 5.0,
+        "clarity_organization": 6.0,
+        "practical_relevance": 5.0,
+        "completeness": 5.0,
+        "engagement_potential": 4.0,
+        "technical_quality": 6.0,
+        "innovation": 3.0
+      },
+      "inner_overall": 5.0,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture provides a basic overview of normalization forms but contains inaccuracies, such as the criteria for 2NF and 3NF.",
+        "pedagogical_effectiveness": "The lecture lacks detailed examples and scaffolding to effectively teach the concepts of normalization.",
+        "clarity_organization": "The structure is logical, but the explanations are somewhat repetitive and could be clearer.",
+        "practical_relevance": "The lecture mentions a real-world example but does not sufficiently connect the concepts to practical database design challenges.",
+        "completeness": "Important sub-topics like functional dependencies and transitive dependencies are not covered.",
+        "engagement_potential": "The lecture is dry and lacks engaging elements such as analogies or hooks to capture interest.",
+        "technical_quality": "The formatting is generally consistent, but there are minor issues with the clarity of criteria for each normal form.",
+        "innovation": "The lecture does not offer fresh perspectives or cross-domain connections beyond standard normalization concepts."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Clarify the criteria for 2NF and 3NF, ensuring they accurately reflect the dependency requirements.",
+        "pedagogical_effectiveness": "Include step-by-step examples to illustrate how to apply each normalization form.",
+        "clarity_organization": "Refine the explanations to avoid repetition and enhance clarity.",
+        "practical_relevance": "Provide more detailed case studies or examples of how normalization impacts real-world database performance.",
+        "completeness": "Introduce discussions on functional and transitive dependencies to provide a more comprehensive understanding.",
+        "engagement_potential": "Incorporate analogies or real-world scenarios to make the material more engaging.",
+        "technical_quality": "Ensure all criteria for normal forms are clearly and accurately presented.",
+        "innovation": "Explore connections to other fields or innovative applications of normalization in modern database systems."
+      },
+      "target_dimensions": [
+        "engagement_potential",
+        "innovation"
+      ],
+      "agents_called": [
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 80.26858186721802
+    }
+  ],
+  "final_lecture": "### Normalization Forms and Database Schema Design (1NF–BCNF)\n\n#### Section 1: Introduction\nNormalization is a process that involves organizing database schemas to minimize redundancy and dependency. It is achieved by breaking down relations into smaller, more manageable pieces. The primary goals of normalization are to reduce storage space, improve query performance, and increase data integrity.\n\n#### Section 2: Overview of Normalization Forms\nNormalization forms are a sequence of rules that dictate the structure of database schemas. They are named after the first letter of the rule, which is a number. The forms are:\n- First Normal Form (1NF)\n- Second Normal Form (2NF)\n- Third Normal Form (3NF)\n- Boyce-Codd Normal Form (BCNF)\n\n#### Section 3: 1NF – First Normal Form\n1NF ensures that a relation has no repeating groups of attributes. A relation is in 1NF if it meets the following criteria:\n- Each attribute is atomic (contains only one value).\n- Each non-primary key attribute is dependent on the primary key.\n\n#### Section 4: 2NF – Second Normal Form\n2NF ensures that a relation is in 1NF and all non-key attributes are dependent on the primary key. A relation is in 2NF if it meets the following criteria:\n- It is in 1NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 5: 3NF – Third Normal Form\n3NF ensures that a relation is in 2NF and all non-key attributes are not dependent on each other. A relation is in 3NF if it meets the following criteria:\n- It is in 2NF.\n- The non-key attributes are not dependent on each other.\n\n#### Section 6: BCNF – Boyce-Codd Normal Form\nBCNF is the highest level of normalization, where all non-key attributes are completely independent of each other. A relation is in BCNF if it meets the following criteria:\n- It is in 3NF.\n- Each non-key attribute is dependent only on the primary key.\n\n#### Section 7: Case Study: Real-world Database Design\nA real-world example of using normalization in database design is the U.S. Census Bureau's database. The U.S. Census Bureau collects and processes a large amount of data for the government. The Census Bureau uses normalization to reduce redundancy and improve data integrity. The Census Bureau's database schema is designed to be in 3NF and BCNF.\n\n#### Section 8: Denormalization\nDenormalization involves storing the join of higher normal form relations as a base relation, which can improve query performance. However, it can also increase storage space and reduce data integrity.\n\n#### Section 9: Conclusion\nNormalization is a crucial technique for designing efficient and reliable database schemas. By understanding and applying normalization forms, database designers can effectively minimize redundancy and dependency, ultimately leading to better query performance and data integrity.",
+  "final_inner_scores": {
+    "academic_accuracy": 6.0,
+    "pedagogical_effectiveness": 5.0,
+    "clarity_organization": 6.0,
+    "practical_relevance": 5.0,
+    "completeness": 5.0,
+    "engagement_potential": 4.0,
+    "technical_quality": 6.0,
+    "innovation": 3.0
+  },
+  "final_inner_overall": 5.0,
+  "external_scores": {
+    "academic_accuracy": 2.5,
+    "pedagogical_effectiveness": 2.5,
+    "clarity_organization": 4.5,
+    "practical_relevance": 2.0,
+    "completeness": 2.0,
+    "engagement_potential": 2.0,
+    "technical_quality": 3.0,
+    "innovation": 1.5
+  },
+  "external_overall": 2.2,
+  "external_justifications": {},
+  "panel_per_judge": {
+    "judge_claude": {
+      "scores": {
+        "academic_accuracy": 2.5,
+        "pedagogical_effectiveness": 2.5,
+        "clarity_organization": 3.5,
+        "practical_relevance": 2.0,
+        "completeness": 2.0,
+        "engagement_potential": 2.0,
+        "technical_quality": 2.0,
+        "innovation": 1.5
+      },
+      "justifications": {
+        "academic_accuracy": "The definitions of 2NF, 3NF, and BCNF are critically wrong: 2NF is actually about eliminating partial dependencies on a composite key (not non-key attributes depending on each other), 3NF is about eliminating transitive dependencies, and BCNF requires every determinant to be a superkey — none of these are correctly stated. The claim that normalization improves query performance is also misleading, as normalization typically requires more joins.",
+        "pedagogical_effectiveness": "There is no scaffolding, no worked examples, no functional dependencies introduced, and no step-by-step decomposition shown; a student reading this would have no actionable understanding of how to actually normalize a relation.",
+        "clarity_organization": "The section headings provide a superficially logical flow, but the definitions are circular and nearly identical across 2NF, 3NF, and BCNF, making it impossible for a reader to distinguish between the forms.",
+        "practical_relevance": "The only practical example is a vague, unverifiable reference to the U.S. Census Bureau with no schema, no data, and no demonstration of how normalization was actually applied.",
+        "completeness": "Functional dependencies — the foundational concept for all normalization — are never introduced; there are no examples of violating or satisfying each normal form, no discussion of lossless-join or dependency-preserving decomposition, and higher normal forms (4NF, 5NF) are not even mentioned as existing.",
+        "engagement_potential": "The lecture is dry and repetitive with no motivating scenario, no anomaly examples (insertion/update/deletion anomalies), no analogies, and no tension or problem framing to draw the reader in.",
+        "technical_quality": "There are no tables, no relational schemas, no formal notation for functional dependencies (e.g., A → B), and no code blocks; the formatting is plain prose that fails to leverage any technical precision.",
+        "innovation": "The lecture offers no novel framing, no cross-domain connections, and no non-standard insights; it is a shallow restatement of common misconceptions rather than a fresh perspective."
+      },
+      "overall": 2.2,
+      "error": null,
+      "raw": "{\n  \"scores\": {\n    \"academic_accuracy\": \"2.5\",\n    \"pedagogical_effectiveness\": \"2.5\",\n    \"clarity_organization\": \"3.5\",\n    \"practical_relevance\": \"2.0\",\n    \"completeness\": \"2.0\",\n    \"engagement_potential\": \"2.0\",\n    \"technical_quality\": \"2.0\",\n    \"innovation\": \"1.5\"\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"The definitions of 2NF, 3NF, and BCNF are critically wrong: 2NF is actually about eliminating partial dependencies on a composite key (not non-key attributes depending on each other), 3NF is about eliminating transitive dependencies, and BCNF requires every determinant to be a superkey — none of these are correctly stated. The claim that normalization improves query performance is also misleading, as normalization typically requires more joins.\",\n    \"pedagogical_effectiveness\": \"There is no scaffolding, no worked examples, no functional dependencies introduced, and no step-by-step decomposition shown; a student reading this would have no actionable understanding of how to actually normalize a relation.\",\n    \"clarity_organization\": \"The section headings provide a superficially logical flow, but the definitions are circular and nearly identical across 2NF, 3NF, and BCNF, making it impossible for a reader to distinguish between the forms.\",\n    \"practical_relevance\": \"The only practical example is a vague, unverifiable reference to the U.S. Census Bureau with no schema, no data, and no demonstration of how normalization was actually applied.\",\n    \"completeness\": \"Functional dependencies — the foundational concept for all normalization — are never introduced; there are no examples of violating or satisfying each normal form, no discussion of lossless-join or dependency-preserving decomposition, and higher normal forms (4NF, 5NF) are not even mentioned as existing.\",\n    \"engagement_potential\": \"The lecture is dry and repetitive with no motivating scenario, no anomaly examples (insertion/update/deletion anomalies), no analogies, and no tension or problem framing to draw the reader in.\",\n    \"technical_quality\": \"There are no tables, no relational schemas, no formal notation for functional dependencies (e.g., A → B), and no code blocks; the formatting is plain prose that fails to leverage any technical precision.\",\n    \"innovation\": \"The lecture offers no novel framing, no cross-domain connections, and no non-standard insights; it is a shallow restatement of common misconceptions rather than a fresh perspective.\"\n  },\n  \"overall\": \"2.2\"\n}"
+    },
+    "judge_kimi": {
+      "scores": {
+        "academic_accuracy": 3.5,
+        "pedagogical_effectiveness": 3.0,
+        "clarity_organization": 4.5,
+        "practical_relevance": 3.0,
+        "completeness": 3.0,
+        "engagement_potential": 2.5,
+        "technical_quality": 4.0,
+        "innovation": 2.0
+      },
+      "justifications": {
+        "academic_accuracy": "Multiple serious errors: 1NF incorrectly requires full functional dependency on the primary key; 2NF and 3NF definitions are swapped and garbled (2NF should address partial dependencies, not mutual dependency between non-key attributes); 3NF incorrectly repeats 2NF's wrong definition; BCNF is misdefined as requiring 'non-key attributes completely independent' rather than every determinant being a candidate key. Section 2's 'named after the first letter of the rule, which is a number' is nonsensical.",
+        "pedagogical_effectiveness": "No scaffolding through concrete examples or step-by-step decomposition of a relation; no prerequisite discussion of functional dependencies, candidate keys, or Armstrong's axioms; definitions are presented as isolated bullet points without illustrating before/after schema states or the problems each form prevents.",
+        "clarity_organization": "Structure follows a logical progression (1NF→BCNF) and sections are clearly demarcated, but definitions within sections are internally contradictory and repetitive; the case study is superficial and doesn't trace actual normalization steps; denormalization section is abrupt and underdeveloped.",
+        "practical_relevance": "The Census Bureau case study is hand-wavy and unsupported (no schema details, no specific normal forms applied to which relations); no connection to modern ORM patterns, data warehousing tradeoffs, or when designers deliberately stop at 3NF vs. BCNF; denormalization mention is too brief to be actionable.",
+        "completeness": "Missing: functional dependency definition and notation, partial vs. transitive dependency distinction, candidate/superkey concepts, 3NF formal definition (should allow dependency on candidate keys, not just primary key), multivalued dependencies and 4NF, join dependencies and 5NF, DK/NF, lossless join and dependency preservation theorems, algorithmic decomposition methods (synthesis vs. 3NF, decomposition for BCNF).",
+        "engagement_potential": "No narrative hooks, no motivating anomaly examples (insertion/deletion/update anomalies), no analogies, no historical context (Codd, Boyce), no tension between normalization and performance; flat, encyclopedic tone throughout with no worked problems or interactive elements.",
+        "technical_quality": "Notation is inconsistent and informal (no mathematical symbols for functional dependencies, no relation schemas with attribute sets, no arrow notation); no code blocks, tables, or figures; formatting is plain markdown with no precision in representing schemas (e.g., R(A,B,C) with FDs).",
+        "innovation": "Entirely standard coverage with no fresh angles; no connections to type theory, category theory, software engineering principles, or modern database systems (NewSQL, document stores with normalization considerations); no critical perspective on when normalization theory fails in practice."
+      },
+      "overall": 3.5,
+      "error": null,
+      "raw": "{\"scores\":{\"academic_accuracy\":3.5,\"pedagogical_effectiveness\":3.0,\"clarity_organization\":4.5,\"practical_relevance\":3.0,\"completeness\":3.0,\"engagement_potential\":2.5,\"technical_quality\":4.0,\"innovation\":2.0},\"justifications\":{\"academic_accuracy\":\"Multiple serious errors: 1NF incorrectly requires full functional dependency on the primary key; 2NF and 3NF definitions are swapped and garbled (2NF should address partial dependencies, not mutual dependency between non-key attributes); 3NF incorrectly repeats 2NF's wrong definition; BCNF is misdefined as requiring 'non-key attributes completely independent' rather than every determinant being a candidate key. Section 2's 'named after the first letter of the rule, which is a number' is nonsensical.\",\"pedagogical_effectiveness\":\"No scaffolding through concrete examples or step-by-step decomposition of a relation; no prerequisite discussion of functional dependencies, candidate keys, or Armstrong's axioms; definitions are presented as isolated bullet points without illustrating before/after schema states or the problems each form prevents.\",\"clarity_organization\":\"Structure follows a logical progression (1NF→BCNF) and sections are clearly demarcated, but definitions within sections are internally contradictory and repetitive; the case study is superficial and doesn't trace actual normalization steps; denormalization section is abrupt and underdeveloped.\",\"practical_relevance\":\"The Census Bureau case study is hand-wavy and unsupported (no schema details, no specific normal forms applied to which relations); no connection to modern ORM patterns, data warehousing tradeoffs, or when designers deliberately stop at 3NF vs. BCNF; denormalization mention is too brief to be actionable.\",\"completeness\":\"Missing: functional dependency definition and notation, partial vs. transitive dependency distinction, candidate/superkey concepts, 3NF formal definition (should allow dependency on candidate keys, not just primary key), multivalued dependencies and 4NF, join dependencies and 5NF, DK/NF, lossless join and dependency preservation theorems, algorithmic decomposition methods (synthesis vs. 3NF, decomposition for BCNF).\",\"engagement_potential\":\"No narrative hooks, no motivating anomaly examples (insertion/deletion/update anomalies), no analogies, no historical context (Codd, Boyce), no tension between normalization and performance; flat, encyclopedic tone throughout with no worked problems or interactive elements.\",\"technical_quality\":\"Notation is inconsistent and informal (no mathematical symbols for functional dependencies, no relation schemas with attribute sets, no arrow notation); no code blocks, tables, or figures; formatting is plain markdown with no precision in representing schemas (e.g., R(A,B,C) with FDs).\",\"innovation\":\"Entirely standard coverage with no fresh angles; no connections to type theory, category theory, software engineering principles, or modern database systems (NewSQL, document stores with normalization considerations); no critical perspective on when normalization theory fails in practice.\"},\"overall\":3.5}"
+    },
+    "judge_glm": {
+      "scores": {
+        "academic_accuracy": 2.0,
+        "pedagogical_effectiveness": 2.0,
+        "clarity_organization": 5.0,
+        "practical_relevance": 2.0,
+        "completeness": 2.0,
+        "engagement_potential": 2.0,
+        "technical_quality": 3.0,
+        "innovation": 1.0
+      },
+      "justifications": {
+        "academic_accuracy": "The definitions of 2NF, 3NF, and BCNF are fundamentally incorrect; 2NF requires full functional dependency on the whole key (not just independence), 3NF prevents transitive dependencies (not the same rule as 2NF), and BCNF requires every determinant to be a candidate key (not just 3NF plus non-key dependency on the primary key).",
+        "pedagogical_effectiveness": "The lecture lacks examples, functional dependency definitions, and proper scaffolding, making it impossible for a student to correctly apply these flawed definitions to actual schema design.",
+        "clarity_organization": "While the structural progression from 1NF to BCNF is logical, the repetitive and incorrect definitions make the actual content extremely confusing and misleading.",
+        "practical_relevance": "The U.S. Census Bureau example is superficial and lacks a concrete schema or walkthrough, providing no practical insight into how normalization is actually applied in the field.",
+        "completeness": "Crucial prerequisites like functional dependencies and candidate keys are missing, the definitions of normal forms are incomplete, and advanced forms like 4NF and 5NF are entirely omitted.",
+        "engagement_potential": "The text is a dry list of incorrect bullet points with no motivating hooks, analogies, interactive elements, or tension to engage the reader.",
+        "technical_quality": "Formatting is basic but consistent, though the bizarre claim in Section 2 that forms 'are named after the first letter of the rule, which is a number' indicates severe technical and editorial flaws.",
+        "innovation": "There are absolutely no fresh angles, cross-domain connections, or non-trivial insights; it is a severely flawed attempt at a standard textbook summary."
+      },
+      "overall": 2.0,
+      "error": null,
+      "raw": "{\n  \"scores\": {\n    \"academic_accuracy\": 2.0,\n    \"pedagogical_effectiveness\": 2.0,\n    \"clarity_organization\": 5.0,\n    \"practical_relevance\": 2.0,\n    \"completeness\": 2.0,\n    \"engagement_potential\": 2.0,\n    \"technical_quality\": 3.0,\n    \"innovation\": 1.0\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"The definitions of 2NF, 3NF, and BCNF are fundamentally incorrect; 2NF requires full functional dependency on the whole key (not just independence), 3NF prevents transitive dependencies (not the same rule as 2NF), and BCNF requires every determinant to be a candidate key (not just 3NF plus non-key dependency on the primary key).\",\n    \"pedagogical_effectiveness\": \"The lecture lacks examples, functional dependency definitions, and proper scaffolding, making it impossible for a student to correctly apply these flawed definitions to actual schema design.\",\n    \"clarity_organization\": \"While the structural progression from 1NF to BCNF is logical, the repetitive and incorrect definitions make the actual content extremely confusing and misleading.\",\n    \"practical_relevance\": \"The U.S. Census Bureau example is superficial and lacks a concrete schema or walkthrough, providing no practical insight into how normalization is actually applied in the field.\",\n    \"completeness\": \"Crucial prerequisites like functional dependencies and candidate keys are missing, the definitions of normal forms are incomplete, and advanced forms like 4NF and 5NF are entirely omitted.\",\n    \"engagement_potential\": \"The text is a dry list of incorrect bullet points with no motivating hooks, analogies, interactive elements, or tension to engage the reader.\",\n    \"technical_quality\": \"Formatting is basic but consistent, though the bizarre claim in Section 2 that forms 'are named after the first letter of the rule, which is a number' indicates severe technical and editorial flaws.\",\n    \"innovation\": \"There are absolutely no fresh angles, cross-domain connections, or non-trivial insights; it is a severely flawed attempt at a standard textbook summary.\"\n  },\n  \"overall\": 2.0\n}"
+    }
+  },
+  "panel_n_ok": 3,
+  "final_slides_json": {
+    "error": "skipped: model context too small for Presenter (slides optional)"
+  },
+  "slides_validation_warnings": [
+    "Slides JSON contains error: skipped: model context too small for Presenter (slides optional)"
+  ],
+  "total_elapsed_sec": 760.1895439624786,
+  "error": null
+}

@@ -12,9 +12,15 @@ three external LLM judges.
 - **Generators (6):** ALLaM-7B (local), Llama-3-8B, Llama-3.3-70B, Gemma-4-31B,
   Qwen3-235B, DeepSeek-V4-Pro (hosted).
 - **Inner judge:** GPT-4o (formative, drives the DATR loop).
-- **External panel:** Claude-Sonnet, Kimi-K2.6, GLM-5.1 (median aggregation;
-  cross-family with respect to every generator).
-- **Design:** 6 generators x 4 conditions x 5 seeds x 2 subjects = 240 runs.
+- **External panel:** Claude-Sonnet-4.6, Kimi-K3, GLM-5.2 at temperature 0.2 (median
+  aggregation; cross-family with respect to every generator). The original study used
+  Kimi-K2.6 and GLM-5.1; both were withdrawn from serverless hosting, so all 240 lectures
+  were re-judged with their successors. Both sets of scores are released.
+- **Studies:**
+  - Evaluation corpus: 6 generators x 4 conditions x 5 seeds x 2 subjects = 240 lectures
+    (root pipeline, `results/`).
+  - Shared-draft refinement: 60 drafts x 5 methods = 300 runs, cross-judging (36 lectures x
+    9 judges), test-retest, prompt-vs-model and length checks (`v6/`, `v6/results_v6/`).
 
 ## Repository layout
 
@@ -26,7 +32,13 @@ clients/             Unified LLM client interfaces (hosted API + local backends)
 pipeline/            Generator, RAG, DATR router, inner judge, external panel, runner
 experiments/         Analysis: aggregation, panel agreement, self-preference,
                      significance tests, figures, human-evaluation packaging
+results/             Per-run JSON artifacts of the 240-run study (original panel scores)
+v6/                  Re-evaluation with the current panel, shared-draft refinement,
+                     cross-judging, spend-guarded runner, and the paper's analysis/figures
+human_eval/          Anonymized lectures, anchors, and blank rating form
 ```
+
+See [`v6/README.md`](v6/README.md) for the experiments behind every table and figure in the paper.
 
 ## Setup
 
@@ -42,6 +54,7 @@ Three providers are required. Put your keys in `.env` (never commit it):
 - `TOGETHER_API_KEY` — hosted generators and two panel judges
 - `OPENAI_API_KEY` — inner judge (GPT-4o)
 - `ANTHROPIC_API_KEY` — one panel judge (Claude)
+- `OPENROUTER_API_KEY` — only for the `v6/` refinement runs of Gemma, Qwen, and DeepSeek
 
 ### Reference textbooks (RAG) — not included
 The two subjects are grounded in copyrighted textbooks that are **not redistributed

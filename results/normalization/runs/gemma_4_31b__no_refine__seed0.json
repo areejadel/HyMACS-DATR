@@ -1,0 +1,328 @@
+{
+  "run_id": "gemma_4_31b__no_refine__seed0__1781914616",
+  "model_key": "gemma_4_31b",
+  "condition": "no_refine",
+  "seed": 0,
+  "timestamp": "2026-06-20T00:16:56.617213",
+  "iterations": [
+    {
+      "iteration": 0,
+      "lecture": "### Lecture: Normalization and Database Schema Design (1NF to BCNF)\n\n#### The Cost of Redundancy: Why Normalize?\nImagine you are designing a database for a global logistics company. You store the `WarehouseAddress` every time a `Package` is assigned to a warehouse. If a warehouse moves across the street, you must update 10,000 package records. If you miss one, your data is now contradictory: the warehouse exists in two places at once. This is not just a storage waste; it is a systemic risk to data integrity. \n\nNormalization is the process of surgically removing these redundancies to ensure that **every piece of data is stored in exactly one place**.\n\n---\n\n#### 1. Prerequisites: The Logic of Dependencies\nBefore we can fix a schema, we need a mathematical way to describe how attributes \"cling\" to one another.\n\n**Functional Dependency (FD)**\nA functional dependency $X \\to Y$ exists if, for any two tuples $t_1$ and $t_2$ in a relation $R$, $t_1[X] = t_2[X]$ implies $t_1[Y] = t_2[Y]$. \n\n**The Analogy: The Digital Fingerprint**\nThink of a Functional Dependency as a \"lookup guarantee.\" If $X \\to Y$, then $X$ acts like a fingerprint; once you identify the fingerprint ($X$), the identity ($Y$) is locked in. There is no ambiguity.\n\n**Core Terminology**\n*   **Determinant:** The attribute $X$ (the \"fingerprint\").\n*   **Dependent:** The attribute $Y$ (the \"identity\").\n*   **Candidate Key:** A minimal set of attributes that functionally determines *every* other attribute in the relation.\n*   **Prime Attribute:** An attribute that is a member of at least one candidate key.\n*   **Non-prime Attribute:** An attribute that is not part of any candidate key.\n\n**Worked Example: Finding the Candidate Key**\nConsider $\\text{Enrollment}(\\text{StudentID, CourseID, Grade, StudentName})$.\n1. $\\text{StudentID} \\to \\text{StudentName}$\n2. $\\{\\text{StudentID, CourseID}\\} \\to \\text{Grade}$\n\n**The Tension:** Can $\\text{StudentID}$ alone be the key? No, because it cannot determine the $\\text{Grade}$ (a student has different grades for different courses). Can $\\text{CourseID}$ be the key? No, it doesn't determine the $\\text{StudentName}$. \n**Resolution:** The minimal set that unlocks all data is $\\{\\text{StudentID, CourseID}\\}$. This is the **Candidate Key**.\n*   **Prime:** $\\text{StudentID, CourseID}$.\n*   **Non-prime:** $\\text{Grade, StudentName}$.\n\n**Try This Yourself:** In a relation $\\text{Books}(\\text{ISBN, Title, Author})$, if $\\text{ISBN} \\to \\{\\text{Title, Author}\\}$, is $\\text{Title}$ a prime attribute? \n*(Answer: No, because $\\text{Title}$ is not part of the candidate key $\\text{ISBN}$.)*\n\n---\n\n#### 2. First Normal Form (1NF): Atomicity\n**The Problem: The \"List\" Trap**\nConsider a table where a `Courses` column contains: `CS101, MATH202, PHYS101`. To find every student in `CS101`, the database cannot use a high-speed index; it must perform a \"string search\" (like `LIKE '%CS101%'`) across every single row. This turns a millisecond operation into a multi-second crawl.\n\n**Formal Definition**\nA relation is in **1NF** if and only if the domain of each attribute contains only **atomic** (indivisible) values, and there are no repeating groups.\n\n**Worked Example: Normalizing to 1NF**\n*Non-1NF Table:*\n| StudentID | Courses |\n| :--- | :--- |\n| 101 | {CS101, MATH202} |\n\n*1NF Table:*\n| StudentID | CourseID |\n| :--- | :--- |\n| 101 | CS101 |\n| 101 | MATH202 |\n\n**Quick Check:** A table stores \"Full Name\" as one column. Is this a violation of 1NF? \n*(Answer: Generally no, unless the business logic requires searching/sorting by First Name and Last Name independently, rendering the combined value non-atomic for that specific use case.)*\n\n---\n\n#### 3. Second Normal Form (2NF): No Partial Dependencies\n**The Problem: The \"Half-Key\" Dependency**\n2NF only applies to tables with **composite keys**. A partial dependency occurs when a non-prime attribute is determined by only *part* of the key.\n\n**The Analogy: The Bad Roommate**\nImagine a lease signed by two roommates (the Composite Key). The `RentAmount` depends on both people signing (Full Dependency). However, the `Roommate1_PhoneNumber` depends only on Roommate 1, regardless of who the second roommate is. Storing the phone number on the joint lease is a \"partial dependency.\"\n\n**Formal Definition**\nA relation is in **2NF** if it is in 1NF and every non-prime attribute is **fully functionally dependent** on every candidate key.\n\n**Worked Example: Fixing Partial Dependency**\n$\\text{ProjectAssignments}(\\text{EmpID, ProjID, EmpName, HoursWorked})$.\n*   **Candidate Key:** $\\{\\text{EmpID, ProjID}\\}$\n*   $\\text{FD}_1: \\{\\text{EmpID, ProjID}\\} \\to \\text{HoursWorked}$ (Full)\n*   $\\text{FD}_2: \\text{EmpID} \\to \\text{EmpName}$ (**Partial**—$\\text{EmpName}$ doesn't care about $\\text{ProjID}$)\n\n**The Anomaly:** If an employee is on 10 projects, we store their name 10 times. If they change their name, we must update 10 rows. This is an **Update Anomaly**.\n\n**Decomposition:**\n1. $\\text{Employee}(\\underline{\\text{EmpID}}, \\text{EmpName})$\n2. $\\text{Assignments}(\\underline{\\text{EmpID, ProjID}}, \\text{HoursWorked})$\n\n**Quick Check:** If a table has a single-attribute primary key, can it violate 2NF? \n*(Answer: No. There are no proper subsets of a single attribute to create a partial dependency.)*\n\n---\n\n#### 4. Third Normal Form (3NF): No Transitive Dependencies\n**The Problem: The \"Hidden\" Chain**\nEven if every attribute depends on the *whole* key, they might depend on the key *via* another attribute. This is a transitive dependency: $\\text{Key} \\to \\text{Attribute B} \\to \\text{Attribute C}$.\n\n**The Analogy: The Chain of Command**\nThe CEO ($\\text{Key}$) determines who the Manager is ($\\text{Attribute B}$). The Manager ($\\text{Attribute B}$) determines which Office ($\\text{Attribute C}$) is used. While the CEO technically determines the office, they do so *through* the manager. If the manager changes, the office changes, even if the CEO remains the same.\n\n**Formal Definition**\nA relation is in **3NF** if it is in 2NF and no non-prime attribute is transitively dependent on a candidate key. \n*Criterion:* For every non-trivial FD $X \\to A$, either $X$ is a superkey or $A$ is a prime attribute.\n\n**Worked Example: Fixing Transitive Dependency**\n$\\text{Employee}(\\text{EmpID, DeptID, DeptName})$.\n*   **Candidate Key:** $\\text{EmpID}$\n*   $\\text{FD}_1: \\text{EmpID} \\to \\text{DeptID}$\n*   $\\text{FD}_2: \\text{DeptID} \\to \\text{DeptName}$\n$\\text{DeptName}$ is transitively dependent on $\\text{EmpID}$.\n\n**The Anomaly:** If you delete the last employee in the \"Research\" department, you accidentally delete the fact that the \"Research\" department exists. This is a **Deletion Anomaly**.\n\n**Decomposition:**\n1. $\\text{Employee}(\\underline{\\text{EmpID}}, \\text{DeptID})$\n2. $\\text{Department}(\\underline{\\text{DeptID}}, \\text{DeptName})$\n\n**Try This Yourself:** In $\\text{R}(A, B, C)$ with $A$ as the key, $A \\to B$ and $B \\to C$, which normal form is violated? \n*(Answer: 3NF).*\n\n---\n\n#### 5. Boyce-Codd Normal Form (BCNF): The Strict Standard\n**The Problem: The Overlapping Key Paradox**\n3NF allows a dependency if the dependent attribute is \"prime\" (part of *some* candidate key). BCNF removes this loophole.\n\n**The Tension:** Is 3NF enough? Consider a scenario where we have multiple overlapping candidate keys. 3NF might allow a non-superkey to determine part of a key, which still creates redundancy.\n\n**Formal Definition**\nA relation is in **BCNF** if for every non-trivial FD $X \\to A$, $X$ is a superkey. (Essentially: \"The determinant must be a candidate key, period.\")\n\n**Worked Example: 3NF vs. BCNF**\n$\\text{TEACH}(\\text{Student, Course, Instructor})$.\n*   **Constraints:** Each instructor teaches only one course; students can have multiple instructors.\n*   $\\text{FD}_1: \\{\\text{Student, Course}\\} \\to \\text{Instructor}$\n*   $\\text{FD}_2: \\text{Instructor} \\to \\text{Course}$\n*   **Candidate Keys:** $\\{\\text{Student, Course}\\}$ and $\\{\\text{Student, Instructor}\\}$.\n\n**Evaluation:**\n*   **3NF:** Valid. In $\\text{Instructor} \\to \\text{Course}$, $\\text{Course}$ is a prime attribute (it's part of the first candidate key).\n*   **BCNF:** Invalid. In $\\text{Instructor} \\to \\text{Course}$, the determinant $\\text{Instructor}$ is **not** a superkey.\n\n**Decomposition:**\n1. $\\text{R1}(\\underline{\\text{Student, Instructor}})$\n2. $\\text{R2}(\\underline{\\text{Instructor}}, \\text{Course})$\n\n**Quick Check:** If a relation is in BCNF, is it automatically in 3NF? \n*(Answer: Yes, BCNF is a stricter version of 3NF.)*\n\n---\n\n#### 6. Summary and Practical Trade-offs\n\n**Normalization Comparison Matrix**\n\n| Form | Requirement | Eliminates | Analogy |\n| :--- | :--- | :--- | :--- |\n| **1NF** | Atomic values | Multi-valued attributes | No \"lists\" in cells |\n| **2NF** | 1NF + No partial dependencies | Redundancy from composite keys | No \"half-key\" dependencies |\n| **3NF** | 2NF + No transitive dependencies | Redundancy from non-key attributes | No \"chains of command\" |\n| **BCNF** | Every determinant is a superkey | Redundancy from overlapping keys | Absolute determinant authority |",
+      "inner_scores": {
+        "academic_accuracy": 9.0,
+        "pedagogical_effectiveness": 8.0,
+        "clarity_organization": 8.0,
+        "practical_relevance": 7.0,
+        "completeness": 8.0,
+        "engagement_potential": 7.0,
+        "technical_quality": 9.0,
+        "innovation": 6.0
+      },
+      "inner_overall": 7.75,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture accurately defines normalization concepts and uses correct notation throughout.",
+        "pedagogical_effectiveness": "The lecture effectively uses examples and analogies to explain complex concepts, though it could benefit from more interactive elements.",
+        "clarity_organization": "The structure is logical and the writing is clear, with each section building on the previous one.",
+        "practical_relevance": "The lecture connects theoretical concepts to practical scenarios, though more real-world examples could enhance this further.",
+        "completeness": "The lecture covers all major normal forms and their implications, but could include more on limitations and trade-offs.",
+        "engagement_potential": "The use of analogies and real-world scenarios helps engage the reader, but the lecture could include more interactive elements.",
+        "technical_quality": "The formatting is precise with consistent notation and well-structured tables.",
+        "innovation": "The lecture presents standard material with some fresh analogies, but lacks significant novel insights or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "",
+        "pedagogical_effectiveness": "Incorporate interactive quizzes or exercises to reinforce learning.",
+        "clarity_organization": "",
+        "practical_relevance": "Include more detailed real-world case studies to illustrate the application of normalization.",
+        "completeness": "Discuss more about the limitations and trade-offs of normalization in practice.",
+        "engagement_potential": "Add more interactive elements like quizzes or thought experiments.",
+        "technical_quality": "",
+        "innovation": "Explore cross-domain applications or novel insights into database design."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 112.7692198753357
+    }
+  ],
+  "final_lecture": "### Lecture: Normalization and Database Schema Design (1NF to BCNF)\n\n#### The Cost of Redundancy: Why Normalize?\nImagine you are designing a database for a global logistics company. You store the `WarehouseAddress` every time a `Package` is assigned to a warehouse. If a warehouse moves across the street, you must update 10,000 package records. If you miss one, your data is now contradictory: the warehouse exists in two places at once. This is not just a storage waste; it is a systemic risk to data integrity. \n\nNormalization is the process of surgically removing these redundancies to ensure that **every piece of data is stored in exactly one place**.\n\n---\n\n#### 1. Prerequisites: The Logic of Dependencies\nBefore we can fix a schema, we need a mathematical way to describe how attributes \"cling\" to one another.\n\n**Functional Dependency (FD)**\nA functional dependency $X \\to Y$ exists if, for any two tuples $t_1$ and $t_2$ in a relation $R$, $t_1[X] = t_2[X]$ implies $t_1[Y] = t_2[Y]$. \n\n**The Analogy: The Digital Fingerprint**\nThink of a Functional Dependency as a \"lookup guarantee.\" If $X \\to Y$, then $X$ acts like a fingerprint; once you identify the fingerprint ($X$), the identity ($Y$) is locked in. There is no ambiguity.\n\n**Core Terminology**\n*   **Determinant:** The attribute $X$ (the \"fingerprint\").\n*   **Dependent:** The attribute $Y$ (the \"identity\").\n*   **Candidate Key:** A minimal set of attributes that functionally determines *every* other attribute in the relation.\n*   **Prime Attribute:** An attribute that is a member of at least one candidate key.\n*   **Non-prime Attribute:** An attribute that is not part of any candidate key.\n\n**Worked Example: Finding the Candidate Key**\nConsider $\\text{Enrollment}(\\text{StudentID, CourseID, Grade, StudentName})$.\n1. $\\text{StudentID} \\to \\text{StudentName}$\n2. $\\{\\text{StudentID, CourseID}\\} \\to \\text{Grade}$\n\n**The Tension:** Can $\\text{StudentID}$ alone be the key? No, because it cannot determine the $\\text{Grade}$ (a student has different grades for different courses). Can $\\text{CourseID}$ be the key? No, it doesn't determine the $\\text{StudentName}$. \n**Resolution:** The minimal set that unlocks all data is $\\{\\text{StudentID, CourseID}\\}$. This is the **Candidate Key**.\n*   **Prime:** $\\text{StudentID, CourseID}$.\n*   **Non-prime:** $\\text{Grade, StudentName}$.\n\n**Try This Yourself:** In a relation $\\text{Books}(\\text{ISBN, Title, Author})$, if $\\text{ISBN} \\to \\{\\text{Title, Author}\\}$, is $\\text{Title}$ a prime attribute? \n*(Answer: No, because $\\text{Title}$ is not part of the candidate key $\\text{ISBN}$.)*\n\n---\n\n#### 2. First Normal Form (1NF): Atomicity\n**The Problem: The \"List\" Trap**\nConsider a table where a `Courses` column contains: `CS101, MATH202, PHYS101`. To find every student in `CS101`, the database cannot use a high-speed index; it must perform a \"string search\" (like `LIKE '%CS101%'`) across every single row. This turns a millisecond operation into a multi-second crawl.\n\n**Formal Definition**\nA relation is in **1NF** if and only if the domain of each attribute contains only **atomic** (indivisible) values, and there are no repeating groups.\n\n**Worked Example: Normalizing to 1NF**\n*Non-1NF Table:*\n| StudentID | Courses |\n| :--- | :--- |\n| 101 | {CS101, MATH202} |\n\n*1NF Table:*\n| StudentID | CourseID |\n| :--- | :--- |\n| 101 | CS101 |\n| 101 | MATH202 |\n\n**Quick Check:** A table stores \"Full Name\" as one column. Is this a violation of 1NF? \n*(Answer: Generally no, unless the business logic requires searching/sorting by First Name and Last Name independently, rendering the combined value non-atomic for that specific use case.)*\n\n---\n\n#### 3. Second Normal Form (2NF): No Partial Dependencies\n**The Problem: The \"Half-Key\" Dependency**\n2NF only applies to tables with **composite keys**. A partial dependency occurs when a non-prime attribute is determined by only *part* of the key.\n\n**The Analogy: The Bad Roommate**\nImagine a lease signed by two roommates (the Composite Key). The `RentAmount` depends on both people signing (Full Dependency). However, the `Roommate1_PhoneNumber` depends only on Roommate 1, regardless of who the second roommate is. Storing the phone number on the joint lease is a \"partial dependency.\"\n\n**Formal Definition**\nA relation is in **2NF** if it is in 1NF and every non-prime attribute is **fully functionally dependent** on every candidate key.\n\n**Worked Example: Fixing Partial Dependency**\n$\\text{ProjectAssignments}(\\text{EmpID, ProjID, EmpName, HoursWorked})$.\n*   **Candidate Key:** $\\{\\text{EmpID, ProjID}\\}$\n*   $\\text{FD}_1: \\{\\text{EmpID, ProjID}\\} \\to \\text{HoursWorked}$ (Full)\n*   $\\text{FD}_2: \\text{EmpID} \\to \\text{EmpName}$ (**Partial**—$\\text{EmpName}$ doesn't care about $\\text{ProjID}$)\n\n**The Anomaly:** If an employee is on 10 projects, we store their name 10 times. If they change their name, we must update 10 rows. This is an **Update Anomaly**.\n\n**Decomposition:**\n1. $\\text{Employee}(\\underline{\\text{EmpID}}, \\text{EmpName})$\n2. $\\text{Assignments}(\\underline{\\text{EmpID, ProjID}}, \\text{HoursWorked})$\n\n**Quick Check:** If a table has a single-attribute primary key, can it violate 2NF? \n*(Answer: No. There are no proper subsets of a single attribute to create a partial dependency.)*\n\n---\n\n#### 4. Third Normal Form (3NF): No Transitive Dependencies\n**The Problem: The \"Hidden\" Chain**\nEven if every attribute depends on the *whole* key, they might depend on the key *via* another attribute. This is a transitive dependency: $\\text{Key} \\to \\text{Attribute B} \\to \\text{Attribute C}$.\n\n**The Analogy: The Chain of Command**\nThe CEO ($\\text{Key}$) determines who the Manager is ($\\text{Attribute B}$). The Manager ($\\text{Attribute B}$) determines which Office ($\\text{Attribute C}$) is used. While the CEO technically determines the office, they do so *through* the manager. If the manager changes, the office changes, even if the CEO remains the same.\n\n**Formal Definition**\nA relation is in **3NF** if it is in 2NF and no non-prime attribute is transitively dependent on a candidate key. \n*Criterion:* For every non-trivial FD $X \\to A$, either $X$ is a superkey or $A$ is a prime attribute.\n\n**Worked Example: Fixing Transitive Dependency**\n$\\text{Employee}(\\text{EmpID, DeptID, DeptName})$.\n*   **Candidate Key:** $\\text{EmpID}$\n*   $\\text{FD}_1: \\text{EmpID} \\to \\text{DeptID}$\n*   $\\text{FD}_2: \\text{DeptID} \\to \\text{DeptName}$\n$\\text{DeptName}$ is transitively dependent on $\\text{EmpID}$.\n\n**The Anomaly:** If you delete the last employee in the \"Research\" department, you accidentally delete the fact that the \"Research\" department exists. This is a **Deletion Anomaly**.\n\n**Decomposition:**\n1. $\\text{Employee}(\\underline{\\text{EmpID}}, \\text{DeptID})$\n2. $\\text{Department}(\\underline{\\text{DeptID}}, \\text{DeptName})$\n\n**Try This Yourself:** In $\\text{R}(A, B, C)$ with $A$ as the key, $A \\to B$ and $B \\to C$, which normal form is violated? \n*(Answer: 3NF).*\n\n---\n\n#### 5. Boyce-Codd Normal Form (BCNF): The Strict Standard\n**The Problem: The Overlapping Key Paradox**\n3NF allows a dependency if the dependent attribute is \"prime\" (part of *some* candidate key). BCNF removes this loophole.\n\n**The Tension:** Is 3NF enough? Consider a scenario where we have multiple overlapping candidate keys. 3NF might allow a non-superkey to determine part of a key, which still creates redundancy.\n\n**Formal Definition**\nA relation is in **BCNF** if for every non-trivial FD $X \\to A$, $X$ is a superkey. (Essentially: \"The determinant must be a candidate key, period.\")\n\n**Worked Example: 3NF vs. BCNF**\n$\\text{TEACH}(\\text{Student, Course, Instructor})$.\n*   **Constraints:** Each instructor teaches only one course; students can have multiple instructors.\n*   $\\text{FD}_1: \\{\\text{Student, Course}\\} \\to \\text{Instructor}$\n*   $\\text{FD}_2: \\text{Instructor} \\to \\text{Course}$\n*   **Candidate Keys:** $\\{\\text{Student, Course}\\}$ and $\\{\\text{Student, Instructor}\\}$.\n\n**Evaluation:**\n*   **3NF:** Valid. In $\\text{Instructor} \\to \\text{Course}$, $\\text{Course}$ is a prime attribute (it's part of the first candidate key).\n*   **BCNF:** Invalid. In $\\text{Instructor} \\to \\text{Course}$, the determinant $\\text{Instructor}$ is **not** a superkey.\n\n**Decomposition:**\n1. $\\text{R1}(\\underline{\\text{Student, Instructor}})$\n2. $\\text{R2}(\\underline{\\text{Instructor}}, \\text{Course})$\n\n**Quick Check:** If a relation is in BCNF, is it automatically in 3NF? \n*(Answer: Yes, BCNF is a stricter version of 3NF.)*\n\n---\n\n#### 6. Summary and Practical Trade-offs\n\n**Normalization Comparison Matrix**\n\n| Form | Requirement | Eliminates | Analogy |\n| :--- | :--- | :--- | :--- |\n| **1NF** | Atomic values | Multi-valued attributes | No \"lists\" in cells |\n| **2NF** | 1NF + No partial dependencies | Redundancy from composite keys | No \"half-key\" dependencies |\n| **3NF** | 2NF + No transitive dependencies | Redundancy from non-key attributes | No \"chains of command\" |\n| **BCNF** | Every determinant is a superkey | Redundancy from overlapping keys | Absolute determinant authority |",
+  "final_inner_scores": {
+    "academic_accuracy": 9.0,
+    "pedagogical_effectiveness": 8.0,
+    "clarity_organization": 8.0,
+    "practical_relevance": 7.0,
+    "completeness": 8.0,
+    "engagement_potential": 7.0,
+    "technical_quality": 9.0,
+    "innovation": 6.0
+  },
+  "final_inner_overall": 7.75,
+  "external_scores": {
+    "academic_accuracy": 8.5,
+    "pedagogical_effectiveness": 9.0,
+    "clarity_organization": 9.0,
+    "practical_relevance": 7.5,
+    "completeness": 7.0,
+    "engagement_potential": 8.5,
+    "technical_quality": 8.5,
+    "innovation": 7.5
+  },
+  "external_overall": 8.1,
+  "external_justifications": {},
+  "panel_per_judge": {
+    "judge_claude": {
+      "scores": {
+        "academic_accuracy": 8.5,
+        "pedagogical_effectiveness": 9.0,
+        "clarity_organization": 9.0,
+        "practical_relevance": 7.5,
+        "completeness": 7.0,
+        "engagement_potential": 8.5,
+        "technical_quality": 8.5,
+        "innovation": 7.5
+      },
+      "justifications": {
+        "academic_accuracy": "Definitions of FDs, 1NF through BCNF, and candidate/prime attributes are correct and precise; the 3NF criterion is stated accurately using the standard superkey-or-prime-attribute formulation. One minor imprecision: the BCNF definition says 'determinant must be a candidate key' but the correct statement is 'superkey' (which the formal definition does state correctly, making the parenthetical slightly misleading).",
+        "pedagogical_effectiveness": "Excellent scaffolding — prerequisites (FDs, keys) are established before normal forms, each section follows a consistent problem→definition→example→anomaly→decomposition→check pattern, and embedded 'Try This Yourself' exercises reinforce learning at each step. The progression from 1NF to BCNF is well-paced and builds on prior sections.",
+        "clarity_organization": "The lecture is logically structured with clear headings, consistent section format, and smooth transitions; prose is concise and avoids unnecessary jargon. Tables and bullet lists are used appropriately to break up dense content.",
+        "practical_relevance": "The opening warehouse scenario and the update/deletion anomaly examples ground the theory in real consequences, but the lecture stops short of discussing when to intentionally denormalize (e.g., for OLAP, read-heavy workloads, or performance tuning), which is a significant practical consideration.",
+        "completeness": "The lecture covers 1NF–BCNF solidly but omits 4NF (multi-valued dependencies) and 5NF (join dependencies), Armstrong's axioms, lossless-join and dependency-preservation properties of decompositions, and the important caveat that BCNF decomposition may not always preserve all FDs — all of which are standard sub-topics in a university normalization lecture.",
+        "engagement_potential": "The 'fingerprint,' 'bad roommate,' and 'chain of command' analogies are memorable and well-chosen; the opening logistics scenario creates immediate stakes. The recurring 'Quick Check' and 'Try This Yourself' prompts maintain active engagement throughout.",
+        "technical_quality": "Mathematical notation is consistent (LaTeX-style inline math, underlined keys in decompositions, labeled FDs), tables are well-formatted, and code/schema examples are clearly distinguished. Minor inconsistency: underline notation for keys is used in decompositions but not in the initial relation definitions.",
+        "innovation": "The analogy-per-normal-form approach and the summary matrix with an 'Analogy' column are pedagogically creative and not boilerplate. However, the cross-domain connections remain within standard database pedagogy; there are no genuinely novel framings or connections to information theory, logic, or modern NoSQL trade-offs."
+      },
+      "overall": 8.1,
+      "error": null,
+      "raw": "```json\n{\n  \"scores\": {\n    \"academic_accuracy\": \"8.5\",\n    \"pedagogical_effectiveness\": \"9.0\",\n    \"clarity_organization\": \"9.0\",\n    \"practical_relevance\": \"7.5\",\n    \"completeness\": \"7.0\",\n    \"engagement_potential\": \"8.5\",\n    \"technical_quality\": \"8.5\",\n    \"innovation\": \"7.5\"\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"Definitions of FDs, 1NF through BCNF, and candidate/prime attributes are correct and precise; the 3NF criterion is stated accurately using the standard superkey-or-prime-attribute formulation. One minor imprecision: the BCNF definition says 'determinant must be a candidate key' but the correct statement is 'superkey' (which the formal definition does state correctly, making the parenthetical slightly misleading).\",\n    \"pedagogical_effectiveness\": \"Excellent scaffolding — prerequisites (FDs, keys) are established before normal forms, each section follows a consistent problem→definition→example→anomaly→decomposition→check pattern, and embedded 'Try This Yourself' exercises reinforce learning at each step. The progression from 1NF to BCNF is well-paced and builds on prior sections.\",\n    \"clarity_organization\": \"The lecture is logically structured with clear headings, consistent section format, and smooth transitions; prose is concise and avoids unnecessary jargon. Tables and bullet lists are used appropriately to break up dense content.\",\n    \"practical_relevance\": \"The opening warehouse scenario and the update/deletion anomaly examples ground the theory in real consequences, but the lecture stops short of discussing when to intentionally denormalize (e.g., for OLAP, read-heavy workloads, or performance tuning), which is a significant practical consideration.\",\n    \"completeness\": \"The lecture covers 1NF–BCNF solidly but omits 4NF (multi-valued dependencies) and 5NF (join dependencies), Armstrong's axioms, lossless-join and dependency-preservation properties of decompositions, and the important caveat that BCNF decomposition may not always preserve all FDs — all of which are standard sub-topics in a university normalization lecture.\",\n    \"engagement_potential\": \"The 'fingerprint,' 'bad roommate,' and 'chain of command' analogies are memorable and well-chosen; the opening logistics scenario creates immediate stakes. The recurring 'Quick Check' and 'Try This Yourself' prompts maintain active engagement throughout.\",\n    \"technical_quality\": \"Mathematical notation is consistent (LaTeX-style inline math, underlined keys in decompositions, labeled FDs), tables are well-formatted, and code/schema examples are clearly distinguished. Minor inconsistency: underline notation for keys is used in decompositions but not in the initial relation definitions.\",\n    \"innovation\": \"The analogy-per-normal-form approach and the summary matrix with an 'Analogy' column are pedagogically creative and not boilerplate. However, the cross-domain connections remain within standard database pedagogy; there are no genuinely novel framings or connections to information theory, logic, or modern NoSQL trade-offs.\"\n  },\n  \"overall\": \"8.1\"\n}\n```"
+    },
+    "judge_kimi": {
+      "scores": {
+        "academic_accuracy": 8.5,
+        "pedagogical_effectiveness": 8.0,
+        "clarity_organization": 8.5,
+        "practical_relevance": 6.5,
+        "completeness": 6.0,
+        "engagement_potential": 8.0,
+        "technical_quality": 8.5,
+        "innovation": 6.5
+      },
+      "justifications": {
+        "academic_accuracy": "Definitions for FDs, candidate keys, 1NF-BCNF are technically correct; the BCNF example (TEACH) is a classic valid case. Minor issue: the 3NF formal definition uses the 'superkey or prime attribute' criterion correctly, though the phrasing 'no non-prime attribute is transitively dependent' is slightly imprecise (should be 'no transitive dependency on any candidate key').",
+        "pedagogical_effectiveness": "Strong scaffolding with prerequisites first, then progressive buildup (1NF→2NF→3NF→BCNF). Each level includes a concrete worked example, analogy, and quick check. The 'Try This Yourself' with answer provided is effective formative assessment. Could improve with a more complex multi-step decomposition exercise.",
+        "clarity_organization": "Excellent logical flow with consistent structure per section (Problem → Analogy → Formal Definition → Worked Example → Anomaly → Decomposition → Quick Check). Visual hierarchy with markdown is clear. The summary matrix effectively consolidates learning.",
+        "practical_relevance": "Opening logistics scenario is strong, and anomalies (update, deletion) are well-motivated. However, lacks discussion of when to *stop* normalizing (denormalization for performance), costs of joins, or modern NoSQL/non-relational contexts where strict normalization may be relaxed.",
+        "completeness": "Missing several important sub-topics: no coverage of multi-valued dependencies and 4NF, no discussion of lossless-join and dependency-preserving decomposition properties, no algorithm for BCNF/3NF decomposition, no mention of the closure algorithm or canonical cover for finding candidate keys. The lecture ends at BCNF without noting higher normal forms exist.",
+        "engagement_potential": "Strong use of narrative hooks (logistics crisis), memorable analogies (digital fingerprint, bad roommate, chain of command), and tension/resolution structure. The interactive 'Try This Yourself' elements maintain engagement. Analogy density is high but generally effective rather than forced.",
+        "technical_quality": "LaTeX formatting is consistent and correct; tables render properly; code-like formatting for relation schemas is clear. The FD notation and candidate key underlining are conventionally precise. No broken formatting or inconsistent terminology.",
+        "innovation": "The analogies are well-crafted but largely conventional in database pedagogy. No fresh cross-domain connections beyond standard fare. The 'tension' framing is somewhat novel but not substantially innovative. Would benefit from connecting to software engineering practices (migrations, ORM impedance mismatch) or data engineering pipelines."
+      },
+      "overall": 7.5,
+      "error": null,
+      "raw": "{\"scores\":{\"academic_accuracy\":8.5,\"pedagogical_effectiveness\":8.0,\"clarity_organization\":8.5,\"practical_relevance\":6.5,\"completeness\":6.0,\"engagement_potential\":8.0,\"technical_quality\":8.5,\"innovation\":6.5},\"justifications\":{\"academic_accuracy\":\"Definitions for FDs, candidate keys, 1NF-BCNF are technically correct; the BCNF example (TEACH) is a classic valid case. Minor issue: the 3NF formal definition uses the 'superkey or prime attribute' criterion correctly, though the phrasing 'no non-prime attribute is transitively dependent' is slightly imprecise (should be 'no transitive dependency on any candidate key').\",\"pedagogical_effectiveness\":\"Strong scaffolding with prerequisites first, then progressive buildup (1NF→2NF→3NF→BCNF). Each level includes a concrete worked example, analogy, and quick check. The 'Try This Yourself' with answer provided is effective formative assessment. Could improve with a more complex multi-step decomposition exercise.\",\"clarity_organization\":\"Excellent logical flow with consistent structure per section (Problem → Analogy → Formal Definition → Worked Example → Anomaly → Decomposition → Quick Check). Visual hierarchy with markdown is clear. The summary matrix effectively consolidates learning.\",\"practical_relevance\":\"Opening logistics scenario is strong, and anomalies (update, deletion) are well-motivated. However, lacks discussion of when to *stop* normalizing (denormalization for performance), costs of joins, or modern NoSQL/non-relational contexts where strict normalization may be relaxed.\",\"completeness\":\"Missing several important sub-topics: no coverage of multi-valued dependencies and 4NF, no discussion of lossless-join and dependency-preserving decomposition properties, no algorithm for BCNF/3NF decomposition, no mention of the closure algorithm or canonical cover for finding candidate keys. The lecture ends at BCNF without noting higher normal forms exist.\",\"engagement_potential\":\"Strong use of narrative hooks (logistics crisis), memorable analogies (digital fingerprint, bad roommate, chain of command), and tension/resolution structure. The interactive 'Try This Yourself' elements maintain engagement. Analogy density is high but generally effective rather than forced.\",\"technical_quality\":\"LaTeX formatting is consistent and correct; tables render properly; code-like formatting for relation schemas is clear. The FD notation and candidate key underlining are conventionally precise. No broken formatting or inconsistent terminology.\",\"innovation\":\"The analogies are well-crafted but largely conventional in database pedagogy. No fresh cross-domain connections beyond standard fare. The 'tension' framing is somewhat novel but not substantially innovative. Would benefit from connecting to software engineering practices (migrations, ORM impedance mismatch) or data engineering pipelines.\"},\"overall\":7.5}"
+    },
+    "judge_glm": {
+      "scores": {
+        "academic_accuracy": 9.0,
+        "pedagogical_effectiveness": 9.5,
+        "clarity_organization": 9.0,
+        "practical_relevance": 8.0,
+        "completeness": 7.5,
+        "engagement_potential": 9.0,
+        "technical_quality": 8.5,
+        "innovation": 7.5
+      },
+      "justifications": {
+        "academic_accuracy": "Definitions, FD logic, and normal form criteria are rigorously correct, including the subtle 3NF loophole that BCNF resolves and the proper handling of prime attributes.",
+        "pedagogical_effectiveness": "Exceptional scaffolding using a consistent pattern: problem statement, analogy, formal definition, worked example, and interactive 'Quick Check', which solidifies understanding at each step.",
+        "clarity_organization": "Highly logical progression from 1NF to BCNF with clear headings, bolded key terms, and a summary comparison matrix that reinforces the structural hierarchy of normal forms.",
+        "practical_relevance": "Strong real-world motivation in the introduction and examples (e.g., string-search performance in 1NF, update/deletion anomalies), though it lacks a concluding discussion on the performance trade-offs of denormalization in read-heavy systems.",
+        "completeness": "Covers 1NF through BCNF thoroughly with anomalies and decompositions, but omits multivalued dependencies/4NF and join dependencies/5NF, which are standard sub-topics in a complete university-level normalization module.",
+        "engagement_potential": "Effectively uses narrative tension (e.g., 'The Cost of Redundancy', 'The Overlapping Key Paradox') and relatable analogies (bad roommate, chain of command) to transform dry relational theory into compelling reading.",
+        "technical_quality": "Clean and consistent notation for functional dependencies and candidate keys, well-formatted tables, and clear typographic distinction between terms, though MathJax delimiters ($$) are used somewhat inconsistently.",
+        "innovation": "The 'bad roommate' and 'chain of command' analogies for 2NF and 3NF are fresh and highly effective cross-domain mappings compared to standard textbook examples, offering a genuinely new pedagogical angle."
+      },
+      "overall": 8.5,
+      "error": null,
+      "raw": "```json\n{\n  \"scores\": {\n    \"academic_accuracy\": 9.0,\n    \"pedagogical_effectiveness\": 9.5,\n    \"clarity_organization\": 9.0,\n    \"practical_relevance\": 8.0,\n    \"completeness\": 7.5,\n    \"engagement_potential\": 9.0,\n    \"technical_quality\": 8.5,\n    \"innovation\": 7.5\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"Definitions, FD logic, and normal form criteria are rigorously correct, including the subtle 3NF loophole that BCNF resolves and the proper handling of prime attributes.\",\n    \"pedagogical_effectiveness\": \"Exceptional scaffolding using a consistent pattern: problem statement, analogy, formal definition, worked example, and interactive 'Quick Check', which solidifies understanding at each step.\",\n    \"clarity_organization\": \"Highly logical progression from 1NF to BCNF with clear headings, bolded key terms, and a summary comparison matrix that reinforces the structural hierarchy of normal forms.\",\n    \"practical_relevance\": \"Strong real-world motivation in the introduction and examples (e.g., string-search performance in 1NF, update/deletion anomalies), though it lacks a concluding discussion on the performance trade-offs of denormalization in read-heavy systems.\",\n    \"completeness\": \"Covers 1NF through BCNF thoroughly with anomalies and decompositions, but omits multivalued dependencies/4NF and join dependencies/5NF, which are standard sub-topics in a complete university-level normalization module.\",\n    \"engagement_potential\": \"Effectively uses narrative tension (e.g., 'The Cost of Redundancy', 'The Overlapping Key Paradox') and relatable analogies (bad roommate, chain of command) to transform dry relational theory into compelling reading.\",\n    \"technical_quality\": \"Clean and consistent notation for functional dependencies and candidate keys, well-formatted tables, and clear typographic distinction between terms, though MathJax delimiters ($$) are used somewhat inconsistently.\",\n    \"innovation\": \"The 'bad roommate' and 'chain of command' analogies for 2NF and 3NF are fresh and highly effective cross-domain mappings compared to standard textbook examples, offering a genuinely new pedagogical angle.\"\n  },\n  \"overall\": 8.5\n}\n```"
+    }
+  },
+  "panel_n_ok": 3,
+  "final_slides_json": {
+    "title": "Normalization and Database Schema Design",
+    "subtitle": "From First Normal Form to Boyce-Codd Normal Form",
+    "slides": [
+      {
+        "type": "title",
+        "title": "Normalization and Database Schema Design",
+        "subtitle": "From First Normal Form to Boyce-Codd Normal Form",
+        "agenda": [
+          "The logic of Functional Dependencies",
+          "1NF: Ensuring Atomicity",
+          "2NF: Eliminating Partial Dependencies",
+          "3NF: Removing Transitive Dependencies",
+          "BCNF: The Strict Determinant Standard"
+        ],
+        "speaker_notes": "Welcome everyone. Today we are discussing database normalization, the process of surgically removing redundancies to ensure data integrity. We will move from the basic requirement of atomicity up to the strict standards of BCNF. By the end of this lecture, you will be able to identify anomalies and decompose relations to prevent data contradiction."
+      },
+      {
+        "type": "content",
+        "title": "Redundancy Creates Systemic Risk to Data Integrity",
+        "bullets": [
+          "Storing the same data in multiple places leads to contradictory records",
+          "Update anomalies occur when a change in one record is missed in others",
+          "Redundancy wastes storage and complicates the maintenance of a global state",
+          "Normalization ensures every piece of data is stored in exactly one place",
+          "The goal is to transform a fragile schema into a robust, single-source-of-truth"
+        ],
+        "speaker_notes": "Consider a logistics company storing warehouse addresses every time a package is assigned. If a warehouse moves, updating 10,000 package records is a nightmare. If you miss just one, the database claims the warehouse exists in two places simultaneously. This is why normalization is a necessity, not just an optimization."
+      },
+      {
+        "type": "math",
+        "title": "Functional Dependencies as Lookup Guarantees",
+        "equation_tex": "t_1[X] = t_2[X] \\implies t_1[Y] = t_2[Y]",
+        "equation_caption": "A functional dependency X \\to Y means X uniquely determines Y for all tuples.",
+        "bullets": [
+          "The determinant X acts as a digital fingerprint for the dependent Y",
+          "Candidate keys are minimal sets that determine every other attribute",
+          "Prime attributes are members of at least one candidate key",
+          "Non-prime attributes do not belong to any candidate key"
+        ],
+        "speaker_notes": "Before we can normalize, we need a formal way to describe how attributes cling to one another. This equation defines a Functional Dependency. If two rows have the same value for X, they must have the same value for Y. This 'lookup guarantee' is the foundation for identifying keys and detecting redundancies."
+      },
+      {
+        "type": "content",
+        "title": "Identifying Candidate Keys in Practice",
+        "bullets": [
+          "Analyze the relation Enrollment(StudentID, CourseID, Grade, StudentName)",
+          "StudentID determines StudentName, but not the Grade",
+          "CourseID alone cannot determine the student's name or grade",
+          "The set {StudentID, CourseID} is the minimal set that unlocks all data",
+          "StudentID and CourseID are prime; Grade and StudentName are non-prime"
+        ],
+        "speaker_notes": "Let's apply the logic of dependencies to a real enrollment table. We see that StudentID isn't enough because a student takes many courses. CourseID isn't enough because many students take one course. Only the combination of both allows us to find a specific grade, making the pair our Candidate Key."
+      },
+      {
+        "type": "exercise",
+        "title": "Check Your Understanding: Prime Attributes",
+        "exercise_prompt": "Consider a relation Books(ISBN, Title, Author) where the functional dependency ISBN \\to {Title, Author} holds. Is the attribute 'Title' a prime attribute? Explain why or why not.",
+        "bullets": [
+          "Identify the candidate key first",
+          "Check if 'Title' is a member of that candidate key",
+          "Apply the definition of a prime attribute"
+        ],
+        "speaker_notes": "Take a moment to solve this. Remember, an attribute is only prime if it is part of a candidate key. Since ISBN is the minimal set that determines everything, it is the only candidate key. Therefore, Title cannot be prime."
+      },
+      {
+        "type": "content",
+        "title": "1NF: Solving the List Trap with Atomicity",
+        "bullets": [
+          "Multi-valued attributes force slow string searches like LIKE '%CS101%'",
+          "Atomic values allow the database to use high-speed indexing",
+          "1NF requires that every attribute domain contains only indivisible values",
+          "Repeating groups must be eliminated to maintain structural consistency",
+          "Non-atomic values are defined by the specific needs of the business logic"
+        ],
+        "speaker_notes": "First Normal Form is about atomicity. If you store a list of courses in a single cell, you've fallen into the 'list trap.' You can no longer use indexes efficiently, turning millisecond queries into multi-second crawls. We fix this by splitting those lists into individual rows."
+      },
+      {
+        "type": "content",
+        "title": "2NF: Eliminating Partial Key Dependencies",
+        "bullets": [
+          "2NF applies specifically to tables with composite candidate keys",
+          "Partial dependencies occur when a non-prime attribute depends on only part of the key",
+          "Full functional dependency means the attribute requires the entire key",
+          "Partial dependencies lead to update anomalies for shared attributes",
+          "A table with a single-attribute primary key is automatically in 2NF"
+        ],
+        "speaker_notes": "Second Normal Form targets the 'half-key' dependency. Imagine a joint lease for two roommates; the rent depends on both, but a phone number only depends on one person. Storing that phone number on the joint lease is a partial dependency. This causes us to repeat the phone number every time the lease is referenced."
+      },
+      {
+        "type": "math",
+        "title": "Decomposing Partial Dependencies in ProjectAssignments",
+        "equation_tex": "\\text{EmpID} \\to \\text{EmpName}",
+        "equation_caption": "The attribute EmpName depends only on a subset of the key {EmpID, ProjID}.",
+        "bullets": [
+          "Original key {EmpID, ProjID} determines HoursWorked (Full Dependency)",
+          "EmpName depends only on EmpID, creating a partial dependency",
+          "Decompose into Employee(EmpID, EmpName) and Assignments(EmpID, ProjID, HoursWorked)"
+        ],
+        "speaker_notes": "Look at this functional dependency. Because EmpName doesn't care about the ProjectID, it's a partial dependency. If an employee is on ten projects, we store their name ten times. We fix this by surgically splitting the table into two: one for employee details and one for the assignments."
+      },
+      {
+        "type": "content",
+        "title": "3NF: Breaking the Transitive Chain of Command",
+        "bullets": [
+          "Transitive dependencies occur when Key \\to B \\to C",
+          "Attributes depend on the key via another non-prime attribute",
+          "This creates deletion anomalies where losing a record erases unrelated facts",
+          "3NF requires no non-prime attribute be transitively dependent on a key",
+          "Criterion: For X \\to A, X must be a superkey or A must be prime"
+        ],
+        "speaker_notes": "Third Normal Form handles 'hidden' chains. Think of a CEO who determines a Manager, who then determines an Office. The CEO technically determines the office, but only through the manager. If we delete the last employee in a department, we might accidentally delete the department's name from our system entirely."
+      },
+      {
+        "type": "content",
+        "title": "Resolving Transitive Dependencies in Employee Data",
+        "bullets": [
+          "Relation: Employee(EmpID, DeptID, DeptName) with key EmpID",
+          "Dependency chain: EmpID \\to DeptID and DeptID \\to DeptName",
+          "DeptName is transitively dependent on the primary key EmpID",
+          "Decompose into Employee(EmpID, DeptID) and Department(DeptID, DeptName)",
+          "This ensures department names exist independently of employee assignments"
+        ],
+        "speaker_notes": "In this example, DeptName is the problem. It doesn't depend on the EmpID directly, but on the DeptID. By splitting this into two tables, we ensure that even if all employees leave a department, the department's existence and name remain in the database."
+      },
+      {
+        "type": "content",
+        "title": "BCNF: The Strict Determinant Standard",
+        "bullets": [
+          "3NF allows dependencies if the dependent attribute is prime",
+          "BCNF removes this loophole to handle overlapping candidate keys",
+          "Requirement: For every non-trivial FD X \\to A, X must be a superkey",
+          "BCNF is a stricter version of 3NF",
+          "Every relation in BCNF is automatically in 3NF"
+        ],
+        "speaker_notes": "Boyce-Codd Normal Form is the gold standard. 3NF has a loophole: it allows a dependency if the result is part of some key. BCNF says 'no.' In BCNF, the determinant must be a superkey, period. This prevents redundancy even when you have multiple overlapping keys."
+      },
+      {
+        "type": "content",
+        "title": "3NF vs BCNF: The TEACH Relation Example",
+        "bullets": [
+          "Relation: TEACH(Student, Course, Instructor) with overlapping keys",
+          "FDs: {Student, Course} \\to Instructor and Instructor \\to Course",
+          "3NF is satisfied because Course is a prime attribute",
+          "BCNF is violated because Instructor is not a superkey",
+          "Decompose into R1(Student, Instructor) and R2(Instructor, Course)"
+        ],
+        "speaker_notes": "In the TEACH relation, we have a paradox. Because Course is part of a candidate key, 3NF is happy. But Instructor determines Course, and Instructor isn't a key. This still creates redundancy. To reach BCNF, we must separate the student-instructor pairing from the instructor-course assignment."
+      },
+      {
+        "type": "summary",
+        "title": "Key Takeaways for Database Normalization",
+        "bullets": [
+          "1NF eliminates multi-valued attributes to ensure atomicity",
+          "2NF removes partial dependencies on composite keys",
+          "3NF breaks transitive chains to prevent deletion anomalies",
+          "BCNF requires all determinants to be superkeys",
+          "Normalization trades off join complexity for data integrity"
+        ],
+        "speaker_notes": "To wrap up, remember the progression: atomicity, then full key dependency, then no transitive chains, and finally absolute determinant authority. Each step reduces redundancy and protects your data from anomalies. In practice, you'll balance this rigor against the performance cost of joining many tables."
+      }
+    ]
+  },
+  "slides_validation_warnings": [
+    "slide[4] speaker_notes 40 words (expected 50-130)",
+    "slide[5] speaker_notes 48 words (expected 50-130)",
+    "slide[9] speaker_notes 45 words (expected 50-130)",
+    "slide[10] speaker_notes 46 words (expected 50-130)",
+    "slide[11] speaker_notes 48 words (expected 50-130)",
+    "slide[12] speaker_notes 45 words (expected 50-130)"
+  ],
+  "total_elapsed_sec": 199.5758969783783,
+  "error": null
+}

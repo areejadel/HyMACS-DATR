@@ -1,0 +1,468 @@
+{
+  "run_id": "deepseek_v3_1__datr_full__seed4__1781838175",
+  "model_key": "deepseek_v3_1",
+  "condition": "datr_full",
+  "seed": 4,
+  "timestamp": "2026-06-19T03:02:55.555095",
+  "iterations": [
+    {
+      "iteration": 0,
+      "lecture": "## Learning Objectives\n\nBy the end of this lecture, you will be able to:\n\n1. **Recall** the definitions of 1NF, 2NF, 3NF, and BCNF.\n2. **Explain** why each normal form exists by describing the specific anomaly it prevents.\n3. **Apply** normalization: given a relation schema and a set of functional dependencies, determine the normal form the schema satisfies, and decompose it to the next higher normal form when it fails.\n4. **Analyze** a real-world scenario with business rules: identify the functional dependencies that hold and select a primary key that minimizes redundancy.\n5. **Create** a normalized relational schema from an unnormalized dataset, justifying each decomposition step with reference to the functional dependencies.\n\n---\n\n## 1. Why Normalize? The Problem We Are Solving\n\n### 1.1 The Core Problem\n\nA poorly designed database stores the same fact in multiple places. When that fact changes, you must update every copy; if you miss one, the database becomes inconsistent.\n\nBut why would anyone design such a database in the first place? The answer is that the \"obvious\" design — one table that mirrors a single spreadsheet or a single report — often feels natural. The trouble only becomes visible when you try to *maintain* the data over time. Normalization is the discipline of anticipating those maintenance problems and eliminating them before they become, quite literally, a source of silent corruption.\n\n### 1.2 Three Anomalies\n\nConsider a university database that stores course enrollments in a single table:\n\n```\nEnrollments(StudentID, StudentName, CourseID, CourseTitle, DeptName, Instructor)\n```\n\nThis design causes three problems:\n\n- **Insertion anomaly.** You cannot record that a new course exists until at least one student enrolls in it, because the table requires a `StudentID` (part of the key) to insert a row. The database forces you to lie — to invent a fake enrollment — just to store a fact about a course.\n- **Deletion anomaly.** If the last student in a course drops out, deleting that row also destroys all information about the course — its title, department, and instructor. The act of removing a student *unintentionally* erases a course.\n- **Update anomaly.** If a course changes its title, you must update every row containing that course. Missing one row leaves the database silently contradictory: one part of the system believes the old title, another believes the new one.\n\nThese anomalies are direct consequences of storing facts about *students* and facts about *courses* in a single table where they are interleaved. The table tries to serve two masters — two distinct real-world entities — and fails at both.\n\n### 1.3 The Two Goals of Normalization\n\nNormalization systematically transforms a schema to achieve two goals:\n\n1. **Minimize redundancy** — store each fact exactly once.\n2. **Eliminate insertion, deletion, and update anomalies** — make the three problems above impossible.\n\nThe process acts as a filter: start with a schema, test it against a normal-form rule, and if it fails, *decompose* it into smaller, better-behaved schemas. Repeat until the schema passes the test. The normal forms covered here — 1NF, 2NF, 3NF, and BCNF — form the practical backbone of industrial database design.\n\n---\n\n## 2. The Two Pillars: Keys and Functional Dependencies\n\nEvery normal-form test depends on two concepts: keys and functional dependencies.\n\n### 2.1 Keys: How We Identify a Unique Row\n\nA **superkey** is a set of attributes $SK$ such that no two distinct tuples in any valid instance of the relation can have the same values for all attributes in $SK$.\n\n*Example.* In `Employee(EmpID, SSN, Name, Dept)`, `{EmpID}`, `{SSN}`, and `{EmpID, Name}` are all superkeys. `{EmpID, Name}` is a superkey because `EmpID` alone guarantees uniqueness; adding `Name` does not break that property, but the set is not minimal.\n\nA **candidate key** is a *minimal* superkey: you cannot remove any attribute from it and still retain uniqueness.\n\n*Example.* In `Employee`, `{EmpID}` is a candidate key. `{SSN}` is also a candidate key. However, `{EmpID, Name}` is not a candidate key because removing `Name` leaves `{EmpID}`, which is still a superkey. A relation can have multiple candidate keys; we designate one as the **primary key**.\n\n**Worked Example: Finding Candidate Keys.** Consider a relation $R(A, B, C, D)$ with functional dependencies $\\{A, B\\} \\rightarrow C$, $\\{A, B\\} \\rightarrow D$, and $B \\rightarrow C$. We test attribute sets for the superkey property.\n\n- $\\{A\\}$: does not determine $B$, so it cannot determine $C$ or $D$. Not a superkey.\n- $\\{B\\}$: does not determine $A$. Not a superkey.\n- $\\{A, B\\}$: determines $C$ and $D$, so it determines all attributes. Is it minimal? Remove $A$: $\\{B\\}$ does not determine $A$. Remove $B$: $\\{A\\}$ does not determine $B$. Neither subset is a superkey. Therefore $\\{A, B\\}$ is a candidate key.\n\nNo other candidate key exists: $\\{A, C\\}$ has no FD to $B$ or $D$, so it is not a superkey. The only candidate key is $\\{A, B\\}$.\n\n**Quick Check 1.** A relation has attributes $\\{X, Y, Z\\}$ and the FD $\\{X\\} \\rightarrow \\{Y, Z\\}$. List all superkeys and all candidate keys.\n\n*Answer.* Superkeys: $\\{X\\}$, $\\{X, Y\\}$, $\\{X, Z\\}$, $\\{X, Y, Z\\}$. The only candidate key is $\\{X\\}$.\n\n### 2.2 Functional Dependencies: How One Fact Determines Another\n\nA functional dependency (FD) $X \\rightarrow Y$ means: if two rows agree on the $X$ values, they *must* agree on the $Y$ values. Knowing $X$ is enough to determine $Y$ uniquely.\n\n**Formal Definition.** Let $X$ and $Y$ be sets of attributes in a relation schema $R$. The FD $X \\rightarrow Y$ holds on $R$ if, for every pair of tuples $t_1$ and $t_2$ in any valid instance $r(R)$, whenever $t_1[X] = t_2[X]$, we also have $t_1[Y] = t_2[Y]$.\n\nFDs capture business rules. In a university database:\n\n- $\\{StudentID\\} \\rightarrow \\{StudentName, Major\\}$ means: a given student ID always maps to the same name and major.\n- $\\{CourseID, Semester\\} \\rightarrow \\{Instructor\\}$ means: a given course in a given semester has exactly one instructor.\n\nFDs come from the domain expert who tells us how the mini-world works; they are not invented by the designer.\n\n**Full vs. Partial Functional Dependency.** An FD $X \\rightarrow Y$ is **full** if removing any attribute from $X$ causes the FD to no longer hold. If the FD still holds after removing some attribute from $X$, it is **partial**.\n\n*Example.* In a relation with key $\\{StudentID, CourseID\\}$, suppose $\\{StudentID, CourseID\\} \\rightarrow Grade$ holds. $\\{StudentID\\} \\rightarrow Grade$ does not hold (a student gets different grades in different courses), and $\\{CourseID\\} \\rightarrow Grade$ does not hold (different students get different grades in the same course). So $\\{StudentID, CourseID\\} \\rightarrow Grade$ is full: both attributes are needed.\n\nNow suppose $\\{StudentID, CourseID\\} \\rightarrow StudentName$ also holds. However, $\\{StudentID\\} \\rightarrow StudentName$ holds on its own — the course is irrelevant to the student's name. Therefore $\\{StudentID, CourseID\\} \\rightarrow StudentName$ is partial. This kind of dependency causes trouble in 2NF.\n\n**Prime vs. Non-Prime Attributes.** An attribute is **prime** if it belongs to *at least one* candidate key. Otherwise, it is **non-prime**.\n\n*Example.* In a relation with candidate key $\\{EmpID, ProjectID\\}$, the attributes `EmpID` and `ProjectID` are prime. `EmpName`, `HoursWorked`, and `ProjectBudget` are non-prime. This distinction matters because normal forms place different constraints on non-prime attributes.\n\n---\n\n## 3. First Normal Form (1NF): Atomic Values Only\n\n### 3.1 Definition and Why It Is the Baseline\n\nA relation is in **First Normal Form (1NF)** if every attribute value is atomic — a single, indivisible value from its domain. This prohibits:\n\n- Multivalued attributes (a column containing a list of values).\n- Composite attributes (a column with internal structure).\n- Nested relations (a table inside a table cell).\n\n1NF is the minimum condition for any relational schema. All further normal forms assume the schema is already in 1NF.\n\n**Why this is non-negotiable.** Think of a database table as a mathematical *relation*: a set of tuples, each tuple being a fixed-length sequence of values from prescribed domains. If a cell can hold a list or a sub-structure, the table is no longer a relation — it is a tree or a graph. The entire machinery of relational algebra (selection, projection, join) and SQL assumes that every column position holds exactly one value. Violating 1NF breaks that machinery, and no higher normal form can even be defined on a structure that is not a relation.\n\n**Try this yourself.** You are given a CSV export from a legacy system:\n\n| EmployeeID | Name       | Skills                  |\n|------------|------------|-------------------------|\n| 101        | Alice      | Python, SQL, Project Mgmt |\n| 102        | Bob        | Java, Python           |\n\nIs this in 1NF? If not, what would a 1NF version look like, and what new problem does the 1NF version introduce (hint: think about what the key must become)? We will return to this tension when we discuss higher normal forms — 1NF is only the beginning.",
+      "inner_scores": {
+        "academic_accuracy": 9.0,
+        "pedagogical_effectiveness": 8.0,
+        "clarity_organization": 8.0,
+        "practical_relevance": 7.0,
+        "completeness": 8.0,
+        "engagement_potential": 6.0,
+        "technical_quality": 9.0,
+        "innovation": 7.0
+      },
+      "inner_overall": 7.75,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture accurately defines key concepts like normal forms, keys, and functional dependencies with correct notation and examples.",
+        "pedagogical_effectiveness": "The lecture effectively uses examples and exercises to reinforce learning, though it could include more scaffolding for beginners.",
+        "clarity_organization": "The lecture is well-structured with clear sections and logical flow, though some transitions between topics could be smoother.",
+        "practical_relevance": "The lecture connects concepts to real-world database design but could include more examples from current industry practices.",
+        "completeness": "The lecture covers essential topics and normal forms but could delve deeper into advanced normalization techniques and limitations.",
+        "engagement_potential": "While informative, the lecture lacks hooks or analogies that could make the material more engaging for students.",
+        "technical_quality": "The formatting is precise with consistent notation and well-organized code blocks and tables.",
+        "innovation": "The lecture presents a solid foundation but could explore more innovative cross-domain connections or fresh perspectives."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "",
+        "pedagogical_effectiveness": "Include more introductory scaffolding for students unfamiliar with database concepts.",
+        "clarity_organization": "Improve transitions between sections to enhance the overall flow of the lecture.",
+        "practical_relevance": "Incorporate more examples from modern database systems and industry practices.",
+        "completeness": "Expand on advanced normalization techniques and discuss potential limitations or challenges.",
+        "engagement_potential": "Introduce engaging elements like real-world case studies or interactive components.",
+        "technical_quality": "",
+        "innovation": "Explore cross-domain applications of normalization or present novel case studies."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 166.26818084716797
+    },
+    {
+      "iteration": 1,
+      "lecture": "## Learning Objectives\n\nBy the end of this lecture, you will be able to:\n\n1. **Recall** the definitions of 1NF, 2NF, 3NF, and BCNF.\n2. **Explain** why each normal form exists by describing the specific anomaly it prevents.\n3. **Apply** normalization: given a relation schema and a set of functional dependencies, determine the normal form the schema satisfies, and decompose it to the next higher normal form when it fails.\n4. **Analyze** a real-world scenario with business rules: identify the functional dependencies that hold and select a primary key that minimizes redundancy.\n5. **Create** a normalized relational schema from an unnormalized dataset, justifying each decomposition step with reference to the functional dependencies.\n\n---\n\n## 1. Why Normalize? The Problem We Are Solving\n\n### 1.1 The Core Problem\n\nA poorly designed database stores the same fact in multiple places. When that fact changes, you must update every copy; if you miss one, the database becomes inconsistent.\n\nBut why would anyone design such a database in the first place? The answer is that the \"obvious\" design — one table that mirrors a single spreadsheet or a single report — often feels natural. The trouble only becomes visible when you try to *maintain* the data over time. Normalization is the discipline of anticipating those maintenance problems and eliminating them before they become, quite literally, a source of silent corruption.\n\n### 1.2 Three Anomalies\n\nConsider a university database that stores course enrollments in a single table:\n\n```\nEnrollments(StudentID, StudentName, CourseID, CourseTitle, DeptName, Instructor)\n```\n\nThis design causes three problems:\n\n- **Insertion anomaly.** You cannot record that a new course exists until at least one student enrolls in it, because the table requires a `StudentID` (part of the key) to insert a row. The database forces you to lie — to invent a fake enrollment — just to store a fact about a course.\n- **Deletion anomaly.** If the last student in a course drops out, deleting that row also destroys all information about the course — its title, department, and instructor. The act of removing a student *unintentionally* erases a course.\n- **Update anomaly.** If a course changes its title, you must update every row containing that course. Missing one row leaves the database silently contradictory: one part of the system believes the old title, another believes the new one.\n\nThese anomalies are direct consequences of storing facts about *students* and facts about *courses* in a single table where they are interleaved. The table tries to serve two masters — two distinct real-world entities — and fails at both.\n\n### 1.3 The Two Goals of Normalization\n\nNormalization systematically transforms a schema to achieve two goals:\n\n1. **Minimize redundancy** — store each fact exactly once.\n2. **Eliminate insertion, deletion, and update anomalies** — make the three problems above impossible.\n\nThe process acts as a filter: start with a schema, test it against a normal-form rule, and if it fails, *decompose* it into smaller, better-behaved schemas. Repeat until the schema passes the test. The normal forms covered here — 1NF, 2NF, 3NF, and BCNF — form the practical backbone of industrial database design.\n\n---\n\n## 2. The Two Pillars: Keys and Functional Dependencies\n\nEvery normal-form test depends on two concepts: keys and functional dependencies.\n\n### 2.1 Keys: How We Identify a Unique Row\n\nA **superkey** is a set of attributes $SK$ such that no two distinct tuples in any valid instance of the relation can have the same values for all attributes in $SK$.\n\n*Example.* In `Employee(EmpID, SSN, Name, Dept)`, `{EmpID}`, `{SSN}`, and `{EmpID, Name}` are all superkeys. `{EmpID, Name}` is a superkey because `EmpID` alone guarantees uniqueness; adding `Name` does not break that property, but the set is not minimal.\n\nA **candidate key** is a *minimal* superkey: you cannot remove any attribute from it and still retain uniqueness.\n\n*Example.* In `Employee`, `{EmpID}` is a candidate key. `{SSN}` is also a candidate key. However, `{EmpID, Name}` is not a candidate key because removing `Name` leaves `{EmpID}`, which is still a superkey. A relation can have multiple candidate keys; we designate one as the **primary key**.\n\n**Worked Example: Finding Candidate Keys.** Consider a relation $R(A, B, C, D)$ with functional dependencies $\\{A, B\\} \\rightarrow C$, $\\{A, B\\} \\rightarrow D$, and $B \\rightarrow C$. We test attribute sets for the superkey property.\n\n- $\\{A\\}$: does not determine $B$, so it cannot determine $C$ or $D$. Not a superkey.\n- $\\{B\\}$: does not determine $A$. Not a superkey.\n- $\\{A, B\\}$: determines $C$ and $D$, so it determines all attributes. Is it minimal? Remove $A$: $\\{B\\}$ does not determine $A$. Remove $B$: $\\{A\\}$ does not determine $B$. Neither subset is a superkey. Therefore $\\{A, B\\}$ is a candidate key.\n\nNo other candidate key exists: $\\{A, C\\}$ has no FD to $B$ or $D$, so it is not a superkey. The only candidate key is $\\{A, B\\}$.\n\n**Quick Check 1.** A relation has attributes $\\{X, Y, Z\\}$ and the FD $\\{X\\} \\rightarrow \\{Y, Z\\}$. List all superkeys and all candidate keys.\n\n*Answer.* Superkeys: $\\{X\\}$, $\\{X, Y\\}$, $\\{X, Z\\}$, $\\{X, Y, Z\\}$. The only candidate key is $\\{X\\}$.\n\n### 2.2 Functional Dependencies: How One Fact Determines Another\n\nA functional dependency (FD) $X \\rightarrow Y$ means: if two rows agree on the $X$ values, they *must* agree on the $Y$ values. Knowing $X$ is enough to determine $Y$ uniquely.\n\n**Formal Definition.** Let $X$ and $Y$ be sets of attributes in a relation schema $R$. The FD $X \\rightarrow Y$ holds on $R$ if, for every pair of tuples $t_1$ and $t_2$ in any valid instance $r(R)$, whenever $t_1[X] = t_2[X]$, we also have $t_1[Y] = t_2[Y]$.\n\nFDs capture business rules. In a university database:\n\n- $\\{StudentID\\} \\rightarrow \\{StudentName, Major\\}$ means: a given student ID always maps to the same name and major.\n- $\\{CourseID, Semester\\} \\rightarrow \\{Instructor\\}$ means: a given course in a given semester has exactly one instructor.\n\nFDs come from the domain expert who tells us how the mini-world works; they are not invented by the designer.\n\n**Full vs. Partial Functional Dependency.** An FD $X \\rightarrow Y$ is **full** if removing any attribute from $X$ causes the FD to no longer hold. If the FD still holds after removing some attribute from $X$, it is **partial**.\n\n*Example.* In a relation with key $\\{StudentID, CourseID\\}$, suppose $\\{StudentID, CourseID\\} \\rightarrow Grade$ holds. $\\{StudentID\\} \\rightarrow Grade$ does not hold (a student gets different grades in different courses), and $\\{CourseID\\} \\rightarrow Grade$ does not hold (different students get different grades in the same course). So $\\{StudentID, CourseID\\} \\rightarrow Grade$ is full: both attributes are needed.\n\nNow suppose $\\{StudentID, CourseID\\} \\rightarrow StudentName$ also holds. However, $\\{StudentID\\} \\rightarrow StudentName$ holds on its own — the course is irrelevant to the student's name. Therefore $\\{StudentID, CourseID\\} \\rightarrow StudentName$ is partial. This kind of dependency causes trouble in 2NF.\n\n**Prime vs. Non-Prime Attributes.** An attribute is **prime** if it belongs to *at least one* candidate key. Otherwise, it is **non-prime**.\n\n*Example.* In a relation with candidate key $\\{EmpID, ProjectID\\}$, the attributes `EmpID` and `ProjectID` are prime. `EmpName`, `HoursWorked`, and `ProjectBudget` are non-prime. This distinction matters because normal forms place different constraints on non-prime attributes.\n\n---\n\n## 3. First Normal Form (1NF): Atomic Values Only\n\n### 3.1 Definition and Why It Is the Baseline\n\nA relation is in **First Normal Form (1NF)** if every attribute value is atomic — a single, indivisible value from its domain. This prohibits:\n\n- Multivalued attributes (a column containing a list of values).\n- Composite attributes (a column with internal structure).\n- Nested relations (a table inside a table cell).\n\n1NF is the minimum condition for any relational schema. All further normal forms assume the schema is already in 1NF.\n\n**Why this is non-negotiable.** Think of a database table as a mathematical *relation*: a set of tuples, each tuple being a fixed-length sequence of values from prescribed domains. If a cell can hold a list or a sub-structure, the table is no longer a relation — it is a tree or a graph. The entire machinery of relational algebra (selection, projection, join) and SQL assumes that every column position holds exactly one value. Violating 1NF breaks that machinery, and no higher normal form can even be defined on a structure that is not a relation.\n\n**Try this yourself.** You are given a CSV export from a legacy system:\n\n| EmployeeID | Name       | Skills                  |\n|------------|------------|-------------------------|\n| 101        | Alice      | Python, SQL, Project Mgmt |\n| 102        | Bob        | Java, Python           |\n\nIs this in 1NF? If not, what would a 1NF version look like, and what new problem does the 1NF version introduce (hint: think about what the key must become)? We will return to this tension when we discuss higher normal forms — 1NF is only the beginning.",
+      "inner_scores": {
+        "academic_accuracy": 9.0,
+        "pedagogical_effectiveness": 8.0,
+        "clarity_organization": 8.0,
+        "practical_relevance": 7.0,
+        "completeness": 8.0,
+        "engagement_potential": 6.0,
+        "technical_quality": 9.0,
+        "innovation": 7.0
+      },
+      "inner_overall": 7.75,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture accurately defines key concepts like normal forms, keys, and functional dependencies with correct notation and examples.",
+        "pedagogical_effectiveness": "The lecture effectively uses examples and exercises to reinforce learning, though it could include more scaffolding for beginners.",
+        "clarity_organization": "The lecture is well-structured with clear sections and logical flow, though some transitions between topics could be smoother.",
+        "practical_relevance": "The lecture connects concepts to real-world database design but could include more examples from current industry practices.",
+        "completeness": "The lecture covers essential topics and normal forms but could delve deeper into advanced normalization techniques and limitations.",
+        "engagement_potential": "While informative, the lecture lacks hooks or analogies that could make the material more engaging for students.",
+        "technical_quality": "The formatting is precise with consistent notation and well-organized code blocks and tables.",
+        "innovation": "The lecture presents a solid foundation but could explore more innovative cross-domain connections or fresh perspectives."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "",
+        "pedagogical_effectiveness": "Include more introductory scaffolding for students unfamiliar with database concepts.",
+        "clarity_organization": "Improve transitions between sections to enhance the overall flow of the lecture.",
+        "practical_relevance": "Incorporate more examples from modern database systems and industry practices.",
+        "completeness": "Expand on advanced normalization techniques and discuss potential limitations or challenges.",
+        "engagement_potential": "Introduce engaging elements like real-world case studies or interactive components.",
+        "technical_quality": "",
+        "innovation": "Explore cross-domain applications of normalization or present novel case studies."
+      },
+      "target_dimensions": [
+        "engagement_potential",
+        "practical_relevance"
+      ],
+      "agents_called": [
+        "engagement",
+        "sme"
+      ],
+      "rolled_back": true,
+      "elapsed_sec": 65.07360911369324
+    },
+    {
+      "iteration": 2,
+      "lecture": "## Learning Objectives\n\nBy the end of this lecture, you will be able to:\n\n1. **Recall** the definitions of 1NF, 2NF, 3NF, and BCNF.\n2. **Explain** why each normal form exists by describing the specific anomaly it prevents.\n3. **Apply** normalization: given a relation schema and a set of functional dependencies, determine the normal form the schema satisfies, and decompose it to the next higher normal form when it fails.\n4. **Analyze** a real-world scenario with business rules: identify the functional dependencies that hold and select a primary key that minimizes redundancy.\n5. **Create** a normalized relational schema from an unnormalized dataset, justifying each decomposition step with reference to the functional dependencies.\n\n---\n\n## 1. Why Normalize? The Problem We Are Solving\n\n### 1.1 The Core Problem\n\nA poorly designed database stores the same fact in multiple places. When that fact changes, you must update every copy; if you miss one, the database becomes inconsistent.\n\nBut why would anyone design such a database in the first place? The answer is that the \"obvious\" design — one table that mirrors a single spreadsheet or a single report — often feels natural. The trouble only becomes visible when you try to *maintain* the data over time. Normalization is the discipline of anticipating those maintenance problems and eliminating them before they become, quite literally, a source of silent corruption.\n\n### 1.2 Three Anomalies\n\nConsider a university database that stores course enrollments in a single table:\n\n```\nEnrollments(StudentID, StudentName, CourseID, CourseTitle, DeptName, Instructor)\n```\n\nThis design causes three problems:\n\n- **Insertion anomaly.** You cannot record that a new course exists until at least one student enrolls in it, because the table requires a `StudentID` (part of the key) to insert a row. The database forces you to lie — to invent a fake enrollment — just to store a fact about a course.\n- **Deletion anomaly.** If the last student in a course drops out, deleting that row also destroys all information about the course — its title, department, and instructor. The act of removing a student *unintentionally* erases a course.\n- **Update anomaly.** If a course changes its title, you must update every row containing that course. Missing one row leaves the database silently contradictory: one part of the system believes the old title, another believes the new one.\n\nThese anomalies are direct consequences of storing facts about *students* and facts about *courses* in a single table where they are interleaved. The table tries to serve two masters — two distinct real-world entities — and fails at both.\n\n### 1.3 The Two Goals of Normalization\n\nNormalization systematically transforms a schema to achieve two goals:\n\n1. **Minimize redundancy** — store each fact exactly once.\n2. **Eliminate insertion, deletion, and update anomalies** — make the three problems above impossible.\n\nThe process acts as a filter: start with a schema, test it against a normal-form rule, and if it fails, *decompose* it into smaller, better-behaved schemas. Repeat until the schema passes the test. The normal forms covered here — 1NF, 2NF, 3NF, and BCNF — form the practical backbone of industrial database design.\n\n---\n\n## 2. The Two Pillars: Keys and Functional Dependencies\n\nEvery normal-form test depends on two concepts: keys and functional dependencies.\n\n### 2.1 Keys: How We Identify a Unique Row\n\nA **superkey** is a set of attributes $SK$ such that no two distinct tuples in any valid instance of the relation can have the same values for all attributes in $SK$.\n\n*Example.* In `Employee(EmpID, SSN, Name, Dept)`, `{EmpID}`, `{SSN}`, and `{EmpID, Name}` are all superkeys. `{EmpID, Name}` is a superkey because `EmpID` alone guarantees uniqueness; adding `Name` does not break that property, but the set is not minimal.\n\nA **candidate key** is a *minimal* superkey: you cannot remove any attribute from it and still retain uniqueness.\n\n*Example.* In `Employee`, `{EmpID}` is a candidate key. `{SSN}` is also a candidate key. However, `{EmpID, Name}` is not a candidate key because removing `Name` leaves `{EmpID}`, which is still a superkey. A relation can have multiple candidate keys; we designate one as the **primary key**.\n\n**Worked Example: Finding Candidate Keys.** Consider a relation $R(A, B, C, D)$ with functional dependencies $\\{A, B\\} \\rightarrow C$, $\\{A, B\\} \\rightarrow D$, and $B \\rightarrow C$. We test attribute sets for the superkey property.\n\n- $\\{A\\}$: does not determine $B$, so it cannot determine $C$ or $D$. Not a superkey.\n- $\\{B\\}$: does not determine $A$. Not a superkey.\n- $\\{A, B\\}$: determines $C$ and $D$, so it determines all attributes. Is it minimal? Remove $A$: $\\{B\\}$ does not determine $A$. Remove $B$: $\\{A\\}$ does not determine $B$. Neither subset is a superkey. Therefore $\\{A, B\\}$ is a candidate key.\n\nNo other candidate key exists: $\\{A, C\\}$ has no FD to $B$ or $D$, so it is not a superkey. The only candidate key is $\\{A, B\\}$.\n\n**Quick Check 1.** A relation has attributes $\\{X, Y, Z\\}$ and the FD $\\{X\\} \\rightarrow \\{Y, Z\\}$. List all superkeys and all candidate keys.\n\n*Answer.* Superkeys: $\\{X\\}$, $\\{X, Y\\}$, $\\{X, Z\\}$, $\\{X, Y, Z\\}$. The only candidate key is $\\{X\\}$.\n\n### 2.2 Functional Dependencies: How One Fact Determines Another\n\nA functional dependency (FD) $X \\rightarrow Y$ means: if two rows agree on the $X$ values, they *must* agree on the $Y$ values. Knowing $X$ is enough to determine $Y$ uniquely.\n\n**Formal Definition.** Let $X$ and $Y$ be sets of attributes in a relation schema $R$. The FD $X \\rightarrow Y$ holds on $R$ if, for every pair of tuples $t_1$ and $t_2$ in any valid instance $r(R)$, whenever $t_1[X] = t_2[X]$, we also have $t_1[Y] = t_2[Y]$.\n\nFDs capture business rules. In a university database:\n\n- $\\{StudentID\\} \\rightarrow \\{StudentName, Major\\}$ means: a given student ID always maps to the same name and major.\n- $\\{CourseID, Semester\\} \\rightarrow \\{Instructor\\}$ means: a given course in a given semester has exactly one instructor.\n\nFDs come from the domain expert who tells us how the mini-world works; they are not invented by the designer.\n\n**Full vs. Partial Functional Dependency.** An FD $X \\rightarrow Y$ is **full** if removing any attribute from $X$ causes the FD to no longer hold. If the FD still holds after removing some attribute from $X$, it is **partial**.\n\n*Example.* In a relation with key $\\{StudentID, CourseID\\}$, suppose $\\{StudentID, CourseID\\} \\rightarrow Grade$ holds. $\\{StudentID\\} \\rightarrow Grade$ does not hold (a student gets different grades in different courses), and $\\{CourseID\\} \\rightarrow Grade$ does not hold (different students get different grades in the same course). So $\\{StudentID, CourseID\\} \\rightarrow Grade$ is full: both attributes are needed.\n\nNow suppose $\\{StudentID, CourseID\\} \\rightarrow StudentName$ also holds. However, $\\{StudentID\\} \\rightarrow StudentName$ holds on its own — the course is irrelevant to the student's name. Therefore $\\{StudentID, CourseID\\} \\rightarrow StudentName$ is partial. This kind of dependency causes trouble in 2NF.\n\n**Prime vs. Non-Prime Attributes.** An attribute is **prime** if it belongs to *at least one* candidate key. Otherwise, it is **non-prime**.\n\n*Example.* In a relation with candidate key $\\{EmpID, ProjectID\\}$, the attributes `EmpID` and `ProjectID` are prime. `EmpName`, `HoursWorked`, and `ProjectBudget` are non-prime. This distinction matters because normal forms place different constraints on non-prime attributes.\n\n---\n\n## 3. First Normal Form (1NF): Atomic Values Only\n\n### 3.1 Definition and Why It Is the Baseline\n\nA relation is in **First Normal Form (1NF)** if every attribute value is atomic — a single, indivisible value from its domain. This prohibits:\n\n- Multivalued attributes (a column containing a list of values).\n- Composite attributes (a column with internal structure).\n- Nested relations (a table inside a table cell).\n\n1NF is the minimum condition for any relational schema. All further normal forms assume the schema is already in 1NF.\n\n**Why this is non-negotiable.** Think of a database table as a mathematical *relation*: a set of tuples, each tuple being a fixed-length sequence of values from prescribed domains. If a cell can hold a list or a sub-structure, the table is no longer a relation — it is a tree or a graph. The entire machinery of relational algebra (selection, projection, join) and SQL assumes that every column position holds exactly one value. Violating 1NF breaks that machinery, and no higher normal form can even be defined on a structure that is not a relation.\n\n**Try this yourself.** You are given a CSV export from a legacy system:\n\n| EmployeeID | Name       | Skills                  |\n|------------|------------|-------------------------|\n| 101        | Alice      | Python, SQL, Project Mgmt |\n| 102        | Bob        | Java, Python           |\n\nIs this in 1NF? If not, what would a 1NF version look like, and what new problem does the 1NF version introduce (hint: think about what the key must become)? We will return to this tension when we discuss higher normal forms — 1NF is only the beginning.",
+      "inner_scores": {
+        "academic_accuracy": 9.0,
+        "pedagogical_effectiveness": 8.0,
+        "clarity_organization": 8.0,
+        "practical_relevance": 7.0,
+        "completeness": 8.0,
+        "engagement_potential": 6.0,
+        "technical_quality": 9.0,
+        "innovation": 7.0
+      },
+      "inner_overall": 7.75,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture accurately defines key concepts like normal forms, keys, and functional dependencies with correct notation and examples.",
+        "pedagogical_effectiveness": "The lecture effectively uses examples and exercises to reinforce learning, though it could include more scaffolding for beginners.",
+        "clarity_organization": "The lecture is well-structured with clear sections and logical flow, though some transitions between topics could be smoother.",
+        "practical_relevance": "The lecture connects concepts to real-world database design but could include more examples from current industry practices.",
+        "completeness": "The lecture covers essential topics and normal forms but could delve deeper into advanced normalization techniques and limitations.",
+        "engagement_potential": "While informative, the lecture lacks hooks or analogies that could make the material more engaging for students.",
+        "technical_quality": "The formatting is precise with consistent notation and well-organized code blocks and tables.",
+        "innovation": "The lecture presents a solid foundation but could explore more innovative cross-domain connections or fresh perspectives."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "",
+        "pedagogical_effectiveness": "Include more introductory scaffolding for students unfamiliar with database concepts.",
+        "clarity_organization": "Improve transitions between sections to enhance the overall flow of the lecture.",
+        "practical_relevance": "Incorporate more examples from modern database systems and industry practices.",
+        "completeness": "Expand on advanced normalization techniques and discuss potential limitations or challenges.",
+        "engagement_potential": "Introduce engaging elements like real-world case studies or interactive components.",
+        "technical_quality": "",
+        "innovation": "Explore cross-domain applications of normalization or present novel case studies."
+      },
+      "target_dimensions": [
+        "engagement_potential",
+        "practical_relevance"
+      ],
+      "agents_called": [
+        "engagement",
+        "sme"
+      ],
+      "rolled_back": true,
+      "elapsed_sec": 59.39089894294739
+    },
+    {
+      "iteration": 3,
+      "lecture": "## Learning Objectives\n\nBy the end of this lecture, you will be able to:\n\n1. **Recall** the definitions of 1NF, 2NF, 3NF, and BCNF.\n2. **Explain** why each normal form exists by describing the specific anomaly it prevents.\n3. **Apply** normalization: given a relation schema and a set of functional dependencies, determine the normal form the schema satisfies, and decompose it to the next higher normal form when it fails.\n4. **Analyze** a real-world scenario with business rules: identify the functional dependencies that hold and select a primary key that minimizes redundancy.\n5. **Create** a normalized relational schema from an unnormalized dataset, justifying each decomposition step with reference to the functional dependencies.\n\n---\n\n## 1. Why Normalize? The Problem We Are Solving\n\n### 1.1 The Core Problem\n\nA poorly designed database stores the same fact in multiple places. When that fact changes, you must update every copy; if you miss one, the database becomes inconsistent.\n\nBut why would anyone design such a database in the first place? The answer is that the \"obvious\" design — one table that mirrors a single spreadsheet or a single report — often feels natural. The trouble only becomes visible when you try to *maintain* the data over time. Normalization is the discipline of anticipating those maintenance problems and eliminating them before they become, quite literally, a source of silent corruption.\n\n### 1.2 Three Anomalies\n\nConsider a university database that stores course enrollments in a single table:\n\n```\nEnrollments(StudentID, StudentName, CourseID, CourseTitle, DeptName, Instructor)\n```\n\nThis design causes three problems:\n\n- **Insertion anomaly.** You cannot record that a new course exists until at least one student enrolls in it, because the table requires a `StudentID` (part of the key) to insert a row. The database forces you to lie — to invent a fake enrollment — just to store a fact about a course.\n- **Deletion anomaly.** If the last student in a course drops out, deleting that row also destroys all information about the course — its title, department, and instructor. The act of removing a student *unintentionally* erases a course.\n- **Update anomaly.** If a course changes its title, you must update every row containing that course. Missing one row leaves the database silently contradictory: one part of the system believes the old title, another believes the new one.\n\nThese anomalies are direct consequences of storing facts about *students* and facts about *courses* in a single table where they are interleaved. The table tries to serve two masters — two distinct real-world entities — and fails at both.\n\n### 1.3 The Two Goals of Normalization\n\nNormalization systematically transforms a schema to achieve two goals:\n\n1. **Minimize redundancy** — store each fact exactly once.\n2. **Eliminate insertion, deletion, and update anomalies** — make the three problems above impossible.\n\nThe process acts as a filter: start with a schema, test it against a normal-form rule, and if it fails, *decompose* it into smaller, better-behaved schemas. Repeat until the schema passes the test. The normal forms covered here — 1NF, 2NF, 3NF, and BCNF — form the practical backbone of industrial database design.\n\n---\n\n## 2. The Two Pillars: Keys and Functional Dependencies\n\nEvery normal-form test depends on two concepts: keys and functional dependencies.\n\n### 2.1 Keys: How We Identify a Unique Row\n\nA **superkey** is a set of attributes $SK$ such that no two distinct tuples in any valid instance of the relation can have the same values for all attributes in $SK$.\n\n*Example.* In `Employee(EmpID, SSN, Name, Dept)`, `{EmpID}`, `{SSN}`, and `{EmpID, Name}` are all superkeys. `{EmpID, Name}` is a superkey because `EmpID` alone guarantees uniqueness; adding `Name` does not break that property, but the set is not minimal.\n\nA **candidate key** is a *minimal* superkey: you cannot remove any attribute from it and still retain uniqueness.\n\n*Example.* In `Employee`, `{EmpID}` is a candidate key. `{SSN}` is also a candidate key. However, `{EmpID, Name}` is not a candidate key because removing `Name` leaves `{EmpID}`, which is still a superkey. A relation can have multiple candidate keys; we designate one as the **primary key**.\n\n**Worked Example: Finding Candidate Keys.** Consider a relation $R(A, B, C, D)$ with functional dependencies $\\{A, B\\} \\rightarrow C$, $\\{A, B\\} \\rightarrow D$, and $B \\rightarrow C$. We test attribute sets for the superkey property.\n\n- $\\{A\\}$: does not determine $B$, so it cannot determine $C$ or $D$. Not a superkey.\n- $\\{B\\}$: does not determine $A$. Not a superkey.\n- $\\{A, B\\}$: determines $C$ and $D$, so it determines all attributes. Is it minimal? Remove $A$: $\\{B\\}$ does not determine $A$. Remove $B$: $\\{A\\}$ does not determine $B$. Neither subset is a superkey. Therefore $\\{A, B\\}$ is a candidate key.\n\nNo other candidate key exists: $\\{A, C\\}$ has no FD to $B$ or $D$, so it is not a superkey. The only candidate key is $\\{A, B\\}$.\n\n**Quick Check 1.** A relation has attributes $\\{X, Y, Z\\}$ and the FD $\\{X\\} \\rightarrow \\{Y, Z\\}$. List all superkeys and all candidate keys.\n\n*Answer.* Superkeys: $\\{X\\}$, $\\{X, Y\\}$, $\\{X, Z\\}$, $\\{X, Y, Z\\}$. The only candidate key is $\\{X\\}$.\n\n### 2.2 Functional Dependencies: How One Fact Determines Another\n\nA functional dependency (FD) $X \\rightarrow Y$ means: if two rows agree on the $X$ values, they *must* agree on the $Y$ values. Knowing $X$ is enough to determine $Y$ uniquely.\n\n**Formal Definition.** Let $X$ and $Y$ be sets of attributes in a relation schema $R$. The FD $X \\rightarrow Y$ holds on $R$ if, for every pair of tuples $t_1$ and $t_2$ in any valid instance $r(R)$, whenever $t_1[X] = t_2[X]$, we also have $t_1[Y] = t_2[Y]$.\n\nFDs capture business rules. In a university database:\n\n- $\\{StudentID\\} \\rightarrow \\{StudentName, Major\\}$ means: a given student ID always maps to the same name and major.\n- $\\{CourseID, Semester\\} \\rightarrow \\{Instructor\\}$ means: a given course in a given semester has exactly one instructor.\n\nFDs come from the domain expert who tells us how the mini-world works; they are not invented by the designer.\n\n**Full vs. Partial Functional Dependency.** An FD $X \\rightarrow Y$ is **full** if removing any attribute from $X$ causes the FD to no longer hold. If the FD still holds after removing some attribute from $X$, it is **partial**.\n\n*Example.* In a relation with key $\\{StudentID, CourseID\\}$, suppose $\\{StudentID, CourseID\\} \\rightarrow Grade$ holds. $\\{StudentID\\} \\rightarrow Grade$ does not hold (a student gets different grades in different courses), and $\\{CourseID\\} \\rightarrow Grade$ does not hold (different students get different grades in the same course). So $\\{StudentID, CourseID\\} \\rightarrow Grade$ is full: both attributes are needed.\n\nNow suppose $\\{StudentID, CourseID\\} \\rightarrow StudentName$ also holds. However, $\\{StudentID\\} \\rightarrow StudentName$ holds on its own — the course is irrelevant to the student's name. Therefore $\\{StudentID, CourseID\\} \\rightarrow StudentName$ is partial. This kind of dependency causes trouble in 2NF.\n\n**Prime vs. Non-Prime Attributes.** An attribute is **prime** if it belongs to *at least one* candidate key. Otherwise, it is **non-prime**.\n\n*Example.* In a relation with candidate key $\\{EmpID, ProjectID\\}$, the attributes `EmpID` and `ProjectID` are prime. `EmpName`, `HoursWorked`, and `ProjectBudget` are non-prime. This distinction matters because normal forms place different constraints on non-prime attributes.\n\n---\n\n## 3. First Normal Form (1NF): Atomic Values Only\n\n### 3.1 Definition and Why It Is the Baseline\n\nA relation is in **First Normal Form (1NF)** if every attribute value is atomic — a single, indivisible value from its domain. This prohibits:\n\n- Multivalued attributes (a column containing a list of values).\n- Composite attributes (a column with internal structure).\n- Nested relations (a table inside a table cell).\n\n1NF is the minimum condition for any relational schema. All further normal forms assume the schema is already in 1NF.\n\n**Why this is non-negotiable.** Think of a database table as a mathematical *relation*: a set of tuples, each tuple being a fixed-length sequence of values from prescribed domains. If a cell can hold a list or a sub-structure, the table is no longer a relation — it is a tree or a graph. The entire machinery of relational algebra (selection, projection, join) and SQL assumes that every column position holds exactly one value. Violating 1NF breaks that machinery, and no higher normal form can even be defined on a structure that is not a relation.\n\n**Try this yourself.** You are given a CSV export from a legacy system:\n\n| EmployeeID | Name       | Skills                  |\n|------------|------------|-------------------------|\n| 101        | Alice      | Python, SQL, Project Mgmt |\n| 102        | Bob        | Java, Python           |\n\nIs this in 1NF? If not, what would a 1NF version look like, and what new problem does the 1NF version introduce (hint: think about what the key must become)? We will return to this tension when we discuss higher normal forms — 1NF is only the beginning.",
+      "inner_scores": {
+        "academic_accuracy": 9.0,
+        "pedagogical_effectiveness": 8.0,
+        "clarity_organization": 8.0,
+        "practical_relevance": 7.0,
+        "completeness": 8.0,
+        "engagement_potential": 6.0,
+        "technical_quality": 9.0,
+        "innovation": 7.0
+      },
+      "inner_overall": 7.75,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture accurately defines key concepts like normal forms, keys, and functional dependencies with correct notation and examples.",
+        "pedagogical_effectiveness": "The lecture effectively uses examples and exercises to reinforce learning, though it could include more scaffolding for beginners.",
+        "clarity_organization": "The lecture is well-structured with clear sections and logical flow, though some transitions between topics could be smoother.",
+        "practical_relevance": "The lecture connects concepts to real-world database design but could include more examples from current industry practices.",
+        "completeness": "The lecture covers essential topics and normal forms but could delve deeper into advanced normalization techniques and limitations.",
+        "engagement_potential": "While informative, the lecture lacks hooks or analogies that could make the material more engaging for students.",
+        "technical_quality": "The formatting is precise with consistent notation and well-organized code blocks and tables.",
+        "innovation": "The lecture presents a solid foundation but could explore more innovative cross-domain connections or fresh perspectives."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "",
+        "pedagogical_effectiveness": "Include more introductory scaffolding for students unfamiliar with database concepts.",
+        "clarity_organization": "Improve transitions between sections to enhance the overall flow of the lecture.",
+        "practical_relevance": "Incorporate more examples from modern database systems and industry practices.",
+        "completeness": "Expand on advanced normalization techniques and discuss potential limitations or challenges.",
+        "engagement_potential": "Introduce engaging elements like real-world case studies or interactive components.",
+        "technical_quality": "",
+        "innovation": "Explore cross-domain applications of normalization or present novel case studies."
+      },
+      "target_dimensions": [
+        "engagement_potential",
+        "practical_relevance"
+      ],
+      "agents_called": [
+        "engagement",
+        "sme"
+      ],
+      "rolled_back": true,
+      "elapsed_sec": 58.388060092926025
+    }
+  ],
+  "final_lecture": "## Learning Objectives\n\nBy the end of this lecture, you will be able to:\n\n1. **Recall** the definitions of 1NF, 2NF, 3NF, and BCNF.\n2. **Explain** why each normal form exists by describing the specific anomaly it prevents.\n3. **Apply** normalization: given a relation schema and a set of functional dependencies, determine the normal form the schema satisfies, and decompose it to the next higher normal form when it fails.\n4. **Analyze** a real-world scenario with business rules: identify the functional dependencies that hold and select a primary key that minimizes redundancy.\n5. **Create** a normalized relational schema from an unnormalized dataset, justifying each decomposition step with reference to the functional dependencies.\n\n---\n\n## 1. Why Normalize? The Problem We Are Solving\n\n### 1.1 The Core Problem\n\nA poorly designed database stores the same fact in multiple places. When that fact changes, you must update every copy; if you miss one, the database becomes inconsistent.\n\nBut why would anyone design such a database in the first place? The answer is that the \"obvious\" design — one table that mirrors a single spreadsheet or a single report — often feels natural. The trouble only becomes visible when you try to *maintain* the data over time. Normalization is the discipline of anticipating those maintenance problems and eliminating them before they become, quite literally, a source of silent corruption.\n\n### 1.2 Three Anomalies\n\nConsider a university database that stores course enrollments in a single table:\n\n```\nEnrollments(StudentID, StudentName, CourseID, CourseTitle, DeptName, Instructor)\n```\n\nThis design causes three problems:\n\n- **Insertion anomaly.** You cannot record that a new course exists until at least one student enrolls in it, because the table requires a `StudentID` (part of the key) to insert a row. The database forces you to lie — to invent a fake enrollment — just to store a fact about a course.\n- **Deletion anomaly.** If the last student in a course drops out, deleting that row also destroys all information about the course — its title, department, and instructor. The act of removing a student *unintentionally* erases a course.\n- **Update anomaly.** If a course changes its title, you must update every row containing that course. Missing one row leaves the database silently contradictory: one part of the system believes the old title, another believes the new one.\n\nThese anomalies are direct consequences of storing facts about *students* and facts about *courses* in a single table where they are interleaved. The table tries to serve two masters — two distinct real-world entities — and fails at both.\n\n### 1.3 The Two Goals of Normalization\n\nNormalization systematically transforms a schema to achieve two goals:\n\n1. **Minimize redundancy** — store each fact exactly once.\n2. **Eliminate insertion, deletion, and update anomalies** — make the three problems above impossible.\n\nThe process acts as a filter: start with a schema, test it against a normal-form rule, and if it fails, *decompose* it into smaller, better-behaved schemas. Repeat until the schema passes the test. The normal forms covered here — 1NF, 2NF, 3NF, and BCNF — form the practical backbone of industrial database design.\n\n---\n\n## 2. The Two Pillars: Keys and Functional Dependencies\n\nEvery normal-form test depends on two concepts: keys and functional dependencies.\n\n### 2.1 Keys: How We Identify a Unique Row\n\nA **superkey** is a set of attributes $SK$ such that no two distinct tuples in any valid instance of the relation can have the same values for all attributes in $SK$.\n\n*Example.* In `Employee(EmpID, SSN, Name, Dept)`, `{EmpID}`, `{SSN}`, and `{EmpID, Name}` are all superkeys. `{EmpID, Name}` is a superkey because `EmpID` alone guarantees uniqueness; adding `Name` does not break that property, but the set is not minimal.\n\nA **candidate key** is a *minimal* superkey: you cannot remove any attribute from it and still retain uniqueness.\n\n*Example.* In `Employee`, `{EmpID}` is a candidate key. `{SSN}` is also a candidate key. However, `{EmpID, Name}` is not a candidate key because removing `Name` leaves `{EmpID}`, which is still a superkey. A relation can have multiple candidate keys; we designate one as the **primary key**.\n\n**Worked Example: Finding Candidate Keys.** Consider a relation $R(A, B, C, D)$ with functional dependencies $\\{A, B\\} \\rightarrow C$, $\\{A, B\\} \\rightarrow D$, and $B \\rightarrow C$. We test attribute sets for the superkey property.\n\n- $\\{A\\}$: does not determine $B$, so it cannot determine $C$ or $D$. Not a superkey.\n- $\\{B\\}$: does not determine $A$. Not a superkey.\n- $\\{A, B\\}$: determines $C$ and $D$, so it determines all attributes. Is it minimal? Remove $A$: $\\{B\\}$ does not determine $A$. Remove $B$: $\\{A\\}$ does not determine $B$. Neither subset is a superkey. Therefore $\\{A, B\\}$ is a candidate key.\n\nNo other candidate key exists: $\\{A, C\\}$ has no FD to $B$ or $D$, so it is not a superkey. The only candidate key is $\\{A, B\\}$.\n\n**Quick Check 1.** A relation has attributes $\\{X, Y, Z\\}$ and the FD $\\{X\\} \\rightarrow \\{Y, Z\\}$. List all superkeys and all candidate keys.\n\n*Answer.* Superkeys: $\\{X\\}$, $\\{X, Y\\}$, $\\{X, Z\\}$, $\\{X, Y, Z\\}$. The only candidate key is $\\{X\\}$.\n\n### 2.2 Functional Dependencies: How One Fact Determines Another\n\nA functional dependency (FD) $X \\rightarrow Y$ means: if two rows agree on the $X$ values, they *must* agree on the $Y$ values. Knowing $X$ is enough to determine $Y$ uniquely.\n\n**Formal Definition.** Let $X$ and $Y$ be sets of attributes in a relation schema $R$. The FD $X \\rightarrow Y$ holds on $R$ if, for every pair of tuples $t_1$ and $t_2$ in any valid instance $r(R)$, whenever $t_1[X] = t_2[X]$, we also have $t_1[Y] = t_2[Y]$.\n\nFDs capture business rules. In a university database:\n\n- $\\{StudentID\\} \\rightarrow \\{StudentName, Major\\}$ means: a given student ID always maps to the same name and major.\n- $\\{CourseID, Semester\\} \\rightarrow \\{Instructor\\}$ means: a given course in a given semester has exactly one instructor.\n\nFDs come from the domain expert who tells us how the mini-world works; they are not invented by the designer.\n\n**Full vs. Partial Functional Dependency.** An FD $X \\rightarrow Y$ is **full** if removing any attribute from $X$ causes the FD to no longer hold. If the FD still holds after removing some attribute from $X$, it is **partial**.\n\n*Example.* In a relation with key $\\{StudentID, CourseID\\}$, suppose $\\{StudentID, CourseID\\} \\rightarrow Grade$ holds. $\\{StudentID\\} \\rightarrow Grade$ does not hold (a student gets different grades in different courses), and $\\{CourseID\\} \\rightarrow Grade$ does not hold (different students get different grades in the same course). So $\\{StudentID, CourseID\\} \\rightarrow Grade$ is full: both attributes are needed.\n\nNow suppose $\\{StudentID, CourseID\\} \\rightarrow StudentName$ also holds. However, $\\{StudentID\\} \\rightarrow StudentName$ holds on its own — the course is irrelevant to the student's name. Therefore $\\{StudentID, CourseID\\} \\rightarrow StudentName$ is partial. This kind of dependency causes trouble in 2NF.\n\n**Prime vs. Non-Prime Attributes.** An attribute is **prime** if it belongs to *at least one* candidate key. Otherwise, it is **non-prime**.\n\n*Example.* In a relation with candidate key $\\{EmpID, ProjectID\\}$, the attributes `EmpID` and `ProjectID` are prime. `EmpName`, `HoursWorked`, and `ProjectBudget` are non-prime. This distinction matters because normal forms place different constraints on non-prime attributes.\n\n---\n\n## 3. First Normal Form (1NF): Atomic Values Only\n\n### 3.1 Definition and Why It Is the Baseline\n\nA relation is in **First Normal Form (1NF)** if every attribute value is atomic — a single, indivisible value from its domain. This prohibits:\n\n- Multivalued attributes (a column containing a list of values).\n- Composite attributes (a column with internal structure).\n- Nested relations (a table inside a table cell).\n\n1NF is the minimum condition for any relational schema. All further normal forms assume the schema is already in 1NF.\n\n**Why this is non-negotiable.** Think of a database table as a mathematical *relation*: a set of tuples, each tuple being a fixed-length sequence of values from prescribed domains. If a cell can hold a list or a sub-structure, the table is no longer a relation — it is a tree or a graph. The entire machinery of relational algebra (selection, projection, join) and SQL assumes that every column position holds exactly one value. Violating 1NF breaks that machinery, and no higher normal form can even be defined on a structure that is not a relation.\n\n**Try this yourself.** You are given a CSV export from a legacy system:\n\n| EmployeeID | Name       | Skills                  |\n|------------|------------|-------------------------|\n| 101        | Alice      | Python, SQL, Project Mgmt |\n| 102        | Bob        | Java, Python           |\n\nIs this in 1NF? If not, what would a 1NF version look like, and what new problem does the 1NF version introduce (hint: think about what the key must become)? We will return to this tension when we discuss higher normal forms — 1NF is only the beginning.",
+  "final_inner_scores": {
+    "academic_accuracy": 9.0,
+    "pedagogical_effectiveness": 8.0,
+    "clarity_organization": 8.0,
+    "practical_relevance": 7.0,
+    "completeness": 8.0,
+    "engagement_potential": 6.0,
+    "technical_quality": 9.0,
+    "innovation": 7.0
+  },
+  "final_inner_overall": 7.75,
+  "external_scores": {
+    "academic_accuracy": 9.0,
+    "pedagogical_effectiveness": 8.5,
+    "clarity_organization": 9.0,
+    "practical_relevance": 7.5,
+    "completeness": 5.5,
+    "engagement_potential": 8.0,
+    "technical_quality": 8.5,
+    "innovation": 6.0
+  },
+  "external_overall": 7.2,
+  "external_justifications": {},
+  "panel_per_judge": {
+    "judge_claude": {
+      "scores": {
+        "academic_accuracy": 8.5,
+        "pedagogical_effectiveness": 8.5,
+        "clarity_organization": 9.0,
+        "practical_relevance": 7.5,
+        "completeness": 5.5,
+        "engagement_potential": 8.0,
+        "technical_quality": 8.5,
+        "innovation": 6.5
+      },
+      "justifications": {
+        "academic_accuracy": "Definitions of superkeys, candidate keys, FDs, full/partial dependencies, and prime/non-prime attributes are all correct and formally stated; the worked example on candidate keys is accurate, though the lecture does not yet reach 2NF/3NF/BCNF where errors are more likely to appear.",
+        "pedagogical_effectiveness": "The lecture scaffolds well — anomalies motivate normalization before formal definitions are introduced, quick checks with answers reinforce concepts, and the 'try this yourself' exercise at the end of 1NF creates active engagement; however, the lecture is incomplete (stops at 1NF), so the full pedagogical arc cannot be assessed.",
+        "clarity_organization": "Section numbering, headers, and prose flow are consistently clear; the progression from motivation to keys to FDs to 1NF is logical and each concept is introduced before it is used.",
+        "practical_relevance": "The university enrollment and employee/project examples are relatable, and the connection between FDs and business rules is explicitly made; however, there is no discussion of when to denormalize, performance trade-offs, or how normalization maps to real DBMS tooling.",
+        "completeness": "The lecture covers only through 1NF despite the learning objectives promising 2NF, 3NF, and BCNF; this is a significant gap that leaves the majority of the stated objectives unmet.",
+        "engagement_potential": "The opening framing of normalization as preventing 'silent corruption' is compelling, the three anomalies are vividly described with concrete consequences, and the self-check exercises maintain reader involvement.",
+        "technical_quality": "Notation is consistent (set notation for FDs, formatted tables, code blocks for schema), and the formal definition of FDs uses proper tuple-level language; minor issue: the schema in section 1.2 is presented as a code block rather than a formal relation notation, which is a minor inconsistency.",
+        "innovation": "The lecture uses solid but conventional pedagogy; the framing of 1NF as preserving the mathematical definition of a relation is a nice conceptual anchor, but there are no cross-domain analogies, historical context, or non-standard perspectives that would distinguish it from a standard textbook treatment."
+      },
+      "overall": 7.2,
+      "error": null,
+      "raw": "{\n  \"scores\": {\n    \"academic_accuracy\": \"8.5\",\n    \"pedagogical_effectiveness\": \"8.5\",\n    \"clarity_organization\": \"9.0\",\n    \"practical_relevance\": \"7.5\",\n    \"completeness\": \"5.5\",\n    \"engagement_potential\": \"8.0\",\n    \"technical_quality\": \"8.5\",\n    \"innovation\": \"6.5\"\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"Definitions of superkeys, candidate keys, FDs, full/partial dependencies, and prime/non-prime attributes are all correct and formally stated; the worked example on candidate keys is accurate, though the lecture does not yet reach 2NF/3NF/BCNF where errors are more likely to appear.\",\n    \"pedagogical_effectiveness\": \"The lecture scaffolds well — anomalies motivate normalization before formal definitions are introduced, quick checks with answers reinforce concepts, and the 'try this yourself' exercise at the end of 1NF creates active engagement; however, the lecture is incomplete (stops at 1NF), so the full pedagogical arc cannot be assessed.\",\n    \"clarity_organization\": \"Section numbering, headers, and prose flow are consistently clear; the progression from motivation to keys to FDs to 1NF is logical and each concept is introduced before it is used.\",\n    \"practical_relevance\": \"The university enrollment and employee/project examples are relatable, and the connection between FDs and business rules is explicitly made; however, there is no discussion of when to denormalize, performance trade-offs, or how normalization maps to real DBMS tooling.\",\n    \"completeness\": \"The lecture covers only through 1NF despite the learning objectives promising 2NF, 3NF, and BCNF; this is a significant gap that leaves the majority of the stated objectives unmet.\",\n    \"engagement_potential\": \"The opening framing of normalization as preventing 'silent corruption' is compelling, the three anomalies are vividly described with concrete consequences, and the self-check exercises maintain reader involvement.\",\n    \"technical_quality\": \"Notation is consistent (set notation for FDs, formatted tables, code blocks for schema), and the formal definition of FDs uses proper tuple-level language; minor issue: the schema in section 1.2 is presented as a code block rather than a formal relation notation, which is a minor inconsistency.\",\n    \"innovation\": \"The lecture uses solid but conventional pedagogy; the framing of 1NF as preserving the mathematical definition of a relation is a nice conceptual anchor, but there are no cross-domain analogies, historical context, or non-standard perspectives that would distinguish it from a standard textbook treatment.\"\n  },\n  \"overall\": \"7.2\"\n}"
+    },
+    "judge_kimi": {
+      "scores": {
+        "academic_accuracy": 9.0,
+        "pedagogical_effectiveness": 8.5,
+        "clarity_organization": 9.0,
+        "practical_relevance": 7.5,
+        "completeness": 6.5,
+        "engagement_potential": 8.0,
+        "technical_quality": 8.5,
+        "innovation": 6.0
+      },
+      "justifications": {
+        "academic_accuracy": "Definitions of superkeys, candidate keys, FDs, and partial/full dependencies are precise and correct; the formal definition of FDs uses proper relational notation and the worked example for finding candidate keys is methodologically sound.",
+        "pedagogical_effectiveness": "Strong scaffolding with concrete examples (university enrollments, employee tables), worked problems, and quick checks; the progression from motivating anomalies to formal definitions to application is well-structured, though more intermediate practice problems would strengthen it further.",
+        "clarity_organization": "Exceptionally clear writing with logical flow from motivation → foundations → first normal form; section headers create natural cognitive chunks and the prose effectively distinguishes conceptual points from worked examples.",
+        "practical_relevance": "The CSV example and business rule discussion ground concepts in real database practice, but the lecture could more explicitly connect to modern data engineering contexts (e.g., data warehouses, ETL pipelines) where normalization trade-offs matter.",
+        "completeness": "Covers 1NF thoroughly and sets up higher normal forms, but as a partial lecture it stops before delivering on 2NF-BCNF promises in the learning objectives; no discussion of normalization algorithms (e.g., 3NF synthesis, BCNF decomposition algorithm) or lossless/dependency-preserving properties.",
+        "engagement_potential": "Effective use of dramatic language ('silent corruption,' 'the database forces you to lie') and the skills-table hook creates genuine intellectual tension; the two-masters metaphor for interleaved facts is memorable and well-crafted.",
+        "technical_quality": "Consistent mathematical notation (sets in braces, proper arrow usage), clean table formatting, and correct use of terms; the CSV table is readable and the code-like relation schemas follow convention.",
+        "innovation": "The framing of normalization as 'anticipating maintenance problems before they become silent corruption' is fresh, but the overall structure follows standard database textbook presentation without surprising cross-domain connections or novel organizational approaches."
+      },
+      "overall": 7.9,
+      "error": null,
+      "raw": "{\"scores\":{\"academic_accuracy\":9.0,\"pedagogical_effectiveness\":8.5,\"clarity_organization\":9.0,\"practical_relevance\":7.5,\"completeness\":6.5,\"engagement_potential\":8.0,\"technical_quality\":8.5,\"innovation\":6.0},\"justifications\":{\"academic_accuracy\":\"Definitions of superkeys, candidate keys, FDs, and partial/full dependencies are precise and correct; the formal definition of FDs uses proper relational notation and the worked example for finding candidate keys is methodologically sound.\",\"pedagogical_effectiveness\":\"Strong scaffolding with concrete examples (university enrollments, employee tables), worked problems, and quick checks; the progression from motivating anomalies to formal definitions to application is well-structured, though more intermediate practice problems would strengthen it further.\",\"clarity_organization\":\"Exceptionally clear writing with logical flow from motivation → foundations → first normal form; section headers create natural cognitive chunks and the prose effectively distinguishes conceptual points from worked examples.\",\"practical_relevance\":\"The CSV example and business rule discussion ground concepts in real database practice, but the lecture could more explicitly connect to modern data engineering contexts (e.g., data warehouses, ETL pipelines) where normalization trade-offs matter.\",\"completeness\":\"Covers 1NF thoroughly and sets up higher normal forms, but as a partial lecture it stops before delivering on 2NF-BCNF promises in the learning objectives; no discussion of normalization algorithms (e.g., 3NF synthesis, BCNF decomposition algorithm) or lossless/dependency-preserving properties.\",\"engagement_potential\":\"Effective use of dramatic language ('silent corruption,' 'the database forces you to lie') and the skills-table hook creates genuine intellectual tension; the two-masters metaphor for interleaved facts is memorable and well-crafted.\",\"technical_quality\":\"Consistent mathematical notation (sets in braces, proper arrow usage), clean table formatting, and correct use of terms; the CSV table is readable and the code-like relation schemas follow convention.\",\"innovation\":\"The framing of normalization as 'anticipating maintenance problems before they become silent corruption' is fresh, but the overall structure follows standard database textbook presentation without surprising cross-domain connections or novel organizational approaches.\"},\"overall\":7.9}"
+    },
+    "judge_glm": {
+      "scores": {
+        "academic_accuracy": 9.0,
+        "pedagogical_effectiveness": 8.5,
+        "clarity_organization": 9.0,
+        "practical_relevance": 7.0,
+        "completeness": 3.0,
+        "engagement_potential": 8.0,
+        "technical_quality": 8.5,
+        "innovation": 6.0
+      },
+      "justifications": {
+        "academic_accuracy": "Definitions of superkeys, candidate keys, and functional dependencies are precise and mathematically sound, correctly distinguishing between full and partial dependencies.",
+        "pedagogical_effectiveness": "The lecture scaffolds concepts well, starting with intuitive anomalies before introducing formal machinery, and uses well-placed 'Quick Checks' and worked examples to reinforce learning.",
+        "clarity_organization": "The structure is highly logical, flowing from the problem (anomalies) to the foundational tools (keys, FDs) to the first normal form, with clear headings and crisp, jargon-free explanations.",
+        "practical_relevance": "The section on anomalies and the legacy CSV example connect theory to practical database design issues, though it stops short of showing how modern RDBMSs handle or enforce these rules.",
+        "completeness": "The lecture is significantly incomplete; it establishes prerequisites and covers 1NF but abruptly ends without detailing 2NF, 3NF, or BCNF as promised in the learning objectives.",
+        "engagement_potential": "Motivating hooks like 'lie — to invent a fake enrollment' and 'serve two masters' make the dry subject of normalization surprisingly engaging and intuitively relevant.",
+        "technical_quality": "Formatting is clean and consistent, effectively utilizing code blocks for schemas, tables for examples, and standard notation for functional dependencies and attribute sets.",
+        "innovation": "While the pedagogical flow is strong, the content relies on standard database curriculum angles rather than introducing fresh, non-trivial cross-domain connections or novel analogies."
+      },
+      "overall": 6.5,
+      "error": null,
+      "raw": "```json\n{\n  \"scores\": {\n    \"academic_accuracy\": 9.0,\n    \"pedagogical_effectiveness\": 8.5,\n    \"clarity_organization\": 9.0,\n    \"practical_relevance\": 7.0,\n    \"completeness\": 3.0,\n    \"engagement_potential\": 8.0,\n    \"technical_quality\": 8.5,\n    \"innovation\": 6.0\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"Definitions of superkeys, candidate keys, and functional dependencies are precise and mathematically sound, correctly distinguishing between full and partial dependencies.\",\n    \"pedagogical_effectiveness\": \"The lecture scaffolds concepts well, starting with intuitive anomalies before introducing formal machinery, and uses well-placed 'Quick Checks' and worked examples to reinforce learning.\",\n    \"clarity_organization\": \"The structure is highly logical, flowing from the problem (anomalies) to the foundational tools (keys, FDs) to the first normal form, with clear headings and crisp, jargon-free explanations.\",\n    \"practical_relevance\": \"The section on anomalies and the legacy CSV example connect theory to practical database design issues, though it stops short of showing how modern RDBMSs handle or enforce these rules.\",\n    \"completeness\": \"The lecture is significantly incomplete; it establishes prerequisites and covers 1NF but abruptly ends without detailing 2NF, 3NF, or BCNF as promised in the learning objectives.\",\n    \"engagement_potential\": \"Motivating hooks like 'lie — to invent a fake enrollment' and 'serve two masters' make the dry subject of normalization surprisingly engaging and intuitively relevant.\",\n    \"technical_quality\": \"Formatting is clean and consistent, effectively utilizing code blocks for schemas, tables for examples, and standard notation for functional dependencies and attribute sets.\",\n    \"innovation\": \"While the pedagogical flow is strong, the content relies on standard database curriculum angles rather than introducing fresh, non-trivial cross-domain connections or novel analogies.\"\n  },\n  \"overall\": 6.5\n}\n```"
+    }
+  },
+  "panel_n_ok": 3,
+  "final_slides_json": {
+    "title": "Backpropagation in Deep Learning",
+    "subtitle": "How gradients flow through composed functions to train neural networks",
+    "slides": [
+      {
+        "type": "title",
+        "title": "Backpropagation in Deep Learning",
+        "subtitle": "How gradients flow through composed functions to train neural networks",
+        "agenda": [
+          "Why gradients drive learning",
+          "Forward pass: caching activations",
+          "Backward pass: chain rule on the graph",
+          "A worked two-layer numerical example",
+          "Failure modes: vanishing and exploding gradients"
+        ],
+        "speaker_notes": "Welcome to this lecture on backpropagation. Today we are going to unpack the single most important algorithm that makes training deep neural networks computationally feasible. Backprop is not a new invention — it is simply the chain rule from calculus applied systematically to a computational graph. By the end of this lecture, you will understand why every modern deep learning framework, from PyTorch to TensorFlow, builds its entire training loop around this one idea. We will start with the forward pass, move to the backward pass, and then work through a concrete numerical example so you can feel the gradients flow layer by layer."
+      },
+      {
+        "type": "content",
+        "title": "A Network Is a Composition of Differentiable Functions",
+        "bullets": [
+          "Each layer maps inputs to outputs through a differentiable function",
+          "Stacking layers produces a single composed function f(g(h(x)))",
+          "The loss L is a scalar at the end of this composition",
+          "Training adjusts every parameter to reduce L on average",
+          "Differentiability is what makes gradient-based learning possible"
+        ],
+        "speaker_notes": "Let us start with the big picture. A feedforward neural network is nothing more than a sequence of functions applied one after another. Each layer takes a tensor, applies a linear transformation followed by a nonlinear activation, and passes the result to the next layer. Stacking them produces one giant composed function. At the very end we attach a loss function that collapses everything into a single scalar. Our job during training is to compute how sensitive that scalar is to every weight in the network — that is the gradient. Differentiability of every operation is the structural property that makes the whole pipeline tractable."
+      },
+      {
+        "type": "content",
+        "title": "The Forward Pass Caches Activations for the Backward Pass",
+        "bullets": [
+          "The forward pass computes and stores every intermediate tensor",
+          "These stored values are called activations or saved tensors",
+          "PyTorch autograd builds a dynamic computational graph during the forward pass",
+          "Each operation records its inputs and outputs for later gradient computation",
+          "Without caching, the backward pass would have to recompute everything from scratch"
+        ],
+        "speaker_notes": "When you call model.forward in PyTorch, you are not just computing the output. Under the hood, the autograd engine is recording every operation and saving every intermediate tensor into a graph. This is the forward pass. The stored tensors are what we call activations — they are the inputs to each operation. The reason we store them is that the backward pass will need them to compute local gradients. If we did not store them, we would have to recompute them during the backward pass, which would double the computational cost. This is why memory consumption during training scales with the number of layers."
+      },
+      {
+        "type": "math",
+        "title": "Backprop Is the Chain Rule Applied to Every Edge",
+        "equation_tex": "\\frac{\\partial L}{\\partial w} = \\frac{\\partial L}{\\partial y} \\cdot \\frac{\\partial y}{\\partial z} \\cdot \\frac{\\partial z}{\\partial w}",
+        "equation_caption": "Local gradients multiply along the path from the loss back to the weight.",
+        "bullets": [
+          "Each factor is a local Jacobian computed during the forward pass",
+          "Backprop reuses these locals — every weight update is one graph traversal",
+          "This is why training cost scales linearly with parameters, not quadratically"
+        ],
+        "speaker_notes": "Here is the equation that captures the entire content of backprop in one line. The left side is the quantity we want — how much the loss changes when we nudge a single weight. The right side decomposes into a product of local gradients that the forward pass has already cached. Each factor is a local Jacobian: the derivative of one operation with respect to its inputs. Backpropagation simply multiplies these factors along every path from the loss back to the weight. This decomposition is what makes training a billion-parameter model computationally feasible at all."
+      },
+      {
+        "type": "content",
+        "title": "The Backward Pass Computes Gradients Layer by Layer",
+        "bullets": [
+          "The backward pass starts at the loss and moves toward the inputs",
+          "At each operation, autograd multiplies the incoming gradient by the local Jacobian",
+          "The result is the gradient with respect to that operation's inputs",
+          "Gradients accumulate for parameters that are used multiple times in the graph",
+          "PyTorch's .backward() call triggers this entire reverse-mode traversal"
+        ],
+        "speaker_notes": "Once the forward pass is complete and we have our loss scalar, we call loss.backward(). This triggers the backward pass. The engine starts at the loss node and walks the graph in reverse topological order. At each node, it takes the gradient coming from downstream — the gradient of the loss with respect to this node's output — and multiplies it by the local Jacobian of that node's operation. The result is the gradient of the loss with respect to this node's inputs. This is why we call it reverse-mode autodiff: gradients flow backward through the graph, from output to input. For parameters that appear multiple times, the gradients accumulate via summation, which is exactly what the multivariate chain rule demands."
+      },
+      {
+        "type": "math",
+        "title": "The Local Jacobian of a Linear Layer",
+        "equation_tex": "\\frac{\\partial z}{\\partial W} = x^\\top, \\quad \\frac{\\partial z}{\\partial x} = W",
+        "equation_caption": "The gradient of a linear transformation z = Wx + b with respect to its weight matrix and its input.",
+        "bullets": [
+          "For a linear layer z = Wx + b, the local gradient w.r.t. W is the input x transposed",
+          "The local gradient w.r.t. x is the weight matrix W itself",
+          "These are the two Jacobians that backprop multiplies at every linear layer"
+        ],
+        "speaker_notes": "Let us look at the concrete Jacobians for the most common operation in deep learning: a linear layer. Given z = Wx + b, we need two local gradients: the gradient of z with respect to W, and the gradient of z with respect to x. The first is simply x transposed — the outer product of the input and the incoming gradient. The second is W itself. These are the two matrices that get multiplied during the backward pass at every fully-connected layer. Understanding these shapes is critical for debugging shape errors in PyTorch and for designing custom layers."
+      },
+      {
+        "type": "math",
+        "title": "The Local Jacobian of ReLU and Other Activations",
+        "equation_tex": "\\frac{\\partial \\text{ReLU}(z)}{\\partial z} = \\mathbf{1}[z > 0]",
+        "equation_caption": "The derivative of ReLU is the indicator function that is 1 when the input is positive and 0 otherwise.",
+        "bullets": [
+          "ReLU's derivative is elementwise: 1 for positive pre-activations, 0 for negative ones",
+          "This indicator function is the source of the vanishing gradient problem",
+          "Sigmoid and tanh have derivatives that saturate to near zero at extreme inputs"
+        ],
+        "speaker_notes": "Now let us look at the nonlinearities. ReLU is by far the most common activation function in modern deep networks. Its derivative is beautifully simple: it is 1 if the input is positive, and 0 if it is negative. This indicator function is the entire source of the vanishing gradient problem — if a neuron's pre-activation becomes negative, its gradient is zero, and no signal flows backward through it. Sigmoid and tanh have even worse behavior: their derivatives saturate to near zero at both extremes of the input range. This is why ReLU and its variants like Leaky ReLU and GELU have become standard."
+      },
+      {
+        "type": "exercise",
+        "title": "Try It: Two-Layer Network With ReLU",
+        "exercise_prompt": "Given y = w2 * relu(w1 * x + b1) + b2 and squared loss L = (y - t)^2 with x = 1.0, t = 0.5, w1 = 0.8, w2 = -1.2, b1 = 0.1, b2 = 0.0: (a) compute the forward pass; (b) derive dL/dw1 by hand; (c) report which term vanishes when w1 * x + b1 < 0.",
+        "bullets": [
+          "Hint: ReLU’s derivative is the indicator 1[z > 0]",
+          "Hint: chain through the output, then the activation, then the linear layer",
+          "Discuss why a negative pre-activation kills the gradient signal"
+        ],
+        "speaker_notes": "Give students four minutes. The goal is to feel the chain rule unroll layer by layer. They should produce one term per layer, with ReLU contributing an indicator function that switches off when the pre-activation is negative. The vanishing case is the entire point — it explains why dead ReLUs and bad initialization matter in practice."
+      },
+      {
+        "type": "content",
+        "title": "Vanishing Gradients: Why Deep Networks Struggle to Learn",
+        "bullets": [
+          "Vanishing gradients occur when repeated multiplication of small numbers drives gradients toward zero",
+          "In deep networks, the chain rule multiplies many local Jacobians together",
+          "If most Jacobians have norm less than 1, the product decays exponentially with depth",
+          "This makes early layers receive near-zero gradient signals and stop learning",
+          "Sigmoid and tanh are particularly prone to this because their derivatives are bounded above by 0.25"
+        ],
+        "speaker_notes": "This is the most famous failure mode of backpropagation. If you stack many layers, the gradient signal must travel through all of them. At each layer, it gets multiplied by a local Jacobian. If those Jacobians consistently have norm less than 1 — which is the case for sigmoid and tanh, whose maximum derivative is 0.25 — then the product decays exponently with depth. By the time the signal reaches the first few layers, it is effectively zero. Those layers receive no useful update and stop learning. This is why deep networks were so hard to train before ReLU and batch normalization."
+      },
+      {
+        "type": "content",
+        "title": "Exploding Gradients: The Opposite Failure Mode",
+        "bullets": [
+          "Exploding gradients occur when repeated multiplication of large numbers drives gradients toward infinity",
+          "If local Jacobians have norm greater than 1, the product grows exponentially with depth",
+          "This causes weight updates to become enormous and destabilize training",
+          "Gradient clipping is the standard practical fix: cap the norm before applying the update",
+          "Careful weight initialization schemes like Xavier and He initialization help prevent this"
+        ],
+        "speaker_notes": "The opposite problem is equally dangerous. If your weight matrices are initialized too large, the local Jacobians can have norm greater than 1. As the signal propagates backward through many layers, it grows exponentially and becomes numerically unstable. Your loss spikes to NaN, and your training crashes. The standard practical fix is gradient clipping: after computing gradients, you cap their global norm to some threshold before passing them to the optimizer. Weight initialization schemes like Xavier and He initialization are designed to keep the expected norm of Jacobians close to 1, preventing both vanishing and exploding gradients."
+      },
+      {
+        "type": "content",
+        "title": "Modern Architectures Mitigate These Failure Modes",
+        "bullets": [
+          "ReLU activations replace sigmoid to avoid saturating derivatives below 1",
+          "Batch normalization rescales activations to keep gradients in a healthy range",
+          "Residual connections provide shortcut paths that bypass multiple layers",
+          "In ResNets, the gradient can flow directly through the skip connection without attenuation",
+          "These three innovations made training 100+ layer networks routine"
+        ],
+        "speaker_notes": "The story of deep learning in the 2010s is largely the story of engineering around the failure modes of the chain rule. Three innovations stand out. First, ReLU activations replaced sigmoid and tanh, giving derivatives that are exactly 1 for positive inputs, which prevents vanishing. Second, batch normalization rescales the activations at each layer to have unit variance, which keeps the local Jacobians well-conditioned. Third, residual connections — the skip connections in ResNets — provide an alternative path for gradients to flow directly from the output to earlier layers, bypassing many multiplications. These three ideas together made it possible to train networks with hundreds of layers."
+      },
+      {
+        "type": "content",
+        "title": "Automatic Differentation in Practice: PyTorch Autograd",
+        "bullets": [
+          "PyTorch's autograd engine builds a dynamic computational graph at runtime",
+          "Every tensor with requires_grad=True tracks its history of operations",
+          "Calling .backward() on a scalar triggers reverse-mode traversal of this graph",
+          "The graph is freed after backward to save memory, unless retain_graph=True is set",
+          "This design makes debugging intuitive because the graph matches your Python control flow"
+        ],
+        "speaker_notes": "In practice, you will never implement backprop by hand. PyTorch's autograd engine does it for you. When you create a tensor with requires_grad=True, every operation you perform on it is recorded in a dynamic computational graph. This graph is built on the fly as your Python code runs, which means it can handle control flow like loops and conditionals naturally. When you call .backward() on a scalar loss, the engine walks this graph in reverse order, computing gradients for every tensor that participated. After the backward pass, the graph is freed to save memory, unless you explicitly ask it to be retained. This is the engine that powers all modern deep learning research."
+      },
+      {
+        "type": "content",
+        "title": "Optimizers Use Gradients to Update Parameters",
+        "bullets": [
+          "SGD updates weights as w = w - learning_rate * grad",
+          "Momentum adds a velocity term that smooths gradient updates over time",
+          "Adam adapts learning rates per parameter using first and second moments of gradients",
+          "All optimizers rely on the gradients computed by backpropagation",
+          "The choice of optimizer affects convergence speed but not the gradient computation itself"
+        ],
+        "speaker_notes": "Once backprop has computed the gradients, the optimizer takes over. The simplest optimizer is stochastic gradient descent: w = w - lr * grad. Momentum adds a velocity term that accumulates past gradients, smoothing the updates and helping escape local minima. Adam goes further: it maintains running estimates of both the mean and the variance of each parameter's gradient, and uses those to adapt the learning rate per parameter. But the key point is that all of these optimizers are downstream consumers of the gradients that backprop provides. The gradient computation itself is the same regardless of which optimizer you use."
+      },
+      {
+        "type": "summary",
+        "title": "What To Remember About Backpropagation",
+        "bullets": [
+          "Backprop is the chain rule applied to a computational graph, nothing more",
+          "The forward pass caches activations; the backward pass reuses them",
+          "Every parameter receives exactly one gradient per training step",
+          "Vanishing gradients motivate ReLU, batch norm, and residual connections",
+          "Modern frameworks like PyTorch and TensorFlow automate this with autograd"
+        ],
+        "speaker_notes": "Let us close by tying the math back to engineering decisions you will actually make. Backprop is the invariant — the chain rule applied to a computational graph. Everything else in modern deep learning is engineering around the failure modes of that single equation. Vanishing gradients motivate ReLU, batch norm, and residual connections. Exploding gradients motivate careful initialization and gradient clipping. And modern frameworks like PyTorch and TensorFlow automate the entire process with autograd, so you can focus on designing architectures rather than computing derivatives. The chain rule is the engine; the rest is engineering."
+      }
+    ],
+    "_repaired": true
+  },
+  "slides_validation_warnings": [],
+  "total_elapsed_sec": 432.58004999160767,
+  "error": null
+}

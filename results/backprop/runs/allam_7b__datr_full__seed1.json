@@ -1,0 +1,298 @@
+{
+  "run_id": "allam_7b__datr_full__seed1__1781667119",
+  "model_key": "allam_7b",
+  "condition": "datr_full",
+  "seed": 1,
+  "timestamp": "2026-06-17T03:31:59.477658",
+  "iterations": [
+    {
+      "iteration": 0,
+      "lecture": "Backpropagation is a crucial training algorithm for feedforward neural networks, enabling the gradient computation necessary for optimizing the network's parameters. The primary objective of backpropagation is to minimize the loss function by adjusting the weights and biases, which results in improved performance on the training data and generalization to new data.\n\n### 6.1 Learning Objective 1: Understand the concept of backpropagation as an optimization algorithm in neural networks\n\nBackpropagation (BP) is an optimization algorithm that utilizes the gradient descent approach to adjust the weights and biases in a feedforward neural network. The goal is to minimize the loss function, which is typically defined as the difference between the predicted output and the actual output.\n\n**Gradient Descent** is an iterative optimization technique that minimizes the loss function by moving in the direction of steepest ascent and then in the opposite direction to the gradient, which is the direction of steepest descent. Backpropagation employs gradient descent to update the weights and biases in the network.\n\n### 6.2.1 Derivation of the Gradient\n\nTo derive the gradient, we first need to calculate the derivative of the cost function with respect to each weight and bias. The cost function is typically defined as the mean squared error (MSE) between the predicted output and the actual output.\n\n$$ J(θ) = \\frac{1}{2N} \\sum (y_{\\text{pred}} - y_{\\text{true}})^2 $$\n\nwhere $ N $ is the number of training samples, $ y_{\\text{pred}} $ is the predicted output, and $ y_{\\text{true}} $ is the actual output.\n\nThe derivative of the cost function with respect to the weight $ w_i $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial w_i} = 2N \\sum (y_{\\text{pred}} - y_{\\text{true}}) \\cdot (z_{i,j} - y_{\\text{true}}) $$\n\nwhere $ z_{i,j} $ is the output of the $ i $-th neuron in the $ j $-th layer.\n\nThe derivative of the cost function with respect to the bias $ b_j $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial b_j} = \\sum (y_{\\text{pred}} - y_{\\text{true}}) $$\n\nwhere $ y_{\\text{pred}} $ is the predicted output and $ y_{\\text{true}} $ is the actual output.\n\nBackpropagation then computes the gradient of the cost function with respect to each weight and bias in the network, using the above derivatives. The gradient is then used to update the weights and biases using gradient descent, iteratively minimizing the loss function.",
+      "inner_scores": {
+        "academic_accuracy": 5.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 7.0,
+        "practical_relevance": 5.0,
+        "completeness": 4.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 6.0,
+        "innovation": 3.0
+      },
+      "inner_overall": 5.1,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture contains errors in the derivative expressions and lacks clarity in defining key terms like gradient descent.",
+        "pedagogical_effectiveness": "The lecture introduces backpropagation and gradient descent but lacks sufficient examples and scaffolding for deeper understanding.",
+        "clarity_organization": "The structure is logical, with clear sections, but some explanations are convoluted.",
+        "practical_relevance": "The lecture mentions optimization but does not connect the concepts to practical ML scenarios.",
+        "completeness": "Important aspects like chain rule application and limitations of backpropagation are missing.",
+        "engagement_potential": "The lecture is straightforward but lacks engaging elements like real-world analogies or interactive components.",
+        "technical_quality": "There are inconsistencies in the mathematical notation and errors in derivative calculations.",
+        "innovation": "The lecture presents standard information without introducing new perspectives or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Correct the derivative expressions and clarify the gradient descent explanation.",
+        "pedagogical_effectiveness": "Include step-by-step examples and visual aids to illustrate backpropagation.",
+        "clarity_organization": "",
+        "practical_relevance": "Incorporate examples of how backpropagation is used in real-world ML applications.",
+        "completeness": "Discuss the chain rule, variants of backpropagation, and its limitations.",
+        "engagement_potential": "Add analogies or case studies to make the content more relatable.",
+        "technical_quality": "Ensure consistent notation and correct the mathematical errors.",
+        "innovation": "Explore connections between backpropagation and other fields or introduce novel teaching methods."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 221.99968481063843
+    },
+    {
+      "iteration": 1,
+      "lecture": "Backpropagation is a crucial training algorithm for feedforward neural networks, enabling the gradient computation necessary for optimizing the network's parameters. The primary objective of backpropagation is to minimize the loss function by adjusting the weights and biases, which results in improved performance on the training data and generalization to new data.\n\n### 6.1 Learning Objective 1: Understand the concept of backpropagation as an optimization algorithm in neural networks\n\nBackpropagation (BP) is an optimization algorithm that utilizes the gradient descent approach to adjust the weights and biases in a feedforward neural network. The goal is to minimize the loss function, which is typically defined as the difference between the predicted output and the actual output.\n\n**Gradient Descent** is an iterative optimization technique that minimizes the loss function by moving in the direction of steepest ascent and then in the opposite direction to the gradient, which is the direction of steepest descent. Backpropagation employs gradient descent to update the weights and biases in the network.\n\n### 6.2.1 Derivation of the Gradient\n\nTo derive the gradient, we first need to calculate the derivative of the cost function with respect to each weight and bias. The cost function is typically defined as the mean squared error (MSE) between the predicted output and the actual output.\n\n$$ J(θ) = \\frac{1}{2N} \\sum (y_{\\text{pred}} - y_{\\text{true}})^2 $$\n\nwhere $ N $ is the number of training samples, $ y_{\\text{pred}} $ is the predicted output, and $ y_{\\text{true}} $ is the actual output.\n\nThe derivative of the cost function with respect to the weight $ w_i $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial w_i} = 2N \\sum (y_{\\text{pred}} - y_{\\text{true}}) \\cdot (z_{i,j} - y_{\\text{true}}) $$\n\nwhere $ z_{i,j} $ is the output of the $ i $-th neuron in the $ j $-th layer.\n\nThe derivative of the cost function with respect to the bias $ b_j $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial b_j} = \\sum (y_{\\text{pred}} - y_{\\text{true}}) $$\n\nwhere $ y_{\\text{pred}} $ is the predicted output and $ y_{\\text{true}} $ is the actual output.\n\nBackpropagation then computes the gradient of the cost function with respect to each weight and bias in the network, using the above derivatives. The gradient is then used to update the weights and biases using gradient descent, iteratively minimizing the loss function.",
+      "inner_scores": {
+        "academic_accuracy": 5.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 7.0,
+        "practical_relevance": 5.0,
+        "completeness": 4.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 6.0,
+        "innovation": 3.0
+      },
+      "inner_overall": 5.1,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture contains errors in the derivative expressions and lacks clarity in defining key terms like gradient descent.",
+        "pedagogical_effectiveness": "The lecture introduces backpropagation and gradient descent but lacks sufficient examples and scaffolding for deeper understanding.",
+        "clarity_organization": "The structure is logical, with clear sections, but some explanations are convoluted.",
+        "practical_relevance": "The lecture mentions optimization but does not connect the concepts to practical ML scenarios.",
+        "completeness": "Important aspects like chain rule application and limitations of backpropagation are missing.",
+        "engagement_potential": "The lecture is straightforward but lacks engaging elements like real-world analogies or interactive components.",
+        "technical_quality": "There are inconsistencies in the mathematical notation and errors in derivative calculations.",
+        "innovation": "The lecture presents standard information without introducing new perspectives or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Correct the derivative expressions and clarify the gradient descent explanation.",
+        "pedagogical_effectiveness": "Include step-by-step examples and visual aids to illustrate backpropagation.",
+        "clarity_organization": "",
+        "practical_relevance": "Incorporate examples of how backpropagation is used in real-world ML applications.",
+        "completeness": "Discuss the chain rule, variants of backpropagation, and its limitations.",
+        "engagement_potential": "Add analogies or case studies to make the content more relatable.",
+        "technical_quality": "Ensure consistent notation and correct the mathematical errors.",
+        "innovation": "Explore connections between backpropagation and other fields or introduce novel teaching methods."
+      },
+      "target_dimensions": [
+        "innovation",
+        "completeness"
+      ],
+      "agents_called": [
+        "engagement",
+        "sme"
+      ],
+      "rolled_back": true,
+      "elapsed_sec": 106.90250492095947
+    },
+    {
+      "iteration": 2,
+      "lecture": "Backpropagation is a crucial training algorithm for feedforward neural networks, enabling the gradient computation necessary for optimizing the network's parameters. The primary objective of backpropagation is to minimize the loss function by adjusting the weights and biases, which results in improved performance on the training data and generalization to new data.\n\n### 6.1 Learning Objective 1: Understand the concept of backpropagation as an optimization algorithm in neural networks\n\nBackpropagation (BP) is an optimization algorithm that utilizes the gradient descent approach to adjust the weights and biases in a feedforward neural network. The goal is to minimize the loss function, which is typically defined as the difference between the predicted output and the actual output.\n\n**Gradient Descent** is an iterative optimization technique that minimizes the loss function by moving in the direction of steepest ascent and then in the opposite direction to the gradient, which is the direction of steepest descent. Backpropagation employs gradient descent to update the weights and biases in the network.\n\n### 6.2.1 Derivation of the Gradient\n\nTo derive the gradient, we first need to calculate the derivative of the cost function with respect to each weight and bias. The cost function is typically defined as the mean squared error (MSE) between the predicted output and the actual output.\n\n$$ J(θ) = \\frac{1}{2N} \\sum (y_{\\text{pred}} - y_{\\text{true}})^2 $$\n\nwhere $ N $ is the number of training samples, $ y_{\\text{pred}} $ is the predicted output, and $ y_{\\text{true}} $ is the actual output.\n\nThe derivative of the cost function with respect to the weight $ w_i $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial w_i} = 2N \\sum (y_{\\text{pred}} - y_{\\text{true}}) \\cdot (z_{i,j} - y_{\\text{true}}) $$\n\nwhere $ z_{i,j} $ is the output of the $ i $-th neuron in the $ j $-th layer.\n\nThe derivative of the cost function with respect to the bias $ b_j $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial b_j} = \\sum (y_{\\text{pred}} - y_{\\text{true}}) $$\n\nwhere $ y_{\\text{pred}} $ is the predicted output and $ y_{\\text{true}} $ is the actual output.\n\nBackpropagation then computes the gradient of the cost function with respect to each weight and bias in the network, using the above derivatives. The gradient is then used to update the weights and biases using gradient descent, iteratively minimizing the loss function.",
+      "inner_scores": {
+        "academic_accuracy": 5.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 7.0,
+        "practical_relevance": 5.0,
+        "completeness": 4.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 6.0,
+        "innovation": 3.0
+      },
+      "inner_overall": 5.1,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture contains errors in the derivative expressions and lacks clarity in defining key terms like gradient descent.",
+        "pedagogical_effectiveness": "The lecture introduces backpropagation and gradient descent but lacks sufficient examples and scaffolding for deeper understanding.",
+        "clarity_organization": "The structure is logical, with clear sections, but some explanations are convoluted.",
+        "practical_relevance": "The lecture mentions optimization but does not connect the concepts to practical ML scenarios.",
+        "completeness": "Important aspects like chain rule application and limitations of backpropagation are missing.",
+        "engagement_potential": "The lecture is straightforward but lacks engaging elements like real-world analogies or interactive components.",
+        "technical_quality": "There are inconsistencies in the mathematical notation and errors in derivative calculations.",
+        "innovation": "The lecture presents standard information without introducing new perspectives or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Correct the derivative expressions and clarify the gradient descent explanation.",
+        "pedagogical_effectiveness": "Include step-by-step examples and visual aids to illustrate backpropagation.",
+        "clarity_organization": "",
+        "practical_relevance": "Incorporate examples of how backpropagation is used in real-world ML applications.",
+        "completeness": "Discuss the chain rule, variants of backpropagation, and its limitations.",
+        "engagement_potential": "Add analogies or case studies to make the content more relatable.",
+        "technical_quality": "Ensure consistent notation and correct the mathematical errors.",
+        "innovation": "Explore connections between backpropagation and other fields or introduce novel teaching methods."
+      },
+      "target_dimensions": [
+        "innovation",
+        "completeness"
+      ],
+      "agents_called": [
+        "engagement",
+        "sme"
+      ],
+      "rolled_back": true,
+      "elapsed_sec": 103.72873187065125
+    },
+    {
+      "iteration": 3,
+      "lecture": "Backpropagation is a crucial training algorithm for feedforward neural networks, enabling the gradient computation necessary for optimizing the network's parameters. The primary objective of backpropagation is to minimize the loss function by adjusting the weights and biases, which results in improved performance on the training data and generalization to new data.\n\n### 6.1 Learning Objective 1: Understand the concept of backpropagation as an optimization algorithm in neural networks\n\nBackpropagation (BP) is an optimization algorithm that utilizes the gradient descent approach to adjust the weights and biases in a feedforward neural network. The goal is to minimize the loss function, which is typically defined as the difference between the predicted output and the actual output.\n\n**Gradient Descent** is an iterative optimization technique that minimizes the loss function by moving in the direction of steepest ascent and then in the opposite direction to the gradient, which is the direction of steepest descent. Backpropagation employs gradient descent to update the weights and biases in the network.\n\n### 6.2.1 Derivation of the Gradient\n\nTo derive the gradient, we first need to calculate the derivative of the cost function with respect to each weight and bias. The cost function is typically defined as the mean squared error (MSE) between the predicted output and the actual output.\n\n$$ J(θ) = \\frac{1}{2N} \\sum (y_{\\text{pred}} - y_{\\text{true}})^2 $$\n\nwhere $ N $ is the number of training samples, $ y_{\\text{pred}} $ is the predicted output, and $ y_{\\text{true}} $ is the actual output.\n\nThe derivative of the cost function with respect to the weight $ w_i $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial w_i} = 2N \\sum (y_{\\text{pred}} - y_{\\text{true}}) \\cdot (z_{i,j} - y_{\\text{true}}) $$\n\nwhere $ z_{i,j} $ is the output of the $ i $-th neuron in the $ j $-th layer.\n\nThe derivative of the cost function with respect to the bias $ b_j $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial b_j} = \\sum (y_{\\text{pred}} - y_{\\text{true}}) $$\n\nwhere $ y_{\\text{pred}} $ is the predicted output and $ y_{\\text{true}} $ is the actual output.\n\nBackpropagation then computes the gradient of the cost function with respect to each weight and bias in the network, using the above derivatives. The gradient is then used to update the weights and biases using gradient descent, iteratively minimizing the loss function.",
+      "inner_scores": {
+        "academic_accuracy": 5.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 7.0,
+        "practical_relevance": 5.0,
+        "completeness": 4.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 6.0,
+        "innovation": 3.0
+      },
+      "inner_overall": 5.1,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture contains errors in the derivative expressions and lacks clarity in defining key terms like gradient descent.",
+        "pedagogical_effectiveness": "The lecture introduces backpropagation and gradient descent but lacks sufficient examples and scaffolding for deeper understanding.",
+        "clarity_organization": "The structure is logical, with clear sections, but some explanations are convoluted.",
+        "practical_relevance": "The lecture mentions optimization but does not connect the concepts to practical ML scenarios.",
+        "completeness": "Important aspects like chain rule application and limitations of backpropagation are missing.",
+        "engagement_potential": "The lecture is straightforward but lacks engaging elements like real-world analogies or interactive components.",
+        "technical_quality": "There are inconsistencies in the mathematical notation and errors in derivative calculations.",
+        "innovation": "The lecture presents standard information without introducing new perspectives or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Correct the derivative expressions and clarify the gradient descent explanation.",
+        "pedagogical_effectiveness": "Include step-by-step examples and visual aids to illustrate backpropagation.",
+        "clarity_organization": "",
+        "practical_relevance": "Incorporate examples of how backpropagation is used in real-world ML applications.",
+        "completeness": "Discuss the chain rule, variants of backpropagation, and its limitations.",
+        "engagement_potential": "Add analogies or case studies to make the content more relatable.",
+        "technical_quality": "Ensure consistent notation and correct the mathematical errors.",
+        "innovation": "Explore connections between backpropagation and other fields or introduce novel teaching methods."
+      },
+      "target_dimensions": [
+        "innovation",
+        "completeness"
+      ],
+      "agents_called": [
+        "engagement",
+        "sme"
+      ],
+      "rolled_back": true,
+      "elapsed_sec": 112.23150491714478
+    }
+  ],
+  "final_lecture": "Backpropagation is a crucial training algorithm for feedforward neural networks, enabling the gradient computation necessary for optimizing the network's parameters. The primary objective of backpropagation is to minimize the loss function by adjusting the weights and biases, which results in improved performance on the training data and generalization to new data.\n\n### 6.1 Learning Objective 1: Understand the concept of backpropagation as an optimization algorithm in neural networks\n\nBackpropagation (BP) is an optimization algorithm that utilizes the gradient descent approach to adjust the weights and biases in a feedforward neural network. The goal is to minimize the loss function, which is typically defined as the difference between the predicted output and the actual output.\n\n**Gradient Descent** is an iterative optimization technique that minimizes the loss function by moving in the direction of steepest ascent and then in the opposite direction to the gradient, which is the direction of steepest descent. Backpropagation employs gradient descent to update the weights and biases in the network.\n\n### 6.2.1 Derivation of the Gradient\n\nTo derive the gradient, we first need to calculate the derivative of the cost function with respect to each weight and bias. The cost function is typically defined as the mean squared error (MSE) between the predicted output and the actual output.\n\n$$ J(θ) = \\frac{1}{2N} \\sum (y_{\\text{pred}} - y_{\\text{true}})^2 $$\n\nwhere $ N $ is the number of training samples, $ y_{\\text{pred}} $ is the predicted output, and $ y_{\\text{true}} $ is the actual output.\n\nThe derivative of the cost function with respect to the weight $ w_i $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial w_i} = 2N \\sum (y_{\\text{pred}} - y_{\\text{true}}) \\cdot (z_{i,j} - y_{\\text{true}}) $$\n\nwhere $ z_{i,j} $ is the output of the $ i $-th neuron in the $ j $-th layer.\n\nThe derivative of the cost function with respect to the bias $ b_j $ in the $ j $-th layer is:\n\n$$ \\frac{\\partial J(θ)}{\\partial b_j} = \\sum (y_{\\text{pred}} - y_{\\text{true}}) $$\n\nwhere $ y_{\\text{pred}} $ is the predicted output and $ y_{\\text{true}} $ is the actual output.\n\nBackpropagation then computes the gradient of the cost function with respect to each weight and bias in the network, using the above derivatives. The gradient is then used to update the weights and biases using gradient descent, iteratively minimizing the loss function.",
+  "final_inner_scores": {
+    "academic_accuracy": 5.0,
+    "pedagogical_effectiveness": 6.0,
+    "clarity_organization": 7.0,
+    "practical_relevance": 5.0,
+    "completeness": 4.0,
+    "engagement_potential": 5.0,
+    "technical_quality": 6.0,
+    "innovation": 3.0
+  },
+  "final_inner_overall": 5.1,
+  "external_scores": {
+    "academic_accuracy": 2.5,
+    "pedagogical_effectiveness": 3.0,
+    "clarity_organization": 5.0,
+    "practical_relevance": 3.0,
+    "completeness": 2.0,
+    "engagement_potential": 3.0,
+    "technical_quality": 4.0,
+    "innovation": 2.0
+  },
+  "external_overall": 2.5,
+  "external_justifications": {},
+  "panel_per_judge": {
+    "judge_claude": {
+      "scores": {
+        "academic_accuracy": 2.5,
+        "pedagogical_effectiveness": 3.0,
+        "clarity_organization": 3.5,
+        "practical_relevance": 3.0,
+        "completeness": 2.0,
+        "engagement_potential": 3.0,
+        "technical_quality": 3.0,
+        "innovation": 2.0
+      },
+      "justifications": {
+        "academic_accuracy": "The gradient formula for ∂J/∂w_i is mathematically incorrect — it introduces a factor of 2N in the numerator and uses z_{i,j} in a nonsensical way that does not follow from the chain rule; the bias gradient is also incomplete, missing the activation derivative and upstream gradient terms. The description of gradient descent as 'moving in the direction of steepest ascent and then in the opposite direction' is a confusing and redundant phrasing.",
+        "pedagogical_effectiveness": "There is no scaffolding of prerequisites (e.g., chain rule, forward pass, computational graphs), no worked numerical example, and the derivation jumps to incorrect formulas without building intuition; the lecture covers only a fragment of what backpropagation entails.",
+        "clarity_organization": "The section numbering is inconsistent (6.1 then 6.2.1 with nothing in between), and the prose occasionally contradicts itself; the overall flow is superficial but not entirely incoherent.",
+        "practical_relevance": "No mention of practical considerations such as vanishing/exploding gradients, learning rate selection, batch vs. stochastic gradient descent, or modern frameworks that automate differentiation.",
+        "completeness": "Critical components are entirely absent: the chain rule derivation layer-by-layer, the delta (error signal) formulation, activation function derivatives, the forward pass, weight update rule with learning rate, and any discussion of variants or limitations.",
+        "engagement_potential": "The lecture is dry and formulaic with no motivating examples, analogies, historical context, or real-world applications to draw the reader in.",
+        "technical_quality": "Notation is inconsistent (θ introduced but never decomposed into W and b; subscript conventions for layers vs. neurons are mixed), and the key equations contain errors that undermine trust in the technical presentation.",
+        "innovation": "The lecture presents a standard (and flawed) textbook treatment with no novel angles, cross-domain connections, or fresh perspectives on backpropagation."
+      },
+      "overall": 2.5,
+      "error": null,
+      "raw": "```json\n{\n  \"scores\": {\n    \"academic_accuracy\": \"2.5\",\n    \"pedagogical_effectiveness\": \"3.0\",\n    \"clarity_organization\": \"3.5\",\n    \"practical_relevance\": \"3.0\",\n    \"completeness\": \"2.0\",\n    \"engagement_potential\": \"3.0\",\n    \"technical_quality\": \"3.0\",\n    \"innovation\": \"2.0\"\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"The gradient formula for ∂J/∂w_i is mathematically incorrect — it introduces a factor of 2N in the numerator and uses z_{i,j} in a nonsensical way that does not follow from the chain rule; the bias gradient is also incomplete, missing the activation derivative and upstream gradient terms. The description of gradient descent as 'moving in the direction of steepest ascent and then in the opposite direction' is a confusing and redundant phrasing.\",\n    \"pedagogical_effectiveness\": \"There is no scaffolding of prerequisites (e.g., chain rule, forward pass, computational graphs), no worked numerical example, and the derivation jumps to incorrect formulas without building intuition; the lecture covers only a fragment of what backpropagation entails.\",\n    \"clarity_organization\": \"The section numbering is inconsistent (6.1 then 6.2.1 with nothing in between), and the prose occasionally contradicts itself; the overall flow is superficial but not entirely incoherent.\",\n    \"practical_relevance\": \"No mention of practical considerations such as vanishing/exploding gradients, learning rate selection, batch vs. stochastic gradient descent, or modern frameworks that automate differentiation.\",\n    \"completeness\": \"Critical components are entirely absent: the chain rule derivation layer-by-layer, the delta (error signal) formulation, activation function derivatives, the forward pass, weight update rule with learning rate, and any discussion of variants or limitations.\",\n    \"engagement_potential\": \"The lecture is dry and formulaic with no motivating examples, analogies, historical context, or real-world applications to draw the reader in.\",\n    \"technical_quality\": \"Notation is inconsistent (θ introduced but never decomposed into W and b; subscript conventions for layers vs. neurons are mixed), and the key equations contain errors that undermine trust in the technical presentation.\",\n    \"innovation\": \"The lecture presents a standard (and flawed) textbook treatment with no novel angles, cross-domain connections, or fresh perspectives on backpropagation.\"\n  },\n  \"overall\": \"2.5\"\n}\n```"
+    },
+    "judge_kimi": {
+      "scores": {
+        "academic_accuracy": 3.5,
+        "pedagogical_effectiveness": 4.0,
+        "clarity_organization": 5.0,
+        "practical_relevance": 3.0,
+        "completeness": 3.5,
+        "engagement_potential": 3.0,
+        "technical_quality": 4.5,
+        "innovation": 2.0
+      },
+      "justifications": {
+        "academic_accuracy": "The gradient descent description is garbled ('steepest ascent and then in the opposite direction'). The partial derivatives are wrong: the weight derivative incorrectly uses 2N as a leading factor instead of 1/(2N), introduces a nonsensical (z_{i,j} - y_{true}) term instead of the chain rule through activations, and the bias derivative omits the necessary chain rule through the activation function entirely. The notation confuses θ with w and b without clarification.",
+        "pedagogical_effectiveness": "Minimal scaffolding: no worked numerical example, no visual diagram of computation flow, and no prerequisite review of chain rule or computational graphs. The derivation jumps to incorrect formulas without explaining why intermediate steps matter. No distinction between output layer and hidden layer gradients.",
+        "clarity_organization": "The structure is superficially logical (objective, derivation, update) but the writing within sections is confusing—especially the gradient descent description and the mangled derivative formulas. Section numbering is inconsistent (6.1, 6.2.1 with no 6.2).",
+        "practical_relevance": "No connection to actual deep learning practice: no mention of modern frameworks (PyTorch/TensorFlow automatic differentiation), no discussion of mini-batches, SGD variants, or computational efficiency. Stays entirely in abstract symbolic land without implementation guidance.",
+        "completeness": "Missing: hidden layer backpropagation (the actual hard part), chain rule decomposition, activation function derivatives, vectorized/matrix formulations, vanishing/exploding gradients, comparison with automatic differentiation, and any algorithmic pseudocode. Only covers output-layer-like formulas incorrectly.",
+        "engagement_potential": "Dry, formulaic exposition with no hooks, no historical context, no intuition-building analogies (e.g., 'credit assignment'), no puzzles or tensions raised. The reader has no reason to care beyond generic 'minimize loss' framing.",
+        "technical_quality": "LaTeX formatting is present but inconsistent (θ vs w/b confusion, undefined z_{i,j}). No code blocks, no tables, no algorithm boxes. Equation errors undermine the 'technical' claim despite visible effort at mathematical typesetting.",
+        "innovation": "Entirely standard, textbook-level treatment even when correct; the incorrect formulas make it worse than standard. No cross-domain connections (e.g., to adjoint methods in ODEs/control, or to message passing), no fresh perspective on why backprop is efficient."
+      },
+      "overall": 3.5,
+      "error": null,
+      "raw": "{\"scores\":{\"academic_accuracy\":3.5,\"pedagogical_effectiveness\":4.0,\"clarity_organization\":5.0,\"practical_relevance\":3.0,\"completeness\":3.5,\"engagement_potential\":3.0,\"technical_quality\":4.5,\"innovation\":2.0},\"justifications\":{\"academic_accuracy\":\"The gradient descent description is garbled ('steepest ascent and then in the opposite direction'). The partial derivatives are wrong: the weight derivative incorrectly uses 2N as a leading factor instead of 1/(2N), introduces a nonsensical (z_{i,j} - y_{true}) term instead of the chain rule through activations, and the bias derivative omits the necessary chain rule through the activation function entirely. The notation confuses θ with w and b without clarification.\",\"pedagogical_effectiveness\":\"Minimal scaffolding: no worked numerical example, no visual diagram of computation flow, and no prerequisite review of chain rule or computational graphs. The derivation jumps to incorrect formulas without explaining why intermediate steps matter. No distinction between output layer and hidden layer gradients.\",\"clarity_organization\":\"The structure is superficially logical (objective, derivation, update) but the writing within sections is confusing—especially the gradient descent description and the mangled derivative formulas. Section numbering is inconsistent (6.1, 6.2.1 with no 6.2).\",\"practical_relevance\":\"No connection to actual deep learning practice: no mention of modern frameworks (PyTorch/TensorFlow automatic differentiation), no discussion of mini-batches, SGD variants, or computational efficiency. Stays entirely in abstract symbolic land without implementation guidance.\",\"completeness\":\"Missing: hidden layer backpropagation (the actual hard part), chain rule decomposition, activation function derivatives, vectorized/matrix formulations, vanishing/exploding gradients, comparison with automatic differentiation, and any algorithmic pseudocode. Only covers output-layer-like formulas incorrectly.\",\"engagement_potential\":\"Dry, formulaic exposition with no hooks, no historical context, no intuition-building analogies (e.g., 'credit assignment'), no puzzles or tensions raised. The reader has no reason to care beyond generic 'minimize loss' framing.\",\"technical_quality\":\"LaTeX formatting is present but inconsistent (θ vs w/b confusion, undefined z_{i,j}). No code blocks, no tables, no algorithm boxes. Equation errors undermine the 'technical' claim despite visible effort at mathematical typesetting.\",\"innovation\":\"Entirely standard, textbook-level treatment even when correct; the incorrect formulas make it worse than standard. No cross-domain connections (e.g., to adjoint methods in ODEs/control, or to message passing), no fresh perspective on why backprop is efficient.\"},\"overall\":3.5}"
+    },
+    "judge_glm": {
+      "scores": {
+        "academic_accuracy": 2.0,
+        "pedagogical_effectiveness": 3.0,
+        "clarity_organization": 5.0,
+        "practical_relevance": 2.0,
+        "completeness": 2.0,
+        "engagement_potential": 2.0,
+        "technical_quality": 4.0,
+        "innovation": 1.0
+      },
+      "justifications": {
+        "academic_accuracy": "The provided derivative equations are mathematically incorrect and inconsistent with the defined cost function; for instance, the bias derivative omits necessary chain rule terms, and the weight derivative introduces undefined variables and incorrect constants.",
+        "pedagogical_effectiveness": "The lecture fails to explain the core mechanism of backpropagation (the chain rule across layers) and skips essential scaffolding, leaving the student with incorrect formulas and no conceptual understanding of how errors are propagated backwards.",
+        "clarity_organization": "The text is readable and divided into logical sections, but the sudden jump to incorrect and unexplained mathematical derivations severely disrupts the overall clarity and coherence of the lecture.",
+        "practical_relevance": "There are no practical examples, connections to modern implementations, or discussions of variants like stochastic or mini-batch gradient descent, leaving the content entirely abstract and disconnected from real-world practice.",
+        "completeness": "Critical sub-topics are missing, including the chain rule, forward pass explanation, activation function derivatives, the actual weight update rule, and computational graphs, making the coverage highly incomplete.",
+        "engagement_potential": "The text is dry, lacks motivating hooks, analogies, or intuitive explanations, and relies on incorrect math that would likely confuse rather than engage a student.",
+        "technical_quality": "While LaTeX formatting is used for equations, the notation is inconsistent (e.g., mixing $w_i$ and $b_j$ indices without clear definition) and the formulas themselves contain severe mathematical errors.",
+        "innovation": "The lecture presents a standard, albeit flawed, introductory overview with no fresh angles, cross-domain connections, or non-traditional insights."
+      },
+      "overall": 2.5,
+      "error": null,
+      "raw": "{\n  \"scores\": {\n    \"academic_accuracy\": 2.0,\n    \"pedagogical_effectiveness\": 3.0,\n    \"clarity_organization\": 5.0,\n    \"practical_relevance\": 2.0,\n    \"completeness\": 2.0,\n    \"engagement_potential\": 2.0,\n    \"technical_quality\": 4.0,\n    \"innovation\": 1.0\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"The provided derivative equations are mathematically incorrect and inconsistent with the defined cost function; for instance, the bias derivative omits necessary chain rule terms, and the weight derivative introduces undefined variables and incorrect constants.\",\n    \"pedagogical_effectiveness\": \"The lecture fails to explain the core mechanism of backpropagation (the chain rule across layers) and skips essential scaffolding, leaving the student with incorrect formulas and no conceptual understanding of how errors are propagated backwards.\",\n    \"clarity_organization\": \"The text is readable and divided into logical sections, but the sudden jump to incorrect and unexplained mathematical derivations severely disrupts the overall clarity and coherence of the lecture.\",\n    \"practical_relevance\": \"There are no practical examples, connections to modern implementations, or discussions of variants like stochastic or mini-batch gradient descent, leaving the content entirely abstract and disconnected from real-world practice.\",\n    \"completeness\": \"Critical sub-topics are missing, including the chain rule, forward pass explanation, activation function derivatives, the actual weight update rule, and computational graphs, making the coverage highly incomplete.\",\n    \"engagement_potential\": \"The text is dry, lacks motivating hooks, analogies, or intuitive explanations, and relies on incorrect math that would likely confuse rather than engage a student.\",\n    \"technical_quality\": \"While LaTeX formatting is used for equations, the notation is inconsistent (e.g., mixing $w_i$ and $b_j$ indices without clear definition) and the formulas themselves contain severe mathematical errors.\",\n    \"innovation\": \"The lecture presents a standard, albeit flawed, introductory overview with no fresh angles, cross-domain connections, or non-traditional insights.\"\n  },\n  \"overall\": 2.5\n}"
+    }
+  },
+  "panel_n_ok": 3,
+  "final_slides_json": {
+    "error": "skipped: model context too small for Presenter (slides optional)"
+  },
+  "slides_validation_warnings": [
+    "Slides JSON contains error: skipped: model context too small for Presenter (slides optional)"
+  ],
+  "total_elapsed_sec": 568.936704158783,
+  "error": null
+}

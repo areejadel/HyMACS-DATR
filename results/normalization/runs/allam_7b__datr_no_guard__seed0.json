@@ -1,0 +1,295 @@
+{
+  "run_id": "allam_7b__datr_no_guard__seed0__1781744977",
+  "model_key": "allam_7b",
+  "condition": "datr_no_guard",
+  "seed": 0,
+  "timestamp": "2026-06-18T01:09:37.396428",
+  "iterations": [
+    {
+      "iteration": 0,
+      "lecture": "# Normalization Forms and Database Schema Design (1NF-BCNF)\n\n## Academic Accuracy\n\n### Definition of Normalization Forms\nNormalization is a process of organizing a database schema to minimize data redundancy and dependency. It is typically performed in five distinct normal forms: 1st normal form (1NF), 2nd normal form (2NF), 3rd normal form (3NF), 4th normal form (4NF), and 5th normal form (5NF), culminating in the 5th normal form (5NF), also known as the BCNF (Boyce-Codd Normal Form).\n\n### 1st Normal Form (1NF)\n1NF is achieved when each attribute in a relation is atomic, meaning it cannot be divided into smaller parts without losing meaning. An attribute is atomic if it is a single value that cannot be broken down into smaller values without losing essential information.\n\n### 2nd Normal Form (2NF)\n2NF is achieved when a relation is in 1NF and each non-key attribute is completely dependent on the primary key. This means that the non-key attributes must be fully functionally dependent on the primary key.\n\n### 3rd Normal Form (3NF)\n3NF is achieved when a relation is in 2NF and the non-key attributes do not depend on each other. In other words, the non-key attributes must be independent of one another and not form their own natural keys.\n\n### 4th Normal Form (4NF)\n4NF is achieved when a relation is in 3NF and there is no transitive dependency between the non-key attributes. Transitive dependency occurs when the value of one non-key attribute depends on the value of another non-key attribute, which in turn depends on the primary key.\n\n### 5th Normal Form (5NF)\n5NF, also known as BCNF (Boyce-Codd Normal Form), is achieved when a relation is in 4NF and each non-key attribute has a dependency on the primary key only. This means that the non-key attributes must be fully functionally dependent on the primary key, but not on each other.\n\n### Denormalization\nDenormalization is the process of storing the join of higher normal form relations as a base relation, which is in a lower normal form. This involves duplicating data from higher normal form relations to achieve performance gains, but it comes with the risk of encountering data anomalies.\n\n## Practical Relevance\n\n### Prerequisites\nTo understand normalization, it is crucial to have a solid grasp of relational algebra, set theory, and SQL. Familiarity with database design and schema design is also essential.\n\n### Key Concepts\n- **Primary Key**: A unique identifier for each record in a table, ensuring data integrity.\n- **Unique Key**: A combination of one or more attributes that uniquely identifies each record in a table.\n- **Functional Dependency**: A relationship between two attributes in a relation, where the value of one attribute determines the value of the other.\n- **Transitive Dependency**: A functional dependency in which the value of one attribute depends on the value of another attribute, which in turn depends on the primary key.\n- **Transaction**: A set of operations performed on a database to update its data.\n\nIn summary, normalization is an essential technique for designing efficient and scalable database schemas. By understanding the normal forms and their characteristics, database designers can create robust database structures that minimize data redundancy and dependency, thus improving data integrity and performance.",
+      "inner_scores": {
+        "academic_accuracy": 6.0,
+        "pedagogical_effectiveness": 5.0,
+        "clarity_organization": 6.0,
+        "practical_relevance": 5.0,
+        "completeness": 5.0,
+        "engagement_potential": 4.0,
+        "technical_quality": 6.0,
+        "innovation": 4.0
+      },
+      "inner_overall": 5.1,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture contains some inaccuracies, such as incorrectly stating that 5NF is also known as BCNF.",
+        "pedagogical_effectiveness": "The lecture provides basic definitions but lacks detailed examples and scaffolding to aid understanding.",
+        "clarity_organization": "The structure is mostly logical, but some definitions are repetitive and could be more concise.",
+        "practical_relevance": "The lecture mentions prerequisites and key concepts but lacks real-world examples of normalization.",
+        "completeness": "While it covers the normal forms, it omits detailed explanations of 4NF and 5NF and their practical implications.",
+        "engagement_potential": "The lecture is dry and lacks engaging elements such as analogies or real-world scenarios.",
+        "technical_quality": "The formatting is generally consistent, but there are some inconsistencies in the explanation of normal forms.",
+        "innovation": "The lecture follows a standard approach without introducing new perspectives or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Correct the definition of BCNF and clarify the distinction between 5NF and BCNF.",
+        "pedagogical_effectiveness": "Include examples and step-by-step walkthroughs of normalization processes.",
+        "clarity_organization": "Streamline definitions to avoid redundancy and improve flow.",
+        "practical_relevance": "Incorporate case studies or examples of normalization in real-world database design.",
+        "completeness": "Expand on 4NF and 5NF with examples and discuss their practical applications.",
+        "engagement_potential": "Use analogies or case studies to make the content more relatable and engaging.",
+        "technical_quality": "Ensure consistent use of terminology and notation throughout the lecture.",
+        "innovation": "Introduce cross-domain examples or novel applications of normalization."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 411.6386091709137
+    },
+    {
+      "iteration": 1,
+      "lecture": "# Normalization Forms and Database Schema Design (1NF-BCNF)\n\n## Academic Accuracy\n\n### Definition of Normalization Forms\nNormalization is a process of organizing a database schema to minimize data redundancy and dependency. It is typically performed in five distinct normal forms: 1st normal form (1NF), 2nd normal form (2NF), 3rd normal form (3NF), 4th normal form (4NF), and 5th normal form (5NF), culminating in the 5th normal form (5NF), also known as the BCNF (Boyce-Codd Normal Form).\n\n### 1st Normal Form (1NF)\n1NF is achieved when each attribute in a relation is atomic, meaning it cannot be divided into smaller parts without losing meaning. An attribute is atomic if it is a single value that cannot be broken down into smaller values without losing essential information.\n\n### 2nd Normal Form (2NF)\n2NF is achieved when a relation is in 1NF and each non-key attribute is completely dependent on the primary key. This means that the non-key attributes must be fully functionally dependent on the primary key.\n\n### 3rd Normal Form (3NF)\n3NF is achieved when a relation is in 2NF and the non-key attributes do not depend on each other. In other words, the non-key attributes must be independent of one another and not form their own natural keys.\n\n### 4th Normal Form (4NF)\n4NF is achieved when a relation is in 3NF and there is no transitive dependency between the non-key attributes. Transitive dependency occurs when the value of one non-key attribute depends on the value of another non-key attribute, which in turn depends on the primary key.\n\n### 5th Normal Form (5NF)\n5NF, also known as BCNF (Boyce-Codd Normal Form), is achieved when a relation is in 4NF and each non-key attribute has a dependency on the primary key only. This means that the non-key attributes must be fully functionally dependent on the primary key, but not on each other.\n\n### Denormalization\nDenormalization is the process of storing the join of higher normal form relations as a base relation, which is in a lower normal form. This involves duplicating data from higher normal form relations to achieve performance gains, but it comes with the risk of encountering data anomalies.\n\n### Real-World Scenario\nImagine you are designing a database for an online shopping website. In this scenario, you have to deal with multiple customers who can purchase multiple products. To ensure data integrity, you would need to normalize the database.\n\n### Example\nConsider a table for orders. In 1NF, each order must have a unique identifier. In 2NF, the order table should have a primary key and each order must be fully dependent on the primary key. In 3NF, the order table should not have any dependencies between non-key attributes. In 4NF, the order table should not have any transitive dependencies. Finally, in 5NF, each non-key attribute should be fully dependent on the primary key only.\n\n### Prerequisites\nTo understand normalization, it is crucial to have a solid grasp of relational algebra, set theory, and SQL. Familiarity with database design and schema design is also essential.\n\n### Key\n[...truncated...]",
+      "inner_scores": {
+        "academic_accuracy": 6.0,
+        "pedagogical_effectiveness": 5.0,
+        "clarity_organization": 6.0,
+        "practical_relevance": 5.0,
+        "completeness": 5.0,
+        "engagement_potential": 4.0,
+        "technical_quality": 6.0,
+        "innovation": 3.0
+      },
+      "inner_overall": 5.0,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture contains some inaccuracies, such as confusing BCNF with 5NF, which are distinct normal forms.",
+        "pedagogical_effectiveness": "The lecture lacks sufficient examples and scaffolding to effectively teach the concepts of normalization.",
+        "clarity_organization": "The structure is logical but lacks clarity in distinguishing between BCNF and 5NF.",
+        "practical_relevance": "The lecture mentions a real-world scenario but does not deeply connect the theory to practical applications.",
+        "completeness": "Important sub-topics such as the distinction between BCNF and 5NF and examples of denormalization are not covered.",
+        "engagement_potential": "The lecture is dry and lacks engaging elements such as analogies or hooks.",
+        "technical_quality": "The formatting is generally consistent, but there are some issues with notation and terminology.",
+        "innovation": "The lecture does not present any fresh angles or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Correct the explanation of BCNF and 5NF, ensuring they are accurately defined and distinguished.",
+        "pedagogical_effectiveness": "Include more detailed examples and step-by-step explanations to enhance understanding.",
+        "clarity_organization": "Clarify the differences between BCNF and 5NF and ensure consistent terminology.",
+        "practical_relevance": "Provide more detailed examples of how normalization impacts real-world database design.",
+        "completeness": "Include discussions on BCNF, 5NF, and more examples of denormalization.",
+        "engagement_potential": "Incorporate analogies or real-world stories to make the content more engaging.",
+        "technical_quality": "Ensure consistent use of terms and correct any formatting errors.",
+        "innovation": "Explore connections to other fields or present novel applications of normalization."
+      },
+      "target_dimensions": [
+        "engagement_potential",
+        "innovation"
+      ],
+      "agents_called": [
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 56.20987415313721
+    },
+    {
+      "iteration": 2,
+      "lecture": "# Normalization Forms and Database Schema Design (1NF-BCNF)\n\n## Academic Accuracy\n\n### Definition of Normalization Forms\nNormalization is a process of organizing a database schema to minimize data redundancy and dependency. It is typically performed in five distinct normal forms: 1st normal form (1NF), 2nd normal form (2NF), 3rd normal form (3NF), 4th normal form (4NF), and 5th normal form (5NF), culminating in the 5th normal form (5NF), also known as the BCNF (Boyce-Codd Normal Form).\n\n### 1st Normal Form (1NF)\n1NF is achieved when each attribute in a relation is atomic, meaning it cannot be divided into smaller parts without losing meaning. An attribute is atomic if it is a single value that cannot be broken down into smaller values without losing essential information.\n\n### 2nd Normal Form (2NF)\n2NF is achieved when a relation is in 1NF and each non-key attribute is completely dependent on the primary key. This means that the non-key attributes must be fully functionally dependent on the primary key.\n\n### 3rd Normal Form (3NF)\n3NF is achieved when a relation is in 2NF and the non-key attributes do not depend on each other. In other words, the non-key attributes must be independent of one another and not form their own natural keys.\n\n### 4th Normal Form (4NF)\n4NF is achieved when a relation is in 3NF and there is no transitive dependency between the non-key attributes. Transitive dependency occurs when the value of one non-key attribute depends on the value of another non-key attribute, which in turn depends on the primary key.\n\n### 5th Normal Form (5NF)\n5NF, also known as BCNF (Boyce-Codd Normal Form), is achieved when a relation is in 4NF and each non-key attribute has a dependency on the primary key only. This means that the non-key attributes must be fully functionally dependent on the primary key, but not on each other.\n\n### Real-World Scenario\nImagine you are designing a database for an online shopping website. In this scenario, you have to deal with multiple customers who can purchase multiple products. To ensure data integrity, you would need a relationship between customers and products. The customer's order table would be in 1NF, while the order items table would be in 2NF. By ensuring that the order items table is in 3NF, the table will not have any transitive dependencies between the non-key attributes. Finally, by ensuring that the order items table is in 4NF, you can achieve 5NF, which is essential to maintain data integrity in the presence of changes in the database.",
+      "inner_scores": {
+        "academic_accuracy": 6.0,
+        "pedagogical_effectiveness": 5.0,
+        "clarity_organization": 6.0,
+        "practical_relevance": 5.0,
+        "completeness": 5.0,
+        "engagement_potential": 4.0,
+        "technical_quality": 6.0,
+        "innovation": 3.0
+      },
+      "inner_overall": 5.0,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture contains inaccuracies, such as conflating 5NF with BCNF, which are distinct forms.",
+        "pedagogical_effectiveness": "The lecture lacks scaffolding and examples for each normal form, making it difficult for learners to grasp the concepts fully.",
+        "clarity_organization": "The structure is mostly logical, but some definitions are unclear and repetitive.",
+        "practical_relevance": "The real-world scenario is too simplistic and does not adequately illustrate the complexities of normalization.",
+        "completeness": "The lecture does not cover all important sub-topics, such as the differences between BCNF and 5NF.",
+        "engagement_potential": "The lecture is dry and lacks engaging elements like analogies or hooks.",
+        "technical_quality": "The formatting is generally consistent, but there are minor issues with notation and terminology.",
+        "innovation": "The lecture does not offer fresh perspectives or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Correct the definition of BCNF and 5NF, ensuring they are accurately distinguished.",
+        "pedagogical_effectiveness": "Include more examples and step-by-step explanations for each normal form.",
+        "clarity_organization": "Clarify definitions and avoid repetition to improve readability.",
+        "practical_relevance": "Provide a more complex real-world example that better illustrates the application of normalization.",
+        "completeness": "Expand on the differences between BCNF and 5NF and discuss limitations of normalization.",
+        "engagement_potential": "Incorporate engaging elements such as analogies or real-world stories.",
+        "technical_quality": "Ensure consistent use of terminology and correct any minor formatting issues.",
+        "innovation": "Introduce novel insights or connections to other fields to enhance the lecture's depth."
+      },
+      "target_dimensions": [
+        "innovation",
+        "engagement_potential"
+      ],
+      "agents_called": [
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 46.08051919937134
+    },
+    {
+      "iteration": 3,
+      "lecture": "# Normalization Forms and Database Schema Design (1NF-BCNF)\n\n## Academic Accuracy\n\n### Definition of Normalization Forms\nNormalization is a process of organizing a database schema to minimize data redundancy and dependency. It is typically performed in five distinct normal forms: 1st normal form (1NF), 2nd normal form (2NF), 3rd normal form (3NF), 4th normal form (4NF), and 5th normal form (5NF), culminating in the 5th normal form (5NF), also known as the BCNF (Boyce-Codd Normal Form).\n\n### 1st Normal Form (1NF)\n1NF is achieved when each attribute in a relation is atomic, meaning it cannot be divided into smaller parts without losing meaning. An attribute is atomic if it is a single value that cannot be broken down into smaller values without losing essential information.\n\n### 2nd Normal Form (2NF)\n2NF is achieved when a relation is in 1NF and each non-key attribute is completely dependent on the primary key. This means that the non-key attributes must be fully functionally dependent on the primary key.\n\n### 3rd Normal Form (3NF)\n3NF is achieved when a relation is in 2NF and the non-key attributes do not depend on each other. In other words, the non-key attributes must be independent of one another and not form their own natural keys.\n\n### 4th Normal Form (4NF)\n4NF is achieved when a relation is in 3NF and there is no transitive dependency between the non-key attributes. Transitive dependency occurs when the value of one non-key attribute depends on the value of another non-key attribute, which in turn depends on the primary key.\n\n### 5th Normal Form (5NF)\n5NF, also known as BCNF (Boyce-Codd Normal Form), is achieved when a relation is in 4NF and each non-key attribute has a dependency on the primary key only. This means that the non-key attributes must be fully functionally dependent on the primary key, but not on each other.\n\n### Real-World Scenario\nImagine you are designing a database for an online shopping website. In this scenario, you have to deal with multiple customers who can purchase multiple products. To ensure data integrity, you would need a relationship between customers and products. The customer's order table would be in 1NF, while the order items table would be in 2NF. By ensuring that the order items table is in 3NF, the table will not have any transitive dependencies between the non-key attributes. Finally, by ensuring that the order items table is in 4NF, the table will not have any transitive dependencies between the non-key attributes and the primary key. This ensures that the data in the database is not redundant and is easily accessible.\n\n### Innovation\nBy understanding the importance of normal forms, you can create a database schema that is efficient and easy to use. Normalization ensures that data is stored in a way that is easy to access and maintain, which is crucial for any organization that relies on data for decision-making. Furthermore, understanding normal forms allows you to create a database schema that can be easily scaled, as you can add new tables and attributes without having to worry about data redundancy.\n\nMoreover, the Boyce-Codd Normal Form (BCNF) is particularly useful in scenarios where foreign keys are not present or are not directly referencing the primary key. For instance, consider a scenario where a \"Department\" table is linked to a \"Teacher\" table through a \"Department\" table. In this case, the Department table acts as a bridge, and the Teacher table has a foreign key that references the Department table. Here, the Department table is in 4NF, and the Teacher table is in 3NF. This ensures that the data is not only efficient but also accurate, as it adheres to the BCNF, making it easier to maintain and scale.\n\nBy applying BCNF, you can ensure that changes to the structure of the database can be made without causing errors or data inconsistencies. This is particularly important in environments where data integrity is critical, such as in financial institutions or healthcare organizations.\n\nIn conclusion, understanding normalization forms, including 1NF, 2NF, 3NF, 4NF, and 5NF, and BCNF, is essential for designing effective and scalable database schemas. By adhering to these forms, you can ensure that your database is efficient, accurate, and easy to maintain, which can ultimately lead to better decision-making and improved performance for your organization.",
+      "inner_scores": {
+        "academic_accuracy": 6.0,
+        "pedagogical_effectiveness": 5.0,
+        "clarity_organization": 6.0,
+        "practical_relevance": 5.0,
+        "completeness": 5.0,
+        "engagement_potential": 4.0,
+        "technical_quality": 6.0,
+        "innovation": 4.0
+      },
+      "inner_overall": 5.1,
+      "inner_justifications": {
+        "academic_accuracy": "The definitions of normal forms are mostly accurate but contain some inaccuracies, such as the incorrect description of BCNF as 5NF.",
+        "pedagogical_effectiveness": "The lecture provides basic definitions but lacks detailed examples and fails to build on prior knowledge effectively.",
+        "clarity_organization": "The structure is logical, but the explanations are sometimes repetitive and not always clear.",
+        "practical_relevance": "The lecture mentions real-world scenarios but does not deeply connect them to practical database design challenges.",
+        "completeness": "Important aspects like limitations and variants of normal forms are not covered.",
+        "engagement_potential": "The lecture lacks engaging elements such as analogies or hooks to capture the reader's interest.",
+        "technical_quality": "The formatting is generally consistent, but there are minor issues with notation and terminology.",
+        "innovation": "The lecture does not offer new insights or connections beyond standard textbook explanations."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Correct the description of BCNF and clarify the distinction between BCNF and 5NF.",
+        "pedagogical_effectiveness": "Include more detailed examples and build on foundational concepts to enhance understanding.",
+        "clarity_organization": "Streamline explanations to avoid repetition and improve clarity.",
+        "practical_relevance": "Provide more detailed case studies or examples that illustrate the application of normal forms in real-world scenarios.",
+        "completeness": "Discuss the limitations and potential drawbacks of each normal form.",
+        "engagement_potential": "Incorporate analogies or real-world hooks to make the content more engaging.",
+        "technical_quality": "Ensure consistent use of terminology and correct any minor formatting issues.",
+        "innovation": "Explore cross-domain applications or novel perspectives on database normalization."
+      },
+      "target_dimensions": [
+        "innovation",
+        "engagement_potential"
+      ],
+      "agents_called": [
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 71.88742923736572
+    }
+  ],
+  "final_lecture": "# Normalization Forms and Database Schema Design (1NF-BCNF)\n\n## Academic Accuracy\n\n### Definition of Normalization Forms\nNormalization is a process of organizing a database schema to minimize data redundancy and dependency. It is typically performed in five distinct normal forms: 1st normal form (1NF), 2nd normal form (2NF), 3rd normal form (3NF), 4th normal form (4NF), and 5th normal form (5NF), culminating in the 5th normal form (5NF), also known as the BCNF (Boyce-Codd Normal Form).\n\n### 1st Normal Form (1NF)\n1NF is achieved when each attribute in a relation is atomic, meaning it cannot be divided into smaller parts without losing meaning. An attribute is atomic if it is a single value that cannot be broken down into smaller values without losing essential information.\n\n### 2nd Normal Form (2NF)\n2NF is achieved when a relation is in 1NF and each non-key attribute is completely dependent on the primary key. This means that the non-key attributes must be fully functionally dependent on the primary key.\n\n### 3rd Normal Form (3NF)\n3NF is achieved when a relation is in 2NF and the non-key attributes do not depend on each other. In other words, the non-key attributes must be independent of one another and not form their own natural keys.\n\n### 4th Normal Form (4NF)\n4NF is achieved when a relation is in 3NF and there is no transitive dependency between the non-key attributes. Transitive dependency occurs when the value of one non-key attribute depends on the value of another non-key attribute, which in turn depends on the primary key.\n\n### 5th Normal Form (5NF)\n5NF, also known as BCNF (Boyce-Codd Normal Form), is achieved when a relation is in 4NF and each non-key attribute has a dependency on the primary key only. This means that the non-key attributes must be fully functionally dependent on the primary key, but not on each other.\n\n### Real-World Scenario\nImagine you are designing a database for an online shopping website. In this scenario, you have to deal with multiple customers who can purchase multiple products. To ensure data integrity, you would need a relationship between customers and products. The customer's order table would be in 1NF, while the order items table would be in 2NF. By ensuring that the order items table is in 3NF, the table will not have any transitive dependencies between the non-key attributes. Finally, by ensuring that the order items table is in 4NF, the table will not have any transitive dependencies between the non-key attributes and the primary key. This ensures that the data in the database is not redundant and is easily accessible.\n\n### Innovation\nBy understanding the importance of normal forms, you can create a database schema that is efficient and easy to use. Normalization ensures that data is stored in a way that is easy to access and maintain, which is crucial for any organization that relies on data for decision-making. Furthermore, understanding normal forms allows you to create a database schema that can be easily scaled, as you can add new tables and attributes without having to worry about data redundancy.\n\nMoreover, the Boyce-Codd Normal Form (BCNF) is particularly useful in scenarios where foreign keys are not present or are not directly referencing the primary key. For instance, consider a scenario where a \"Department\" table is linked to a \"Teacher\" table through a \"Department\" table. In this case, the Department table acts as a bridge, and the Teacher table has a foreign key that references the Department table. Here, the Department table is in 4NF, and the Teacher table is in 3NF. This ensures that the data is not only efficient but also accurate, as it adheres to the BCNF, making it easier to maintain and scale.\n\nBy applying BCNF, you can ensure that changes to the structure of the database can be made without causing errors or data inconsistencies. This is particularly important in environments where data integrity is critical, such as in financial institutions or healthcare organizations.\n\nIn conclusion, understanding normalization forms, including 1NF, 2NF, 3NF, 4NF, and 5NF, and BCNF, is essential for designing effective and scalable database schemas. By adhering to these forms, you can ensure that your database is efficient, accurate, and easy to maintain, which can ultimately lead to better decision-making and improved performance for your organization.",
+  "final_inner_scores": {
+    "academic_accuracy": 6.0,
+    "pedagogical_effectiveness": 5.0,
+    "clarity_organization": 6.0,
+    "practical_relevance": 5.0,
+    "completeness": 5.0,
+    "engagement_potential": 4.0,
+    "technical_quality": 6.0,
+    "innovation": 4.0
+  },
+  "final_inner_overall": 5.1,
+  "external_scores": {
+    "academic_accuracy": 2.0,
+    "pedagogical_effectiveness": 2.5,
+    "clarity_organization": 3.5,
+    "practical_relevance": 3.0,
+    "completeness": 2.0,
+    "engagement_potential": 2.5,
+    "technical_quality": 3.0,
+    "innovation": 1.5
+  },
+  "external_overall": 2.0,
+  "external_justifications": {},
+  "panel_per_judge": {
+    "judge_claude": {
+      "scores": {
+        "academic_accuracy": 1.5,
+        "pedagogical_effectiveness": 2.5,
+        "clarity_organization": 3.0,
+        "practical_relevance": 3.0,
+        "completeness": 2.0,
+        "engagement_potential": 3.0,
+        "technical_quality": 2.0,
+        "innovation": 1.5
+      },
+      "justifications": {
+        "academic_accuracy": "The lecture contains multiple serious errors: BCNF is conflated with 5NF (they are entirely different normal forms), the definition of 3NF is wrong (it describes independence of non-key attributes rather than the correct transitive dependency rule), and 4NF's definition is given as transitive dependency which actually belongs to 3NF — 4NF actually concerns multi-valued dependencies, which are never mentioned.",
+        "pedagogical_effectiveness": "There is no scaffolding through worked examples, no functional dependency notation, no before/after table transformations, and no formal prerequisites established; the real-world scenario is vague and does not actually demonstrate how to apply any normal form step by step.",
+        "clarity_organization": "The section headers suggest structure, but the content is internally contradictory and repetitive (e.g., 4NF and 5NF descriptions are nearly identical), and the 'Innovation' section is misused as a conclusion rather than a distinct analytical contribution.",
+        "practical_relevance": "The e-commerce scenario is a reasonable choice of context, but it is never developed concretely — no actual table schemas, sample data, or decomposition steps are shown, making the practical connection superficial.",
+        "completeness": "BCNF is incorrectly labeled as 5NF and never properly defined; multi-valued dependencies (4NF), join dependencies (5NF), and partial dependencies (2NF with composite keys) are either absent or misdefined; limitations and trade-offs of normalization (e.g., performance, denormalization) are not discussed.",
+        "engagement_potential": "The writing is flat and repetitive with no motivating questions, no surprising facts, no analogies, and no tension between competing design choices; the 'Innovation' label is applied to generic statements rather than genuinely novel insights.",
+        "technical_quality": "No formal notation (e.g., functional dependency arrows, relational schemas, or table diagrams) is used anywhere; terminology is inconsistent and incorrect throughout, and there are no code blocks, tables, or illustrative figures.",
+        "innovation": "The lecture presents no non-trivial connections or fresh perspectives; the claim that BCNF is 5NF and the confused description of the Department-Teacher example demonstrate a fundamental misunderstanding rather than any innovative framing."
+      },
+      "overall": 2.0,
+      "error": null,
+      "raw": "{\n  \"scores\": {\n    \"academic_accuracy\": \"1.5\",\n    \"pedagogical_effectiveness\": \"2.5\",\n    \"clarity_organization\": \"3.0\",\n    \"practical_relevance\": \"3.0\",\n    \"completeness\": \"2.0\",\n    \"engagement_potential\": \"3.0\",\n    \"technical_quality\": \"2.0\",\n    \"innovation\": \"1.5\"\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"The lecture contains multiple serious errors: BCNF is conflated with 5NF (they are entirely different normal forms), the definition of 3NF is wrong (it describes independence of non-key attributes rather than the correct transitive dependency rule), and 4NF's definition is given as transitive dependency which actually belongs to 3NF — 4NF actually concerns multi-valued dependencies, which are never mentioned.\",\n    \"pedagogical_effectiveness\": \"There is no scaffolding through worked examples, no functional dependency notation, no before/after table transformations, and no formal prerequisites established; the real-world scenario is vague and does not actually demonstrate how to apply any normal form step by step.\",\n    \"clarity_organization\": \"The section headers suggest structure, but the content is internally contradictory and repetitive (e.g., 4NF and 5NF descriptions are nearly identical), and the 'Innovation' section is misused as a conclusion rather than a distinct analytical contribution.\",\n    \"practical_relevance\": \"The e-commerce scenario is a reasonable choice of context, but it is never developed concretely — no actual table schemas, sample data, or decomposition steps are shown, making the practical connection superficial.\",\n    \"completeness\": \"BCNF is incorrectly labeled as 5NF and never properly defined; multi-valued dependencies (4NF), join dependencies (5NF), and partial dependencies (2NF with composite keys) are either absent or misdefined; limitations and trade-offs of normalization (e.g., performance, denormalization) are not discussed.\",\n    \"engagement_potential\": \"The writing is flat and repetitive with no motivating questions, no surprising facts, no analogies, and no tension between competing design choices; the 'Innovation' label is applied to generic statements rather than genuinely novel insights.\",\n    \"technical_quality\": \"No formal notation (e.g., functional dependency arrows, relational schemas, or table diagrams) is used anywhere; terminology is inconsistent and incorrect throughout, and there are no code blocks, tables, or illustrative figures.\",\n    \"innovation\": \"The lecture presents no non-trivial connections or fresh perspectives; the claim that BCNF is 5NF and the confused description of the Department-Teacher example demonstrate a fundamental misunderstanding rather than any innovative framing.\"\n  },\n  \"overall\": \"2.0\"\n}"
+    },
+    "judge_kimi": {
+      "scores": {
+        "academic_accuracy": 2.5,
+        "pedagogical_effectiveness": 3.0,
+        "clarity_organization": 3.5,
+        "practical_relevance": 3.0,
+        "completeness": 2.0,
+        "engagement_potential": 2.5,
+        "technical_quality": 3.0,
+        "innovation": 1.5
+      },
+      "justifications": {
+        "academic_accuracy": "Contains multiple serious errors: 5NF is incorrectly equated with BCNF (they are distinct forms); BCNF is not the 5th normal form but a stricter variant of 3NF; 4NF is misdefined as eliminating transitive dependencies (that's 3NF); 5NF is misdescribed; the hierarchy is garbled.",
+        "pedagogical_effectiveness": "Lacks scaffolding progression, has no concrete worked examples with actual data tables, and the 'Real-World Scenario' is vague hand-waving without showing before/after normalization states.",
+        "clarity_organization": "Structure has headings but logical flow is compromised by repeated and contradictory definitions; the 'Innovation' section is misplaced and reads as generic conclusion material.",
+        "practical_relevance": "The shopping example is underdeveloped and doesn't demonstrate actual schema design decisions; BCNF application description is nonsensical (circular 'Department' table reference).",
+        "completeness": "Missing proper 3NF definition (transitive dependency), no mention of functional dependencies or keys as foundations, no discussion of denormalization trade-offs, and 4NF/5NF/BCNF relationships are fundamentally misrepresented.",
+        "engagement_potential": "No intellectual hooks, no analogies, no tension between normalization and performance; generic claims about 'efficiency' and 'scalability' without substantiation.",
+        "technical_quality": "Inconsistent notation (no formal relation schemas), no code blocks or tables, repeated phrases ('transitive dependencies' used twice for different forms), and circular references in examples.",
+        "innovation": "No fresh angles or cross-domain connections; claims 'innovation' in a section header but delivers only standard boilerplate about normalization benefits without novel insight."
+      },
+      "overall": 2.5,
+      "error": null,
+      "raw": "{\"scores\":{\"academic_accuracy\":2.5,\"pedagogical_effectiveness\":3.0,\"clarity_organization\":3.5,\"practical_relevance\":3.0,\"completeness\":2.0,\"engagement_potential\":2.5,\"technical_quality\":3.0,\"innovation\":1.5},\"justifications\":{\"academic_accuracy\":\"Contains multiple serious errors: 5NF is incorrectly equated with BCNF (they are distinct forms); BCNF is not the 5th normal form but a stricter variant of 3NF; 4NF is misdefined as eliminating transitive dependencies (that's 3NF); 5NF is misdescribed; the hierarchy is garbled.\",\"pedagogical_effectiveness\":\"Lacks scaffolding progression, has no concrete worked examples with actual data tables, and the 'Real-World Scenario' is vague hand-waving without showing before/after normalization states.\",\"clarity_organization\":\"Structure has headings but logical flow is compromised by repeated and contradictory definitions; the 'Innovation' section is misplaced and reads as generic conclusion material.\",\"practical_relevance\":\"The shopping example is underdeveloped and doesn't demonstrate actual schema design decisions; BCNF application description is nonsensical (circular 'Department' table reference).\",\"completeness\":\"Missing proper 3NF definition (transitive dependency), no mention of functional dependencies or keys as foundations, no discussion of denormalization trade-offs, and 4NF/5NF/BCNF relationships are fundamentally misrepresented.\",\"engagement_potential\":\"No intellectual hooks, no analogies, no tension between normalization and performance; generic claims about 'efficiency' and 'scalability' without substantiation.\",\"technical_quality\":\"Inconsistent notation (no formal relation schemas), no code blocks or tables, repeated phrases ('transitive dependencies' used twice for different forms), and circular references in examples.\",\"innovation\":\"No fresh angles or cross-domain connections; claims 'innovation' in a section header but delivers only standard boilerplate about normalization benefits without novel insight.\"},\"overall\":2.5}"
+    },
+    "judge_glm": {
+      "scores": {
+        "academic_accuracy": 2.0,
+        "pedagogical_effectiveness": 2.0,
+        "clarity_organization": 4.0,
+        "practical_relevance": 2.0,
+        "completeness": 2.0,
+        "engagement_potential": 2.0,
+        "technical_quality": 3.0,
+        "innovation": 1.0
+      },
+      "justifications": {
+        "academic_accuracy": "The lecture contains severe factual errors: it incorrectly equates 5NF with BCNF, misdefines 3NF as non-key attributes not depending on each other, and bizarrely redefines 4NF as eliminating transitive dependencies (which is actually 3NF).",
+        "pedagogical_effectiveness": "The lecture fails to teach effectively because the definitions are fundamentally flawed, there are no concrete examples or schema diagrams to illustrate the concepts, and the real-world scenario is confusing and incorrectly applies the normal forms.",
+        "clarity_organization": "While the text uses a seemingly logical heading structure, the content within those sections is contradictory and confusing, making the overall flow incoherent and misleading for a learner.",
+        "practical_relevance": "The real-world e-commerce scenario is superficial, incorrectly asserts that specific tables are in specific normal forms without justification, and repeats the exact same phrase for 3NF and 4NF, providing no actionable practical insight.",
+        "completeness": "The lecture completely misses actual functional dependency theory, candidate keys, and the real definition of BCNF, while presenting fabricated definitions for 4NF and 5NF; it also skips multi-valued dependencies entirely.",
+        "engagement_potential": "The text is dry, reads like a poorly generated glossary, lacks interactive or thought-provoking elements, and relies on repetitive and confusing statements rather than genuine motivating hooks or analogies.",
+        "technical_quality": "Formatting is basic and lacks necessary pedagogical visuals like ER diagrams or tables; the text also awkwardly embeds headings like 'Academic Accuracy' and 'Innovation' directly into the lecture body as if they were content sections.",
+        "innovation": "There are no fresh angles or non-trivial cross-domain connections; the 'innovation' section merely restates basic benefits of normalization and includes a nonsensical, circular example about Department and Teacher tables."
+      },
+      "overall": 2.0,
+      "error": null,
+      "raw": "```json\n{\n  \"scores\": {\n    \"academic_accuracy\": 2.0,\n    \"pedagogical_effectiveness\": 2.0,\n    \"clarity_organization\": 4.0,\n    \"practical_relevance\": 2.0,\n    \"completeness\": 2.0,\n    \"engagement_potential\": 2.0,\n    \"technical_quality\": 3.0,\n    \"innovation\": 1.0\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"The lecture contains severe factual errors: it incorrectly equates 5NF with BCNF, misdefines 3NF as non-key attributes not depending on each other, and bizarrely redefines 4NF as eliminating transitive dependencies (which is actually 3NF).\",\n    \"pedagogical_effectiveness\": \"The lecture fails to teach effectively because the definitions are fundamentally flawed, there are no concrete examples or schema diagrams to illustrate the concepts, and the real-world scenario is confusing and incorrectly applies the normal forms.\",\n    \"clarity_organization\": \"While the text uses a seemingly logical heading structure, the content within those sections is contradictory and confusing, making the overall flow incoherent and misleading for a learner.\",\n    \"practical_relevance\": \"The real-world e-commerce scenario is superficial, incorrectly asserts that specific tables are in specific normal forms without justification, and repeats the exact same phrase for 3NF and 4NF, providing no actionable practical insight.\",\n    \"completeness\": \"The lecture completely misses actual functional dependency theory, candidate keys, and the real definition of BCNF, while presenting fabricated definitions for 4NF and 5NF; it also skips multi-valued dependencies entirely.\",\n    \"engagement_potential\": \"The text is dry, reads like a poorly generated glossary, lacks interactive or thought-provoking elements, and relies on repetitive and confusing statements rather than genuine motivating hooks or analogies.\",\n    \"technical_quality\": \"Formatting is basic and lacks necessary pedagogical visuals like ER diagrams or tables; the text also awkwardly embeds headings like 'Academic Accuracy' and 'Innovation' directly into the lecture body as if they were content sections.\",\n    \"innovation\": \"There are no fresh angles or non-trivial cross-domain connections; the 'innovation' section merely restates basic benefits of normalization and includes a nonsensical, circular example about Department and Teacher tables.\"\n  },\n  \"overall\": 2.0\n}\n```"
+    }
+  },
+  "panel_n_ok": 3,
+  "final_slides_json": {
+    "error": "skipped: model context too small for Presenter (slides optional)"
+  },
+  "slides_validation_warnings": [
+    "Slides JSON contains error: skipped: model context too small for Presenter (slides optional)"
+  ],
+  "total_elapsed_sec": 613.0706350803375,
+  "error": null
+}

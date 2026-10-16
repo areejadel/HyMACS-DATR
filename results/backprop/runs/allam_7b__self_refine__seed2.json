@@ -1,0 +1,295 @@
+{
+  "run_id": "allam_7b__self_refine__seed2__1781662778",
+  "model_key": "allam_7b",
+  "condition": "self_refine",
+  "seed": 2,
+  "timestamp": "2026-06-17T02:19:38.084768",
+  "iterations": [
+    {
+      "iteration": 0,
+      "lecture": "# Lecture: Backpropagation in Neural Networks\n\n## Learning Objectives\n1. Understand the definition of backpropagation in neural networks.\n2. Apply backpropagation to compute gradients of the cost function with respect to the network's parameters.\n3. Apply backpropagation to update the weights and biases in the forward pass.\n\n## Introduction\nBackpropagation is an essential technique for training feedforward neural networks, as it allows for the computation of gradients of the loss function with respect to the network's parameters. The process of backpropagation involves propagating the error from the output layer to the input layer, and then computing the gradients of the cost function with respect to the network's parameters.\n\n### Intuition\nBackpropagation is the process of propagating the error from the output layer to the input layer and computing the gradients of the cost function with respect to the network's parameters. This is done by computing the gradient of the cost function with respect to the output weights and biases, and then propagating this gradient back through the network to update the weights and biases in the forward pass.\n\n### Example\nConsider a feedforward neural network with one input layer, one hidden layer, and one output layer. The output of the network is given by:\n\n$$ \\hat{y} = f(\\sum_{i=1}^{n} w_i \\cdot x_i) $$\n\nwhere $ \\hat{y} $ is the predicted output, $ n $ is the number of hidden units, $ w_i $ is the weight connecting the input $ x_i $ to the hidden unit $ i $, $ x_i $ is the input to the hidden unit $ i $, and $ f $ is the activation function.\n\nThe loss function is the mean squared error (MSE), which is given by:\n\n$$ J(w, b) = \\frac{1}{N} \\sum_{i=1}^{N} (y_i - \\hat{y_i})^2 $$\n\nwhere $ y_i $ is the true output of the i-th sample, $ \\hat{y_i} $ is the predicted output of the i-th sample, and $ N $ is the number of samples.\n\nTo train the network using backpropagation, we first perform a forward pass to compute the predicted output and the loss. We then perform a backward pass to compute the gradients of the loss function with respect to the network's parameters. The gradients are then used to update the weights and biases in the forward pass. This process is repeated until the network's performance converges.\n\n### Analysis\nBackpropagation is an efficient way to update the weights and biases in the forward pass because it allows us to compute the gradients of the cost function with respect to the network's parameters without the need for exhaustive manual calculations. This allows us to train neural networks in a more efficient and effective manner.\n\n### Conclusion\nBackpropagation is a fundamental technique for training feedforward neural networks, and it allows us to compute the gradients of the cost function with respect to the network's parameters. This process involves propagating the error from the output layer to the input layer and computing the gradients of the cost function with respect to the network's parameters. By doing so, we can update the weights and biases in the forward pass, which allows us to train neural networks in a more efficient and effective manner.",
+      "inner_scores": {
+        "academic_accuracy": 7.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 7.0,
+        "practical_relevance": 6.0,
+        "completeness": 5.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 6.0,
+        "innovation": 4.0
+      },
+      "inner_overall": 5.75,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture provides correct definitions and equations, but lacks detailed explanation of the backpropagation algorithm steps.",
+        "pedagogical_effectiveness": "The lecture introduces backpropagation with basic examples but lacks scaffolding for deeper understanding.",
+        "clarity_organization": "The structure is logical, but some sections are repetitive and could be more concise.",
+        "practical_relevance": "The lecture mentions practical applications but does not deeply connect theory to real-world ML practice.",
+        "completeness": "Important aspects like variants of backpropagation and limitations are not covered.",
+        "engagement_potential": "The lecture lacks engaging elements such as real-world analogies or interactive components.",
+        "technical_quality": "The formatting is generally consistent, but the notation in equations could be clearer.",
+        "innovation": "The lecture does not present new angles or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Include a step-by-step explanation of the backpropagation algorithm.",
+        "pedagogical_effectiveness": "Incorporate more detailed examples and visual aids to enhance understanding.",
+        "clarity_organization": "Remove repetitive sections and ensure each part adds new information.",
+        "practical_relevance": "Include case studies or examples of backpropagation in real-world applications.",
+        "completeness": "Discuss variants of backpropagation and its limitations in different scenarios.",
+        "engagement_potential": "Add interactive elements or real-world analogies to make the content more engaging.",
+        "technical_quality": "Ensure all equations are clearly presented with consistent notation.",
+        "innovation": "Explore connections to other domains or present novel insights into backpropagation."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 206.21468806266785
+    },
+    {
+      "iteration": 1,
+      "lecture": "# Lecture: Backpropagation in Neural Networks\n\n## Learning Objectives\n1. Apply backpropagation to compute gradients of the cost function with respect to the network's parameters.\n2. Apply backpropagation to update the weights and biases in the forward pass.\n3. Apply backpropagation to compute gradients of the cost function with respect to the output weights and biases.\n4. Apply backpropagation to update the weights and biases in the backward pass.\n\n## Introduction\nBackpropagation is an essential technique for training feedforward neural networks, as it allows for the computation of gradients of the loss function with respect to the network's parameters. The process of backpropagation involves propagating the error from the output layer to the input layer, and then computing the gradients of the cost function with respect to the network's parameters.\n\n### Intuition\nBackpropagation is the process of propagating the error from the output layer to the input layer and computing the gradients of the cost function with respect to the network's parameters. This is done by computing the gradient of the cost function with respect to the output weights and biases, and then propagating this gradient back through the network to update the weights and biases in the forward pass.\n\n### Definition\nBackpropagation is an algorithm used to train neural networks by computing the gradients of the cost function with respect to the network's parameters. The gradients are then used to update the weights and biases in the forward pass. The algorithm involves propagating the error from the output layer to the input layer, and computing the gradients of the cost function with respect to the output weights and biases.\n\n### Formula\nThe gradient of the cost function with respect to the output weights and biases is given by:\n\n$$ \\frac{\\partial J}{\\partial w} = \\frac{\\partial J}{\\partial \\hat{y}} \\cdot \\frac{\\partial \\hat{y}}{\\partial w} $$\n\nwhere $ \\frac{\\partial J}{\\partial \\hat{y}} $ is the gradient of the cost function with respect to the predicted output, and $ \\frac{\\partial \\hat{y}}{\\partial w} $ is the Jacobian matrix of the neural network, which contains the partial derivatives of the output with respect to each weight.\n\n### Example\nConsider a feedforward neural network with one input layer, one hidden layer, and one output layer. The output of the network is given by:\n\n$$ \\hat{y} = f(W_1 \\cdot x + b_1) + W_2 \\cdot f(W_1 \\cdot x + b_1) + b_2 $$\n\nwhere $ W_1 $ and $ W_2 $ are the output weights, $ x $ is the input, $ b_1 $ and $ b_2 $ are the biases, and $ f $ is an activation function.\n\nThe gradient of the cost function with respect to the output weights and biases is given by:\n\n$$ \\frac{\\partial J}{\\partial w} = \\frac{\\partial J}{\\partial \\hat{y}} \\cdot \\frac{\\partial \\hat{y}}{\\partial w} = \\frac{\\partial J}{\\partial \\hat{y}} \\cdot (W_2 \\cdot f'(W_1 \\cdot x + b_1) \\cdot x + W_1 \\cdot f'(W_1 \\cdot x + b_1) \\cdot b_1 + b_2) $$\n\nwhere $ f'(x) $ is the derivative of the activation function.\n\n### Example\nConsider a feedforward neural network with one input layer, one hidden layer, and one output layer. The output of the network is given by:\n\n$$ \\hat{y} = f(W_1 \\cdot x + b_1) + W_2 \\cdot f(W_1 \\cdot x + b_1) + b_2 $$\n\nwhere $ W_1 $ and $ W_2 $ are the output weights, $ x $ is the input, $ b_1 $ and $ b_2 $ are the biases, and $ f $ is an activation function.\n\nThe gradient of the cost function with respect to the output weights and biases is given by:\n\n$$ \\frac{\\partial J}{\\partial w} = \\frac{\\partial J}{\\partial \\hat{y}} \\cdot \\frac{\\partial \\hat{y}}{\\partial w} = \\frac{\\partial J}{\\partial \\hat{y}} \\cdot (W_2 \\cdot f'(W_1 \\cdot x + b_1) \\cdot x + W_1 \\cdot f'(W_1 \\cdot x + b_1) \\cdot b_1 + b_2) $$\n\nwhere $ f'(x) $ is the derivative of the activation function.",
+      "inner_scores": {
+        "academic_accuracy": 6.0,
+        "pedagogical_effectiveness": 5.0,
+        "clarity_organization": 5.0,
+        "practical_relevance": 4.0,
+        "completeness": 4.0,
+        "engagement_potential": 3.0,
+        "technical_quality": 4.0,
+        "innovation": 3.0
+      },
+      "inner_overall": 4.25,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture contains correct definitions and equations, but there are repeated sections and some inaccuracies in the explanation of the forward and backward pass.",
+        "pedagogical_effectiveness": "The lecture lacks scaffolding and clear examples that build on each other, making it difficult for learners to follow the progression of ideas.",
+        "clarity_organization": "The structure is repetitive and lacks a logical flow, with repeated examples and definitions that could confuse learners.",
+        "practical_relevance": "The lecture does not connect the theoretical concepts to practical applications or real-world scenarios in machine learning.",
+        "completeness": "Important sub-topics such as the chain rule, different activation functions, and limitations of backpropagation are not covered.",
+        "engagement_potential": "The lecture lacks engaging elements such as hooks or analogies that could capture the reader's interest.",
+        "technical_quality": "There are formatting issues with repeated sections and inconsistent notation, which detracts from the technical quality.",
+        "innovation": "The lecture does not present any fresh angles or cross-domain connections, sticking to basic explanations."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Clarify the distinction between forward and backward pass updates and ensure all equations are accurately presented.",
+        "pedagogical_effectiveness": "Introduce step-by-step examples and ensure each concept builds on the previous one for better understanding.",
+        "clarity_organization": "Reorganize the content to avoid repetition and ensure a logical progression of ideas.",
+        "practical_relevance": "Include examples of how backpropagation is used in real-world ML applications.",
+        "completeness": "Expand the lecture to include discussions on the chain rule, various activation functions, and limitations of backpropagation.",
+        "engagement_potential": "Incorporate analogies or real-world examples to make the content more relatable and engaging.",
+        "technical_quality": "Ensure consistent notation and remove repeated sections to improve clarity.",
+        "innovation": "Explore connections to other domains or introduce novel examples to provide a fresh perspective."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 242.18156123161316
+    },
+    {
+      "iteration": 2,
+      "lecture": "Backpropagation in Neural Networks\n\n## Learning Objectives\n1. Apply backpropagation to compute gradients of the cost function with respect to the network's parameters.\n2. Apply backpropagation to update the weights and biases in the forward pass.\n3. Apply backpropagation to compute gradients of the cost function with respect to the output weights and biases.\n4. Apply backpropagation to update the weights and biases in the backward pass.\n\n## Introduction\nBackpropagation is an essential technique for training feedforward neural networks, as it allows for the computation of gradients of the loss function with respect to the network's parameters. The process of backpropagation involves propagating the error from the output layer to the input layer, and then computing the gradients of the cost function with respect to the network's parameters.\n\n### Step 1: Prerequisites\nTo understand backpropagation, we need to understand the forward pass of a neural network. The forward pass is the process of computing the predicted output of a neural network given a set of inputs.\n\n### Step 2: Intuition\nBackpropagation is the process of propagating the error from the output layer to the input layer and computing the gradients of the cost function with respect to the network's parameters. This is done by computing the gradient of the cost function with respect to the output weights and biases, and then propagating this gradient back through the network to update the weights and biases in the forward pass. Imagine a housekeeper who checks each room's cleanliness and adjusts the cleaning schedule based on the results of the inspection. Backpropagation works in a similar way, but it's for neural networks.\n\n### Step 3: Definition\nBackpropagation is an algorithm used to train neural networks by computing the gradients of the cost function with respect to the network's parameters. The gradients are then used to update the weights and biases in the forward pass. The algorithm involves propagating the error from the output layer to the input layer, and computing the gradients of the cost function with respect to the output weights and biases.\n\n### Step 4: Formula\nThe gradient of the cost function with respect to the output weights and biases is given by:\n\n$$ \\frac{\\partial J}{\\partial w} = \\frac{\\partial J}{\\partial \\hat{y}} \\cdot \\frac{\\partial \\hat{y}}{\\partial w} $$\n\nwhere $ \\frac{\\partial J}{\\partial \\hat{y}} $ is the gradient of the cost function with respect to the predicted output, and $ \\frac{\\partial \\hat{y}}{\\partial w} $ is the Jacobian matrix of the neural network.",
+      "inner_scores": {
+        "academic_accuracy": 7.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 6.0,
+        "practical_relevance": 5.0,
+        "completeness": 5.0,
+        "engagement_potential": 5.0,
+        "technical_quality": 6.0,
+        "innovation": 4.0
+      },
+      "inner_overall": 5.5,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture provides correct definitions and equations, but lacks depth in explaining the full backpropagation algorithm.",
+        "pedagogical_effectiveness": "The lecture introduces concepts with some scaffolding but lacks detailed examples and step-by-step explanations.",
+        "clarity_organization": "The structure is logical, but the writing could be clearer, especially in differentiating between forward and backward passes.",
+        "practical_relevance": "The lecture mentions practical applications but does not connect deeply with real-world ML practices.",
+        "completeness": "Important sub-topics like chain rule application and limitations of backpropagation are not covered.",
+        "engagement_potential": "The analogy used is somewhat engaging, but the lecture lacks hooks or tension to maintain interest.",
+        "technical_quality": "The formatting is mostly consistent, but there are minor issues with notation and lack of code examples.",
+        "innovation": "The lecture does not present fresh angles or significant cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "Include a more detailed explanation of the backpropagation steps and the chain rule application.",
+        "pedagogical_effectiveness": "Provide more examples and a detailed walkthrough of the backpropagation process.",
+        "clarity_organization": "Clarify the distinction between forward and backward passes and improve the flow of information.",
+        "practical_relevance": "Include examples of how backpropagation is used in real-world neural network training scenarios.",
+        "completeness": "Discuss the limitations of backpropagation and cover more variants of the algorithm.",
+        "engagement_potential": "Incorporate more engaging analogies or real-world scenarios to capture interest.",
+        "technical_quality": "Ensure consistent notation and include code snippets to illustrate the concepts.",
+        "innovation": "Explore cross-domain applications or novel perspectives on backpropagation."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 187.59574508666992
+    },
+    {
+      "iteration": 3,
+      "lecture": "```\nBackpropagation in Neural Networks\n\n## Learning Objectives\n1. Apply backpropagation to compute gradients of the cost function with respect to the network's parameters.\n2. Apply backpropagation to update the weights and biases in the forward pass.\n3. Apply backpropagation to compute gradients of the cost function with respect to the output weights and biases.\n4. Apply backpropagation to update the weights and biases in the backward pass.\n\n## Introduction\nBackpropagation is an essential technique for training feedforward neural networks, as it allows for the computation of gradients of the loss function with respect to the network's parameters. The process of backpropagation involves propagating the error from the output layer to the input layer, and then computing the gradients of the cost function with respect to the network's parameters.\n\n### Step 1: Prerequisites\nTo understand backpropagation, we need to understand the forward pass of a neural network. The forward pass is the process of computing the predicted output of a neural network given a set of inputs.\n\n### Step 2: Intuition\nImagine a housekeeper who checks each room's cleanliness and adjusts the cleaning schedule based on the results of the inspection. Backpropagation works in a similar way, but it's for neural networks. The housekeeper checks the output of the neural network, and the backpropagation algorithm adjusts the weights and biases to improve the network's predictions.\n\n### Step 3: Definition\nBackpropagation is an algorithm used to train neural networks by computing the gradients of the cost function with respect to the network's parameters. The gradients are then used to update the weights and biases in the forward pass. The algorithm involves propagating the error from the output layer to the input layer, and computing the gradients of the cost function with respect to the output weights and biases.\n\n### Step 4: Formula\nThe gradient of the cost function with respect to the output weights and biases is given by:\n\n$$ \\frac{\\partial J}{\\partial w} = \\frac{\\partial J}{\\partial \\hat{y}} \\cdot \\frac{\\partial \\hat{y}}{\\partial w} $$\n\nwhere $ \\frac{\\partial J}{\\partial \\hat{y}} $ is the gradient of the cost function with respect to the predicted output, and $ \\frac{\\partial \\hat{y}}{\\partial w} $ is the derivative of the predicted output with respect to the weight.\n```",
+      "inner_scores": {
+        "academic_accuracy": 7.0,
+        "pedagogical_effectiveness": 6.0,
+        "clarity_organization": 6.0,
+        "practical_relevance": 5.0,
+        "completeness": 5.0,
+        "engagement_potential": 6.0,
+        "technical_quality": 5.0,
+        "innovation": 4.0
+      },
+      "inner_overall": 5.5,
+      "inner_justifications": {
+        "academic_accuracy": "The lecture accurately defines backpropagation and provides a correct formula for gradient computation.",
+        "pedagogical_effectiveness": "The lecture introduces backpropagation with an analogy, but lacks detailed examples and step-by-step explanations.",
+        "clarity_organization": "The structure is logical, but some sections are repetitive and could be more concise.",
+        "practical_relevance": "The lecture does not sufficiently connect backpropagation to real-world ML applications or practices.",
+        "completeness": "Important aspects such as chain rule application and limitations of backpropagation are not covered.",
+        "engagement_potential": "The housekeeper analogy is engaging, but the lecture could benefit from more varied hooks or real-world examples.",
+        "technical_quality": "The notation is mostly consistent, but the lecture lacks code examples and detailed derivations.",
+        "innovation": "The lecture presents standard content with little novel perspective or cross-domain connections."
+      },
+      "inner_suggestions": {
+        "academic_accuracy": "",
+        "pedagogical_effectiveness": "Include more detailed examples and a step-by-step walkthrough of the backpropagation process.",
+        "clarity_organization": "Reduce repetition and ensure each section adds unique value to the understanding of backpropagation.",
+        "practical_relevance": "Incorporate examples of how backpropagation is used in real-world neural network training scenarios.",
+        "completeness": "Discuss the chain rule in detail and address common limitations or challenges in using backpropagation.",
+        "engagement_potential": "Add more analogies or real-world scenarios to maintain interest and illustrate concepts.",
+        "technical_quality": "Include code snippets and more detailed mathematical derivations to enhance technical precision.",
+        "innovation": "Explore cross-domain applications or novel perspectives on backpropagation to add depth."
+      },
+      "target_dimensions": [],
+      "agents_called": [
+        "sme",
+        "pedagogy",
+        "clarity",
+        "engagement"
+      ],
+      "rolled_back": false,
+      "elapsed_sec": 270.23713088035583
+    }
+  ],
+  "final_lecture": "```\nBackpropagation in Neural Networks\n\n## Learning Objectives\n1. Apply backpropagation to compute gradients of the cost function with respect to the network's parameters.\n2. Apply backpropagation to update the weights and biases in the forward pass.\n3. Apply backpropagation to compute gradients of the cost function with respect to the output weights and biases.\n4. Apply backpropagation to update the weights and biases in the backward pass.\n\n## Introduction\nBackpropagation is an essential technique for training feedforward neural networks, as it allows for the computation of gradients of the loss function with respect to the network's parameters. The process of backpropagation involves propagating the error from the output layer to the input layer, and then computing the gradients of the cost function with respect to the network's parameters.\n\n### Step 1: Prerequisites\nTo understand backpropagation, we need to understand the forward pass of a neural network. The forward pass is the process of computing the predicted output of a neural network given a set of inputs.\n\n### Step 2: Intuition\nImagine a housekeeper who checks each room's cleanliness and adjusts the cleaning schedule based on the results of the inspection. Backpropagation works in a similar way, but it's for neural networks. The housekeeper checks the output of the neural network, and the backpropagation algorithm adjusts the weights and biases to improve the network's predictions.\n\n### Step 3: Definition\nBackpropagation is an algorithm used to train neural networks by computing the gradients of the cost function with respect to the network's parameters. The gradients are then used to update the weights and biases in the forward pass. The algorithm involves propagating the error from the output layer to the input layer, and computing the gradients of the cost function with respect to the output weights and biases.\n\n### Step 4: Formula\nThe gradient of the cost function with respect to the output weights and biases is given by:\n\n$$ \\frac{\\partial J}{\\partial w} = \\frac{\\partial J}{\\partial \\hat{y}} \\cdot \\frac{\\partial \\hat{y}}{\\partial w} $$\n\nwhere $ \\frac{\\partial J}{\\partial \\hat{y}} $ is the gradient of the cost function with respect to the predicted output, and $ \\frac{\\partial \\hat{y}}{\\partial w} $ is the derivative of the predicted output with respect to the weight.\n```",
+  "final_inner_scores": {
+    "academic_accuracy": 7.0,
+    "pedagogical_effectiveness": 6.0,
+    "clarity_organization": 6.0,
+    "practical_relevance": 5.0,
+    "completeness": 5.0,
+    "engagement_potential": 6.0,
+    "technical_quality": 5.0,
+    "innovation": 4.0
+  },
+  "final_inner_overall": 5.5,
+  "external_scores": {
+    "academic_accuracy": 4.5,
+    "pedagogical_effectiveness": 3.5,
+    "clarity_organization": 4.0,
+    "practical_relevance": 3.0,
+    "completeness": 2.5,
+    "engagement_potential": 3.5,
+    "technical_quality": 4.0,
+    "innovation": 2.0
+  },
+  "external_overall": 3.5,
+  "external_justifications": {},
+  "panel_per_judge": {
+    "judge_claude": {
+      "scores": {
+        "academic_accuracy": 4.5,
+        "pedagogical_effectiveness": 3.5,
+        "clarity_organization": 4.0,
+        "practical_relevance": 3.0,
+        "completeness": 2.5,
+        "engagement_potential": 4.0,
+        "technical_quality": 4.0,
+        "innovation": 3.0
+      },
+      "justifications": {
+        "academic_accuracy": "The chain rule formula shown is correct at a high level, but the lecture contains a notable error: it states gradients are used to update weights 'in the forward pass' rather than the backward pass, and it never introduces the actual backpropagation update rule (e.g., w := w - α·∂J/∂w) or the delta/error signal formulation.",
+        "pedagogical_effectiveness": "There is no scaffolding of prerequisite math (chain rule, partial derivatives, activation functions), no worked numerical example, and the learning objectives are repetitive and poorly differentiated, making it very difficult for a student to actually learn the algorithm.",
+        "clarity_organization": "The step-based structure gives a superficial sense of organization, but the steps are not logically sequenced (e.g., 'Step 2: Intuition' comes after 'Step 1: Prerequisites' but before the definition, and the content within steps is thin and sometimes contradictory).",
+        "practical_relevance": "No connection is made to real frameworks (PyTorch, TensorFlow), common architectures, or practical issues like vanishing gradients, making the material feel disconnected from actual practice.",
+        "completeness": "Critical components are entirely absent: the full chain-rule derivation through hidden layers, the delta (error signal) formulation, weight update equations, activation function derivatives, bias gradients, and any discussion of limitations or numerical considerations.",
+        "engagement_potential": "The housekeeper analogy is a creative attempt at motivation, but it is underdeveloped and not revisited; there are no visualizations, no motivating problem, and no tension or 'why does this matter' framing.",
+        "technical_quality": "LaTeX notation for the single formula is rendered correctly, but notation is inconsistent (J vs. cost function vs. loss function), layer indices are never introduced, and there are no code blocks, diagrams, or tables to support the technical content.",
+        "innovation": "The lecture follows a very standard surface-level treatment with no novel analogies developed in depth, no cross-domain connections, and no fresh perspective on the algorithm."
+      },
+      "overall": 3.5,
+      "error": null,
+      "raw": "```json\n{\n  \"scores\": {\n    \"academic_accuracy\": \"4.5\",\n    \"pedagogical_effectiveness\": \"3.5\",\n    \"clarity_organization\": \"4.0\",\n    \"practical_relevance\": \"3.0\",\n    \"completeness\": \"2.5\",\n    \"engagement_potential\": \"4.0\",\n    \"technical_quality\": \"4.0\",\n    \"innovation\": \"3.0\"\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"The chain rule formula shown is correct at a high level, but the lecture contains a notable error: it states gradients are used to update weights 'in the forward pass' rather than the backward pass, and it never introduces the actual backpropagation update rule (e.g., w := w - α·∂J/∂w) or the delta/error signal formulation.\",\n    \"pedagogical_effectiveness\": \"There is no scaffolding of prerequisite math (chain rule, partial derivatives, activation functions), no worked numerical example, and the learning objectives are repetitive and poorly differentiated, making it very difficult for a student to actually learn the algorithm.\",\n    \"clarity_organization\": \"The step-based structure gives a superficial sense of organization, but the steps are not logically sequenced (e.g., 'Step 2: Intuition' comes after 'Step 1: Prerequisites' but before the definition, and the content within steps is thin and sometimes contradictory).\",\n    \"practical_relevance\": \"No connection is made to real frameworks (PyTorch, TensorFlow), common architectures, or practical issues like vanishing gradients, making the material feel disconnected from actual practice.\",\n    \"completeness\": \"Critical components are entirely absent: the full chain-rule derivation through hidden layers, the delta (error signal) formulation, weight update equations, activation function derivatives, bias gradients, and any discussion of limitations or numerical considerations.\",\n    \"engagement_potential\": \"The housekeeper analogy is a creative attempt at motivation, but it is underdeveloped and not revisited; there are no visualizations, no motivating problem, and no tension or 'why does this matter' framing.\",\n    \"technical_quality\": \"LaTeX notation for the single formula is rendered correctly, but notation is inconsistent (J vs. cost function vs. loss function), layer indices are never introduced, and there are no code blocks, diagrams, or tables to support the technical content.\",\n    \"innovation\": \"The lecture follows a very standard surface-level treatment with no novel analogies developed in depth, no cross-domain connections, and no fresh perspective on the algorithm.\"\n  },\n  \"overall\": \"3.5\"\n}\n```"
+    },
+    "judge_kimi": {
+      "scores": {
+        "academic_accuracy": 4.5,
+        "pedagogical_effectiveness": 3.5,
+        "clarity_organization": 4.0,
+        "practical_relevance": 3.0,
+        "completeness": 3.5,
+        "engagement_potential": 3.5,
+        "technical_quality": 4.0,
+        "innovation": 2.0
+      },
+      "justifications": {
+        "academic_accuracy": "The chain rule formula shown is oversimplified and misleading for multi-layer networks; it omits the crucial recursive application through hidden layers and uses ambiguous dot notation rather than proper matrix calculus. Learning objective 2 incorrectly states backpropagation updates weights 'in the forward pass,' and objective 4 redundantly repeats objective 2 with minor wording changes.",
+        "pedagogical_effectiveness": "The housekeeper analogy is vague and doesn't actually explain how error signals propagate or how gradients flow computationally. There are no worked examples, no concrete network architecture, no mention of activation functions or their derivatives, and no scaffolding from simple to complex cases.",
+        "clarity_organization": "The structure appears logical with numbered steps but contains redundancies (objectives 2 and 4 are nearly identical) and logical confusion between forward and backward passes. The 'Definition' section contradicts itself about when updates occur.",
+        "practical_relevance": "No connection to actual deep learning frameworks, no discussion of computational graphs, automatic differentiation, or efficiency considerations like avoiding redundant computations. No mention of modern variants or when backpropagation fails.",
+        "completeness": "Missing hidden layer backpropagation entirely, no mention of bias gradients, no activation functions, no loss function examples, no discussion of vanishing/exploding gradients, no vectorization, and no comparison with numerical differentiation.",
+        "engagement_potential": "The housekeeper analogy is generic and doesn't create intellectual tension or reveal surprising structure. No historical context, no 'aha' moment about weight sharing of error signals, no connection to broader optimization concepts.",
+        "technical_quality": "LaTeX formatting is present but minimal; no code blocks, no algorithm pseudocode, no figure references, no consistent notation for layer indices (l, L), and the single equation uses imprecise dot product notation for what should be outer products in weight gradient matrices.",
+        "innovation": "Entirely standard presentation with no fresh angles; misses opportunities to connect to automatic differentiation, adjoint methods in physics, or credit assignment in reinforcement learning as intellectual siblings."
+      },
+      "overall": 3.5,
+      "error": null,
+      "raw": "{\"scores\":{\"academic_accuracy\":4.5,\"pedagogical_effectiveness\":3.5,\"clarity_organization\":4.0,\"practical_relevance\":3.0,\"completeness\":3.5,\"engagement_potential\":3.5,\"technical_quality\":4.0,\"innovation\":2.0},\"justifications\":{\"academic_accuracy\":\"The chain rule formula shown is oversimplified and misleading for multi-layer networks; it omits the crucial recursive application through hidden layers and uses ambiguous dot notation rather than proper matrix calculus. Learning objective 2 incorrectly states backpropagation updates weights 'in the forward pass,' and objective 4 redundantly repeats objective 2 with minor wording changes.\",\"pedagogical_effectiveness\":\"The housekeeper analogy is vague and doesn't actually explain how error signals propagate or how gradients flow computationally. There are no worked examples, no concrete network architecture, no mention of activation functions or their derivatives, and no scaffolding from simple to complex cases.\",\"clarity_organization\":\"The structure appears logical with numbered steps but contains redundancies (objectives 2 and 4 are nearly identical) and logical confusion between forward and backward passes. The 'Definition' section contradicts itself about when updates occur.\",\"practical_relevance\":\"No connection to actual deep learning frameworks, no discussion of computational graphs, automatic differentiation, or efficiency considerations like avoiding redundant computations. No mention of modern variants or when backpropagation fails.\",\"completeness\":\"Missing hidden layer backpropagation entirely, no mention of bias gradients, no activation functions, no loss function examples, no discussion of vanishing/exploding gradients, no vectorization, and no comparison with numerical differentiation.\",\"engagement_potential\":\"The housekeeper analogy is generic and doesn't create intellectual tension or reveal surprising structure. No historical context, no 'aha' moment about weight sharing of error signals, no connection to broader optimization concepts.\",\"technical_quality\":\"LaTeX formatting is present but minimal; no code blocks, no algorithm pseudocode, no figure references, no consistent notation for layer indices (l, L), and the single equation uses imprecise dot product notation for what should be outer products in weight gradient matrices.\",\"innovation\":\"Entirely standard presentation with no fresh angles; misses opportunities to connect to automatic differentiation, adjoint methods in physics, or credit assignment in reinforcement learning as intellectual siblings.\"},\"overall\":3.5}"
+    },
+    "judge_glm": {
+      "scores": {
+        "academic_accuracy": 3.0,
+        "pedagogical_effectiveness": 2.0,
+        "clarity_organization": 4.0,
+        "practical_relevance": 1.0,
+        "completeness": 2.0,
+        "engagement_potential": 2.0,
+        "technical_quality": 4.0,
+        "innovation": 1.0
+      },
+      "justifications": {
+        "academic_accuracy": "The lecture contains significant errors: it repeatedly claims backpropagation updates weights in the forward pass, and the chain rule formula only shows a single layer rather than the full multi-layer computation graph.",
+        "pedagogical_effectiveness": "The lecture fails to scaffold the algorithm effectively; it omits the actual step-by-step backward pass computation and provides no numerical examples or clear prerequisites beyond a vague reference to the forward pass.",
+        "clarity_organization": "While the step-by-step structure seems logical at a glance, the content within the steps is redundant and contradictory, making the actual flow of ideas confusing.",
+        "practical_relevance": "There is no connection to real-world practice, such as implementation details, common activation functions, or optimization algorithms like SGD or Adam.",
+        "completeness": "Crucial sub-topics are missing, including the recursive chain rule for hidden layers, the role of activation functions, bias gradients, and the actual weight update rule.",
+        "engagement_potential": "The housekeeper analogy is weak and does not meaningfully illustrate the backward flow of errors; the text is overly dry and repetitive, lacking hooks to motivate the reader.",
+        "technical_quality": "Formatting is superficially consistent but mathematically insufficient, lacking proper multi-index notation or clear variable definitions for a multi-layer network.",
+        "innovation": "The lecture presents a standard, poorly executed overview of backpropagation with no fresh angles, cross-domain connections, or non-trivial insights."
+      },
+      "overall": 2.5,
+      "error": null,
+      "raw": "{\n  \"scores\": {\n    \"academic_accuracy\": 3.0,\n    \"pedagogical_effectiveness\": 2.0,\n    \"clarity_organization\": 4.0,\n    \"practical_relevance\": 1.0,\n    \"completeness\": 2.0,\n    \"engagement_potential\": 2.0,\n    \"technical_quality\": 4.0,\n    \"innovation\": 1.0\n  },\n  \"justifications\": {\n    \"academic_accuracy\": \"The lecture contains significant errors: it repeatedly claims backpropagation updates weights in the forward pass, and the chain rule formula only shows a single layer rather than the full multi-layer computation graph.\",\n    \"pedagogical_effectiveness\": \"The lecture fails to scaffold the algorithm effectively; it omits the actual step-by-step backward pass computation and provides no numerical examples or clear prerequisites beyond a vague reference to the forward pass.\",\n    \"clarity_organization\": \"While the step-by-step structure seems logical at a glance, the content within the steps is redundant and contradictory, making the actual flow of ideas confusing.\",\n    \"practical_relevance\": \"There is no connection to real-world practice, such as implementation details, common activation functions, or optimization algorithms like SGD or Adam.\",\n    \"completeness\": \"Crucial sub-topics are missing, including the recursive chain rule for hidden layers, the role of activation functions, bias gradients, and the actual weight update rule.\",\n    \"engagement_potential\": \"The housekeeper analogy is weak and does not meaningfully illustrate the backward flow of errors; the text is overly dry and repetitive, lacking hooks to motivate the reader.\",\n    \"technical_quality\": \"Formatting is superficially consistent but mathematically insufficient, lacking proper multi-index notation or clear variable definitions for a multi-layer network.\",\n    \"innovation\": \"The lecture presents a standard, poorly executed overview of backpropagation with no fresh angles, cross-domain connections, or non-trivial insights.\"\n  },\n  \"overall\": 2.5\n}"
+    }
+  },
+  "panel_n_ok": 3,
+  "final_slides_json": {
+    "error": "skipped: model context too small for Presenter (slides optional)"
+  },
+  "slides_validation_warnings": [
+    "Slides JSON contains error: skipped: model context too small for Presenter (slides optional)"
+  ],
+  "total_elapsed_sec": 931.6471910476685,
+  "error": null
+}
