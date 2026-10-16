@@ -10,7 +10,7 @@ No rater identities, individual ratings, or comments are included.
 - `rating_form_template.xlsx` — the blank 8-dimension rating form given to raters.
 
 ## Protocol (summary)
-- 15 faculty/graduate raters, blinded incomplete-block design.
+- 17 raters (faculty members from two universities and AI master's/bachelor's graduates), blinded incomplete-block design.
 - Lectures anonymized and randomly ordered; each rater scored only one subject's lectures.
 - Coverage: each lecture independently rated by ≥3 raters.
 - Rubric: 8 dimensions, 1–10 scale; two anchors read first for calibration.
