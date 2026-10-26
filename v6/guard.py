@@ -37,6 +37,8 @@ PRICES = {
     "deepseek/deepseek-v4-pro": (0.96, 1.91),
     "qwen/qwen3-235b-a22b-2507": (0.09, 0.55),
     "google/gemma-4-31b-it": (0.09, 0.34),
+    "moonshotai/kimi-k3": (3.00, 15.00),      # عبر OpenRouter → Together
+    "z-ai/glm-5.2": (1.40, 4.40),
     # Together (أكتوبر 2026، من /v1/models على حسابك)
     "moonshotai/Kimi-K3": (2.70, 13.50),
     "zai-org/GLM-5.2": (1.40, 4.40),

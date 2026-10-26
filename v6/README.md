@@ -68,3 +68,23 @@ returned fewer than three scores, are marked as errors and redone on the next la
 
 API keys, the reference textbooks, local model weights, and the human raters'
 individual responses (only per-lecture aggregates are released, as stated in the paper).
+
+## Targeting baselines (Study B, added October 2026)
+
+Two cost/guard-matched baselines were run on the same 60 shared drafts:
+
+| Condition | What it does |
+|---|---|
+| `datr_random_composite` (Random-2) | revises two dimensions drawn at random each round (seeded by run key and round), same owning agents, composite guard (τc = 0) |
+| `self_refine_composite` | Self-Refine (all four agents every round) under the composite guard |
+
+```bash
+bash run_baselines.sh          # all generators, both subjects (resumable)
+bash continue_qwen.sh          # Qwen re-run with degenerate-output detection + judge-route calibration
+python paper/baselines_stats.py results_v6 results_v6/baseline_stats
+```
+
+* `degen.py` — detector for degenerate provider output (repetition loops, empty skeletons); flagged revisions are re-requested up to 3 times. Calibrated on all saved lectures: no real lecture flagged.
+* `results_v6/exp1/*/lectures/proposals*` — every Qwen baseline revision as returned by the provider (`proposals_evidence_*` holds the degenerate ones from the first attempt).
+* `calib_judges_or.py` → `results_v6/calibration/` — Kimi-K3 and GLM-5.2 reached through OpenRouter pinned to Together (no fallbacks) for 17 runs; agreement with the direct route on 10 lectures (panel mean difference +0.01, MAE 0.11).
+* `results_v6/baseline_stats/` — every number in the paper's Study-B baseline results.

@@ -30,7 +30,13 @@ PINNED = {
     "google/gemma-4-31b-it": ["DeepInfra"],
     "deepseek/deepseek-v4-pro": ["StreamLake"],
     "qwen/qwen3-235b-a22b-2507": ["Nebius"],
+    # Llama-3.3-70B لم يعد «بلا خادم» على Together (أكتوبر 2026) ⇒ نفس الأوزان عبر OpenRouter بدقة FP8 مثل Turbo
+    "meta-llama/llama-3.3-70b-instruct": ["DeepInfra"],
+    # حَكَما اللجنة عبر OpenRouter بعد نفاد رصيد Together (25 أكتوبر 2026) ⇒ مثبّتان على Together نفسه، بلا بديل
+    "moonshotai/kimi-k3": ["Together"],
+    "z-ai/glm-5.2": ["Together"],
 }
+NO_FALLBACK = {"moonshotai/kimi-k3", "z-ai/glm-5.2"}
 
 
 class OpenRouterClient(BaseClient):
@@ -49,7 +55,10 @@ class OpenRouterClient(BaseClient):
         order = os.getenv("OPENROUTER_PROVIDER_ORDER", "").strip()
         pinned = [p.strip() for p in order.split(",") if p.strip()] if order else PINNED.get(model_id.split(":")[0])
         if pinned:
-            self.extra["provider"] = {"order": pinned, "allow_fallbacks": True}
+            self.extra["provider"] = {"order": pinned,
+                                      "allow_fallbacks": model_id.split(":")[0] not in NO_FALLBACK}
+        if model_id.split(":")[0] in NO_FALLBACK:   # نفس إعدادات TogetherV6Client
+            self.extra["chat_template_kwargs"] = {"thinking": False, "enable_thinking": False}
 
     @retry(retry=retry_if_exception(_retryable), wait=wait_exponential(multiplier=2, min=2, max=30),
            stop=stop_after_attempt(5), reraise=True)

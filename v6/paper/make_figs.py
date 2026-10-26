@@ -1,4 +1,4 @@
-"""Figures for the paper (all from v6 results). Usage (from v6/): python paper/make_figs.py [out_dir]"""
+"""Figures for access_v6.tex (all from v6 results). Output: PDF + PNG into OUT."""
 import sys
 from pathlib import Path
 
@@ -10,10 +10,10 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-HERE = Path(__file__).resolve().parent
-S = HERE.parent / "results_v6" / "paper_v6_stats"   # written by paper_stats.py + export_fig_data.py
-T = HERE.parent / "results_v6" / "tables"           # written by analyze_v6.py
-OUT = Path(sys.argv[1] if len(sys.argv) > 1 else HERE / "figures")
+_R = Path(__file__).resolve().parent.parent / "results_v6"
+S = _R / "paper_v6_stats"
+T = _R / "tables"
+OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "figures")
 OUT.mkdir(parents=True, exist_ok=True)
 
 plt.rcParams.update({
@@ -29,8 +29,14 @@ GRAY = "#9a9994"
 MODELS = ["allam_7b", "llama_3_8b", "llama_3_3_70b", "gemma_4_31b", "deepseek_v3_1", "qwen3_235b"]
 LBL = {"allam_7b": "ALLaM-7B", "llama_3_8b": "Llama-3-8B", "llama_3_3_70b": "Llama-3.3-70B",
        "gemma_4_31b": "Gemma-4-31B", "deepseek_v3_1": "DeepSeek-V4-Pro", "qwen3_235b": "Qwen3-235B"}
-CND = {"self_refine": "Self-Refine", "self_refine_guard": "Self-Refine + guard", "datr_no_guard": "DATR (no guard)",
-       "datr_full": "DATR + per-dim. guard", "datr_composite_guard": "DATR + composite guard"}
+CND = {"self_refine": "Self-Refine", "self_refine_guard": "Self-Refine +\nper-dim. guard", "datr_no_guard": "DATR (no guard)",
+       "datr_full": "DATR + per-dim. guard", "datr_composite_guard": "DATR + composite guard",
+       "datr_random_composite": "Random 2 dims +\ncomposite guard", "self_refine_composite": "Self-Refine +\ncomposite guard"}
+SB = _R / "baseline_stats"
+beff = pd.read_csv(SB / "b_efficiency.csv", index_col=0)
+btier = pd.read_csv(SB / "b_tier.csv")
+import json as _json
+be3 = _json.load(open(SB / "b_e3.json"))
 COL_W, TXT_W = 3.45, 7.16
 
 
@@ -84,12 +90,12 @@ def fig_teaser():
                             ("gpt4o_panelprompt", AQUA, "GPT-4o, panel prompt", "^")]:
         ax.plot(x, g[col], marker=mk, color=c, lw=1.2, ms=4.5, mec="white", mew=0.6, label=lab)
     ax.set_xticks(x)
-    ax.set_xticklabels([LBL[m].replace("-Pro", "") for m in g.index], rotation=40, ha="right")
+    ax.set_xticklabels([LBL[m] for m in g.index], rotation=40, ha="right")
     ax.set_ylabel("Mean rubric score (1–10)")
     ax.set_ylim(1.5, 9)
     ax.grid(axis="y")
     ax.legend(frameon=False, loc="lower right", handlelength=1.6)
-    ax.set_title("A single judge compresses", loc="left")
+    ax.set_title("GPT-4o compresses the scale", loc="left")
     panel_label(ax, "(a)")
 
     ax = axs[1]
@@ -111,8 +117,22 @@ def fig_teaser():
     panel_label(ax, "(b)")
 
     ax = axs[2]
-    forest(ax)
-    ax.set_title("Refinement from a shared draft", loc="left")
+    pts = [("self_refine", GRAY, "o", "Self-Refine"), ("self_refine_composite", GRAY, "D", "Self-Refine +\ncomp. guard"),
+           ("datr_composite_guard", BLUE, "D", "DATR +\ncomp. guard"), ("datr_random_composite", ORANGE, "D", "Random 2 dims +\ncomp. guard")]
+    off = {"self_refine": (-0.6, 0.03, "right"), "self_refine_composite": (-0.6, -0.055, "right"),
+           "datr_composite_guard": (0.5, 0.02, "left"), "datr_random_composite": (0.5, -0.04, "left")}
+    for c, col, mk, lab in pts:
+        r = beff.loc[c]
+        ax.plot([r.calls, r.calls], [r.lo, r.hi], color=col, lw=1.4, solid_capstyle="round", zorder=2)
+        ax.plot(r.calls, r.gain, mk, color=col, ms=5.5, mec="white", mew=0.8, zorder=3)
+        dx, dy, ha = off[c]
+        ax.text(r.calls + dx, r.gain + dy, f"{lab} {r.gain:+.2f}", fontsize=6.4, ha=ha, va="center", color=INK)
+    ax.axhline(0, color=MUTED, lw=0.6)
+    ax.set_xlim(2.5, 14.5); ax.set_ylim(-0.03, 0.42)
+    ax.set_xlabel("Revision calls per run")
+    ax.set_ylabel("Panel gain over same draft (95% CI)")
+    ax.grid(axis="y"); ax.set_axisbelow(True)
+    ax.set_title("Same guard: choosing the weakest matters", loc="left")
     panel_label(ax, "(c)")
     save(fig, "vfig01_teaser")
 
@@ -253,15 +273,15 @@ def fig_cross():
         own = pan[m], jy[m]
         ax.plot(*own, "o", ms=8, mfc="none", mec=c, mew=1.2)
     ax.plot(xs, xs, color=MUTED, lw=0.7, ls=(0, (3, 2)))
-    ax.text(7.05, 6.55, "y = x", fontsize=6.5, color=MUTED, ha="left")
+    ax.text(7.25, 6.6, "y = x", fontsize=6.5, color=MUTED, ha="left")
     ax.set_xlabel("Panel median (per generator)")
     ax.set_ylabel("Score given by generator-judge")
     ax.set_xlim(1.5, 9)
     ax.set_ylim(1.5, 9.6)
-    ax.legend(frameon=False, loc="lower right", fontsize=6.3)
+    ax.legend(frameon=False, loc="upper left", fontsize=6.3, bbox_to_anchor=(0.0, -0.22), ncol=1)
     ax.grid()
     ax.set_axisbelow(True)
-    ax.set_title("Weaker judges are flat, not self-favouring", loc="left")
+    ax.set_title("Weaker judges are flat, not self-favoring", loc="left")
     panel_label(ax, "(b)")
     save(fig, "vfig05_crossjudge")
 
@@ -289,10 +309,10 @@ def fig_heat():
 
 # ------------------------------------------------------------------ Fig 7 refinement detail
 def fig_refine():
-    tier = pd.read_csv(S / "exp1_tier.csv")
-    E3 = pd.read_csv(T / "E3_targeting_mechanism.csv")
-    conds = ["self_refine", "self_refine_guard", "datr_no_guard", "datr_full", "datr_composite_guard"]
-    fig, axs = plt.subplots(1, 2, figsize=(TXT_W, 2.3), gridspec_kw=dict(width_ratios=[1.3, 1], wspace=0.75))
+    tier = btier
+    conds = ["self_refine", "self_refine_guard", "self_refine_composite", "datr_no_guard", "datr_full",
+             "datr_composite_guard", "datr_random_composite"]
+    fig, axs = plt.subplots(1, 2, figsize=(TXT_W, 2.75), gridspec_kw=dict(width_ratios=[1.3, 1], wspace=0.75))
     ax = axs[0]
     y = np.arange(len(conds))[::-1]
     for off, tr, c, lab in [(0.17, "weak", ORANGE, "Weaker generators (ALLaM, Llama)"), (-0.17, "strong", BLUE, "Stronger generators (Gemma, DeepSeek, Qwen)")]:
@@ -310,11 +330,10 @@ def fig_refine():
     panel_label(ax, "(a)")
 
     ax = axs[1]
-    e = E3.set_index("condition")
-    dc = ["datr_no_guard", "datr_full", "datr_composite_guard"]
+    dc = ["datr_no_guard", "datr_full", "datr_composite_guard", "datr_random_composite"]
     x = np.arange(len(dc))
-    tv = [float(e.loc[c, "Δ targeted dims (panel)"]) for c in dc]
-    nv = [float(e.loc[c, "Δ non-targeted dims (panel)"]) for c in dc]
+    tv = [be3[c][0] for c in dc]
+    nv = [be3[c][1] for c in dc]
     ax.bar(x - 0.18, tv, width=0.34, color=BLUE, label="Targeted dimensions")
     ax.bar(x + 0.18, nv, width=0.34, color=GRAY, label="Other dimensions")
     for xi, v in zip(x - 0.18, tv):
@@ -323,13 +342,13 @@ def fig_refine():
         ax.text(xi, max(v, 0) + 0.015, f"{v:+.2f}", ha="center", fontsize=6.5)
     ax.axhline(0, color=MUTED, lw=0.6)
     ax.set_xticks(x)
-    ax.set_xticklabels(["No guard", "Per-dim.\nguard", "Composite\nguard"])
+    ax.set_xticklabels(["DATR\nno guard", "DATR\nper-dim.", "DATR\ncomp.", "Random\ncomp."], fontsize=6.8)
     ax.set_ylabel("Δ panel score per dimension")
-    ax.set_ylim(-0.1, 0.78)
-    ax.legend(frameon=False, loc="upper left")
+    ax.set_ylim(-0.1, 0.98)
+    ax.legend(frameon=False, loc="upper right", fontsize=6.4)
     ax.grid(axis="y")
     ax.set_axisbelow(True)
-    ax.set_title("DATR moves the dimensions it targets", loc="left")
+    ax.set_title("Weakest-first targets have room to rise", loc="left")
     panel_label(ax, "(b)")
     save(fig, "vfig07_refinement")
 

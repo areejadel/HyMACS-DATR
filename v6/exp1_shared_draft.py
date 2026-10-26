@@ -41,6 +41,9 @@ from pathlib import Path
 import common
 
 CONDITIONS = ["self_refine", "self_refine_guard", "datr_no_guard", "datr_full", "datr_composite_guard"]
+# خطوط أساس إضافية (طلب المراجعين): بُعدان عشوائيان + حارس مركّب، وSelf-Refine + حارس مركّب
+EXTRA_CONDITIONS = ["datr_random_composite", "self_refine_composite"]
+COMPOSITE_GUARDED = ("datr_composite_guard", "datr_random_composite", "self_refine_composite")
 PANEL_PROMPT = "panel"
 
 
@@ -79,6 +82,27 @@ def main():
             b["prior_chars"] = a.prior_chars
         return b
     ab.Agent._budget = _budget
+
+    # ── رصد المخرجات المنحطّة (حلقة تكرار من المزوّد، مثل "In In In ...") ──
+    # تُعامل كاستدعاء فاشل: نعيد المحاولة حتى 3 مرات؛ إن بقيت منحطّة نحتفظ بالنص السابق.
+    import threading as _th
+    _DEG = _th.local()
+    _orig_revise = ab.Agent.revise
+
+    from degen import is_degenerate as _degenerate
+
+    def _revise(self, *args, **kw):
+        r = _orig_revise(self, *args, **kw)
+        tries = 1
+        while r.ok and _degenerate(r.text) and tries < 3:
+            _DEG.n = getattr(_DEG, "n", 0) + 1
+            r = _orig_revise(self, *args, **kw); tries += 1
+        if r.ok and _degenerate(r.text):
+            _DEG.n = getattr(_DEG, "n", 0) + 1
+            _DEG.failed = getattr(_DEG, "failed", 0) + 1
+            r.error = "degenerate output (repetition loop) after 3 attempts"
+        return r
+    ab.Agent.revise = _revise
 
     from routes import LOCAL_MODELS, available, is_substitute
     models = [m for m in a.models if not (a.skip_allam and m == "allam_7b")
@@ -195,6 +219,7 @@ def main():
                   "chars": len(lecture)}]
         t0 = time.time()
         err = None
+        _DEG.n = 0; _DEG.failed = 0
         for it in range(1, a.iters + 1):
             dec = router.decide(ev)
             if not dec.should_continue:
@@ -203,12 +228,19 @@ def main():
             if cond.startswith("self_refine"):
                 new = gen.refine_self(lecture, fb)
                 agents_called, targets = ["sme", "pedagogy", "clarity", "engagement"], []
+            elif cond == "datr_random_composite":
+                import random, zlib
+                rng = random.Random(zlib.crc32(f"{k}|{it}".encode()))
+                targets = rng.sample(list(common.DIMS), 2)
+                new, agents_called = gen.refine_datr(lecture, targets, fb)
             else:
                 new, agents_called = gen.refine_datr(lecture, dec.target_dimensions, fb)
                 targets = list(dec.target_dimensions)
             from guard import GUARD
             GUARD.quality(f"gen:{m}", len(new) >= 0.3 * len(lecture),
                           f"مراجعة قصيرة جداً ({len(new)} مقابل {len(lecture)} حرف)")
+            _pd = lec_dir / "proposals"; _pd.mkdir(exist_ok=True)   # للتدقيق: نحفظ كل مقترح
+            (_pd / f"{m}__{cond}__seed{s}__it{it}.md").write_text(new, encoding="utf-8")
             nev = inner_eval(new)
             if nev.get("error"):
                 err = f"inner judge failed at iter {it}"
@@ -216,7 +248,7 @@ def main():
             rolled, regressed = False, []
             if cond in ("datr_full", "self_refine_guard"):
                 rolled, regressed = router.check_regression(ev["scores"], nev["scores"], targets)
-            elif cond == "datr_composite_guard":
+            elif cond in COMPOSITE_GUARDED:
                 rolled = nev["composite"] < ev["composite"] - a.composite_tol
             iters.append({"iteration": it, "targets": targets, "agents": agents_called,
                           "proposed_scores": nev["scores"], "proposed_composite": nev["composite"],
@@ -239,6 +271,8 @@ def main():
                   "draft_panel_composite": dr["panel"]["composite"],
                   "n_rollbacks": sum(1 for x in iters[1:] if x.get("rolled_back")),
                   "n_rounds": len(iters) - 1, "elapsed_sec": round(time.time() - t0, 1),
+                  "n_degenerate_retries": getattr(_DEG, "n", 0),
+                  "n_degenerate_failed": getattr(_DEG, "failed", 0),
                   "error": err or pe.get("error")})
 
     # ALLaM المحلي متسلسل؛ نعالجه بخيط واحد في النهاية
